@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.node.json",
   "compilerOptions": {
-    "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
@@ -19,5 +18,5 @@
       "@config/*": ["config/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json", ".env"]
+  "include": ["src/**/*.ts", "src/**/*.json"]
 }

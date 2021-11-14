@@ -1,0 +1,19 @@
+{
+  "name": "@oleksandr/dbms-shared",
+  "version": "0.0.0",
+  "description": "Shared utilities",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "tsc && npx tsc-alias",
+    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "envalid": "^7.1.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0"
+  }
+}
