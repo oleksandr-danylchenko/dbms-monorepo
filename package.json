@@ -11,5 +11,8 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7"
   }
 }
