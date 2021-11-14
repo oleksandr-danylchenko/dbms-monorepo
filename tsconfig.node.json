@@ -1,5 +1,5 @@
 {
-  "compileOnSave": false,
+  "extends": "./tsconfig.shared.json",
   "compilerOptions": {
     "target": "es2017",
     "lib": ["es2017", "esnext.asynciterable"],
@@ -7,23 +7,7 @@
       "types",
       "node_modules/@types"
     ],
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
     "module": "commonjs",
-    "pretty": true,
-    "sourceMap": true,
-    "declaration": true,
-    "outDir": "./dist",
-    "allowJs": true,
-    "noEmit": false,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "strict": true,
-    "noFallthroughCasesInSwitch": true
   },
   "exclude": ["node_modules"]
 }
