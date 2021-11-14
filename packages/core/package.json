@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@oleksandr/dbms-core",
   "version": "0.0.0",
   "description": "TypeScript + Express API Server",
   "author": "",
@@ -54,7 +54,6 @@
     "node-config": "^0.0.2",
     "node-gyp": "^8.1.0",
     "nodemon": "^2.0.9",
-    "prettier": "^2.3.2",
     "supertest": "^6.1.3",
     "tsconfig-paths": "^3.10.1"
   }
