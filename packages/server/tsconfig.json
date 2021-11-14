@@ -18,5 +18,5 @@
       "@config/*": ["config/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.json"]
+  "include": ["src"]
 }
