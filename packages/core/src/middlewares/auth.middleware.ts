@@ -1,18 +1,18 @@
-import { NextFunction, Response } from 'express';
+import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { HttpException } from '@exceptions/HttpException';
-import { DataStoredInToken, RequestWithUser } from '@interfaces/auth.interface';
+import { DataStoredInToken } from '@interfaces/auth.interface';
 import userModel from '@models/users.model';
 
-const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+const authMiddleware: RequestHandler = async (req, res, next) => {
   try {
-    const Authorization = req.cookies['Authorization'] || req.header('Authorization').split('Bearer ')[1] || null;
+    const Authorization = req.cookies['Authorization'] || req.header('Authorization')?.split('Bearer ')[1] || null;
 
     if (Authorization) {
-      const secretKey: string = 'secretKey';
+      const secretKey = 'secretKey';
       const verificationResponse = (await jwt.verify(Authorization, secretKey)) as DataStoredInToken;
       const userId = verificationResponse.id;
-      const findUser = userModel.find(user => user.id === userId);
+      const findUser = userModel.find((user) => user.id === userId);
 
       if (findUser) {
         req.user = findUser;
