@@ -4,13 +4,13 @@ import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken } from '@interfaces/auth.interface';
 import userModel from '@models/users.model';
 
-const authMiddleware: RequestHandler = async (req, res, next) => {
+const authMiddleware: RequestHandler = (req, res, next) => {
   try {
     const Authorization = req.cookies['Authorization'] || req.header('Authorization')?.split('Bearer ')[1] || null;
 
     if (Authorization) {
       const secretKey = 'secretKey';
-      const verificationResponse = (await jwt.verify(Authorization, secretKey)) as DataStoredInToken;
+      const verificationResponse = jwt.verify(Authorization, secretKey) as DataStoredInToken;
       const userId = verificationResponse.id;
       const findUser = userModel.find((user) => user.id === userId);
 
