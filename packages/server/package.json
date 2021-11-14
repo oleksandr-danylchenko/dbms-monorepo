@@ -1,5 +1,5 @@
 {
-  "name": "@oleksandr/dbms-core",
+  "name": "@oleksandr/dbms-server",
   "version": "0.0.0",
   "description": "TypeScript + Express API Server",
   "author": "",

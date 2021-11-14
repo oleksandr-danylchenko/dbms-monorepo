@@ -2316,9 +2316,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@oleksandr/dbms-core@workspace:packages/core":
+"@oleksandr/dbms-server@workspace:packages/server":
   version: 0.0.0-use.local
-  resolution: "@oleksandr/dbms-core@workspace:packages/core"
+  resolution: "@oleksandr/dbms-server@workspace:packages/server"
   dependencies:
     "@types/bcrypt": ^5.0.0
     "@types/compression": ^1.7.1
