@@ -2293,8 +2293,8 @@ __metadata:
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
     "@types/jest": ^26.0.15
-    "@types/react": ^17.0.0
-    "@types/react-dom": ^17.0.0
+    "@types/react": ^17.0.34
+    "@types/react-dom": ^17.0.11
     "@typescript-eslint/eslint-plugin": ^4.26.1
     "@typescript-eslint/parser": ^4.26.1
     eslint: ^7.28.0
@@ -2362,6 +2362,16 @@ __metadata:
     typescript: ^4.4.4
     winston: ^3.3.3
     winston-daily-rotate-file: ^4.5.5
+  languageName: unknown
+  linkType: soft
+
+"@oleksandr/dbms-shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@oleksandr/dbms-shared@workspace:packages/shared"
+  dependencies:
+    "@types/dotenv": ^8.2.0
+    dotenv: ^10.0.0
+    envalid: ^7.1.0
   languageName: unknown
   linkType: soft
 
@@ -3081,7 +3091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^17.0.0":
+"@types/react-dom@npm:^17.0.11":
   version: 17.0.11
   resolution: "@types/react-dom@npm:17.0.11"
   dependencies:
@@ -3090,7 +3100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17.0.0":
+"@types/react@npm:*, @types/react@npm:^17.0.34":
   version: 17.0.34
   resolution: "@types/react@npm:17.0.34"
   dependencies:
