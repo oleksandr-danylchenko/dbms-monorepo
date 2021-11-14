@@ -1,5 +1,3 @@
-process.env['NODE_CONFIG_DIR'] = __dirname + '/configs';
-
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -10,6 +8,7 @@ import morgan from 'morgan';
 import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import env from '@config/env';
 
 class App {
   public app: express.Application;
@@ -18,8 +17,8 @@ class App {
 
   constructor(routes: Routes[]) {
     this.app = express();
-    this.port = process.env.PORT || 3000;
-    this.env = process.env.NODE_ENV || 'development';
+    this.port = env.PORT || 3000;
+    this.env = env.NODE_ENV || 'development';
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
@@ -40,8 +39,8 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(morgan(process.env.LOG_FORMAT, { stream }));
-    this.app.use(cors({ origin: !!process.env.CORS_ORIGIN, credentials: !!process.env.CORS_CREDENTIALS }));
+    this.app.use(morgan(env.LOG_FORMAT, { stream }));
+    this.app.use(cors({ origin: env.CORS_ORIGIN, credentials: env.CORS_CREDENTIALS }));
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
@@ -51,7 +50,7 @@ class App {
   }
 
   private initializeRoutes(routes: Routes[]) {
-    routes.forEach(route => {
+    routes.forEach((route) => {
       this.app.use('/', route.router);
     });
   }
