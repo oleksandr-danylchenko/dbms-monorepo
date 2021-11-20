@@ -1,14 +1,20 @@
+import fs from 'fs';
 import DbmsDatabase from '@services/dbms/dbmsDatabase';
 import { PersistedColumn, PersistedDatabase, PersistedTable } from '@interfaces/dbms/persistedDbms.interface';
-import fs from 'fs';
 import DbmsColumn from '@services/dbms/dbmsColumn';
 import DbmsTable from '@services/dbms/dbmsTable';
 
 class DbmsPersistor {
-  public basePath = process.cwd();
+  public basePath = `${process.cwd()}/storage`;
   public databasesFolder = `${this.basePath}/databases`;
   public tablesFolder = `${this.basePath}/tables`;
   public recordsFolder = `${this.basePath}/records`;
+
+  constructor() {
+    fs.mkdirSync(this.databasesFolder, { recursive: true });
+    fs.mkdirSync(this.tablesFolder, { recursive: true });
+    fs.mkdirSync(this.recordsFolder, { recursive: true });
+  }
 
   public readDatabases(): DbmsDatabase[] {
     const persistedDatabases = this.readDatabasesFiles();
