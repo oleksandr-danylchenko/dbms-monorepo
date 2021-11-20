@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
+import DbmsService from '@services/dbms/dbms.service';
 
 class DbmsController {
-  // public dbmsService = new DbmsService();
+  public dbmsService = new DbmsService();
 
   public getDatabases = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
