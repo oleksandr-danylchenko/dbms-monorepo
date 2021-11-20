@@ -5,13 +5,25 @@ import { normalize } from '@utils/normalization.helper';
 class DbmsTable {
   public id: string;
   public name: string;
+  public databaseId: string;
   public columnsIndex: {
     [columnId: string]: DbmsColumn;
   };
 
-  constructor({ id, name, columns }: { id?: string; name: string; columns: DbmsColumn[] }) {
+  constructor({
+    id,
+    name,
+    databaseId,
+    columns,
+  }: {
+    id?: string;
+    name: string;
+    databaseId: string;
+    columns: DbmsColumn[];
+  }) {
     this.id = id || nanoid();
     this.name = name;
+    this.databaseId = databaseId;
     this.columnsIndex = normalize(columns);
   }
 
