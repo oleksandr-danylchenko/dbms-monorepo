@@ -4,12 +4,14 @@ import { FieldType } from '@interfaces/dbms/dbms.interface';
 class DbmsColumn {
   public id: string;
   public name: string;
+  public tableId: string;
   public type: FieldType;
   private validationFunction: (value: unknown) => boolean;
 
-  constructor({ id, name, type }: { id?: string; name: string; type: FieldType }) {
+  constructor({ id, name, tableId, type }: { id?: string; name: string; tableId: string; type: FieldType }) {
     this.id = id || nanoid();
     this.name = name;
+    this.tableId = tableId;
     this.type = type;
     this.validationFunction = () => true;
   }

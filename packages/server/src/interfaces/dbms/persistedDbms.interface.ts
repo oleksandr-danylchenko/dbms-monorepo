@@ -21,6 +21,7 @@ export interface PersistedTable extends PersistedEntity {
 }
 
 export interface PersistedColumn extends PersistedEntity {
+  tableId: string;
   type: FieldType;
 }
 
