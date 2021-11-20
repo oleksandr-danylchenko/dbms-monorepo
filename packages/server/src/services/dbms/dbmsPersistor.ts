@@ -38,14 +38,18 @@ class DbmsPersistor {
 
   private readDatabasesFiles(): PersistedDatabase[] {
     const databasesFilenames = fs.readdirSync(this.databasesFolder);
-    const databasesFiles = databasesFilenames.map((filename) => fs.readFileSync(filename));
+    const databasesFilesPaths = databasesFilenames.map((filename) =>
+      this.createDatabasePath(filename.replace('.json', ''))
+    );
+    const databasesFiles = databasesFilesPaths.map((path) => fs.readFileSync(path));
     return databasesFiles.map((file) => JSON.parse(file.toString()) as PersistedDatabase);
   }
 
   private readDatabaseTablesFiles(database: PersistedDatabase): PersistedTable[] {
-    const tablesIds = Object.keys(database.tablesIndex);
-    const tablesFilesPaths = tablesIds.map((tableId) => `${this.tablesFolder}/${database.id}_${tableId}.json`);
-    const tablesFiles = tablesFilesPaths.map((filename) => fs.readFileSync(filename));
+    const { id: databaseId, tablesIndex } = database;
+    const tablesIds = Object.keys(tablesIndex);
+    const tablesFilesPaths = tablesIds.map((tableId) => this.createTablePath(databaseId, tableId));
+    const tablesFiles = tablesFilesPaths.map((path) => fs.readFileSync(path));
     return tablesFiles.map((file) => JSON.parse(file.toString()) as PersistedTable);
   }
 
@@ -69,13 +73,21 @@ class DbmsPersistor {
     }
   }
 
+  private createDatabasePath(databaseId: string): string {
+    return `${this.databasesFolder}/${databaseId}.json`;
+  }
+
+  private createTablePath(databaseId: string, tableId: string): string {
+    return `${this.tablesFolder}/${databaseId}_${tableId}.json`;
+  }
+
   private static createColumns(columns: PersistedColumn[]): DbmsColumn[] {
-    return columns.map(({ id, name, type }) => new DbmsColumn({ id, name, type }));
+    return columns.map(({ id, name, tableId, type }) => new DbmsColumn({ id, name, tableId, type }));
   }
 
   private static createTable(table: PersistedTable, columns: DbmsColumn[]): DbmsTable {
-    const { id, name } = table;
-    return new DbmsTable({ id, name, columns });
+    const { id, name, databaseId } = table;
+    return new DbmsTable({ id, name, databaseId, columns });
   }
 
   private static createDatabase(database: PersistedDatabase, tables: DbmsTable[]): DbmsDatabase {
