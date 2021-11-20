@@ -10,8 +10,8 @@ class DbmsDatabase {
   public name: string;
   public tablesIndex: TablesIndex;
 
-  constructor(name: string, tables: DbmsTable[]) {
-    this.id = nanoid();
+  constructor({ id, name, tables }: { id?: string; name: string; tables: DbmsTable[] }) {
+    this.id = id || nanoid();
     this.name = name;
     this.tablesIndex = tables.reduce((index, table) => {
       index[table.id] = table;
