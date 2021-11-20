@@ -5,11 +5,11 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "tsc && npx tsc-alias",
-    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "npm run lint -- --fix"
+    "server-start": "npm run server-build && cross-env NODE_ENV=production node dist/server.js",
+    "server-dev": "cross-env NODE_ENV=development nodemon",
+    "server-build": "tsc && npx tsc-alias",
+    "server-lint": "eslint --ignore-path .gitignore --ext .ts src/",
+    "server-lint:fix": "npm run server-lint -- --fix"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
