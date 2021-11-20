@@ -10,7 +10,14 @@ class DbmsController {
     }
   };
 
-  public getDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getDatabaseById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public deleteDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
@@ -24,7 +31,21 @@ class DbmsController {
     }
   };
 
-  public getTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getTableById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public createTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public deleteTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
@@ -45,7 +66,7 @@ class DbmsController {
     }
   };
 
-  public createTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public createTableRecordById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
@@ -53,6 +74,13 @@ class DbmsController {
   };
 
   public updateTableRecord = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public deleteTableRecord = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
