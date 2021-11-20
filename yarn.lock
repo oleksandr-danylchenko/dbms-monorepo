@@ -2353,6 +2353,7 @@ __metadata:
     jest: ^27.0.6
     jsonwebtoken: ^8.5.1
     morgan: ^1.10.0
+    nanoid: ^3.1.30
     node-config: ^0.0.2
     node-gyp: ^8.1.0
     nodemon: ^2.0.9
@@ -2362,16 +2363,6 @@ __metadata:
     typescript: ^4.4.4
     winston: ^3.3.3
     winston-daily-rotate-file: ^4.5.5
-  languageName: unknown
-  linkType: soft
-
-"@oleksandr/dbms-shared@workspace:packages/shared":
-  version: 0.0.0-use.local
-  resolution: "@oleksandr/dbms-shared@workspace:packages/shared"
-  dependencies:
-    "@types/dotenv": ^8.2.0
-    dotenv: ^10.0.0
-    envalid: ^7.1.0
   languageName: unknown
   linkType: soft
 

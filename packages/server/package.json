@@ -27,6 +27,7 @@
     "jest": "^27.0.6",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "nanoid": "^3.1.30",
     "ts-node": "^10.0.0",
     "typescript": "^4.4.4",
     "winston": "^3.3.3",
