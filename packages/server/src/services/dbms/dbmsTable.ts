@@ -9,8 +9,8 @@ class DbmsTable {
     [columnId: string]: DbmsColumn;
   };
 
-  constructor(name: string, columns: DbmsColumn[]) {
-    this.id = nanoid();
+  constructor({ id, name, columns }: { id?: string; name: string; columns: DbmsColumn[] }) {
+    this.id = id || nanoid();
     this.name = name;
     this.columnsIndex = normalize(columns);
   }
