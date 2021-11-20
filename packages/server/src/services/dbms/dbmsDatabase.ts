@@ -1,7 +1,8 @@
 import DbmsTable from '@services/dbms/dbmsTable';
 import { nanoid } from 'nanoid';
+import { normalize } from '@utils/normalization.helper';
 
-interface TablesIndex {
+export interface TablesIndex {
   [tableId: string]: DbmsTable;
 }
 
@@ -13,10 +14,7 @@ class DbmsDatabase {
   constructor({ id, name, tables }: { id?: string; name: string; tables: DbmsTable[] }) {
     this.id = id || nanoid();
     this.name = name;
-    this.tablesIndex = tables.reduce((index, table) => {
-      index[table.id] = table;
-      return index;
-    }, {} as TablesIndex);
+    this.tablesIndex = normalize(tables);
   }
 
   get tables(): DbmsTable[] {

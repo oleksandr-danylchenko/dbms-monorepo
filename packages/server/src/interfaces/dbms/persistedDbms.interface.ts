@@ -6,9 +6,11 @@ interface PersistedEntity {
 }
 
 export interface PersistedDatabase extends PersistedEntity {
-  tablesIndex: {
-    [tableId: string]: Pick<PersistedTable, 'id'>;
-  };
+  tablesIndex: PersistedTablesIndex;
+}
+
+export interface PersistedTablesIndex {
+  [tableId: string]: Pick<PersistedTable, 'id'>;
 }
 
 export interface PersistedTable extends PersistedEntity {
