@@ -26,8 +26,9 @@ export interface PersistedColumn extends PersistedEntity {
 }
 
 export interface PersistedRecord {
+  tableId: string;
   columnsIndex: {
-    [columnName: string]: {
+    [columnId: string]: {
       value: unknown;
     };
   };
