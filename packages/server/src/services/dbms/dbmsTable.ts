@@ -2,13 +2,15 @@ import { nanoid } from 'nanoid';
 import DbmsColumn from '@services/dbms/dbmsColumn';
 import { normalize } from '@utils/normalization.helper';
 
+export interface ColumnsIndex {
+  [columnId: string]: DbmsColumn;
+}
+
 class DbmsTable {
   public id: string;
   public name: string;
   public databaseId: string;
-  public columnsIndex: {
-    [columnId: string]: DbmsColumn;
-  };
+  public columnsIndex: ColumnsIndex;
 
   constructor({
     id,

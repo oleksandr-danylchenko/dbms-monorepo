@@ -2,12 +2,13 @@ import fs, { promises as fsPromises } from 'fs';
 import DbmsDatabase, { TablesIndex } from '@services/dbms/dbmsDatabase';
 import {
   PersistedColumn,
+  PersistedColumnsIndex,
   PersistedDatabase,
   PersistedTable,
   PersistedTablesIndex,
 } from '@interfaces/dbms/persistedDbms.interface';
 import DbmsColumn from '@services/dbms/dbmsColumn';
-import DbmsTable from '@services/dbms/dbmsTable';
+import DbmsTable, { ColumnsIndex } from '@services/dbms/dbmsTable';
 
 class DbmsPersistor {
   public basePath = `${process.cwd()}/storage`;
@@ -55,7 +56,7 @@ class DbmsPersistor {
 
   public async writeDatabase(database: DbmsDatabase) {
     const { id, name, tablesIndex } = database;
-    const databaseFilePath = `${this.databasesFolder}/${id}.json`;
+    const databaseFilePath = this.createDatabasePath(id);
     const persistContent = {
       id,
       name,
@@ -70,6 +71,27 @@ class DbmsPersistor {
         index[tableId] = { id: tableId };
         return index;
       }, {} as PersistedTablesIndex);
+    }
+  }
+
+  public async writeTable(table: DbmsTable) {
+    const { id, name, databaseId, columnsIndex } = table;
+    const tableFilePath = this.createTablePath(databaseId, id);
+    const persistContent = {
+      id,
+      name,
+      databaseId,
+      columnsIndex: createPersistColumnsIndex(columnsIndex),
+    };
+    const persistContentStr = JSON.stringify(persistContent);
+    return fsPromises.writeFile(tableFilePath, persistContentStr);
+
+    function createPersistColumnsIndex(columnsIndex: ColumnsIndex): PersistedColumnsIndex {
+      return Object.values(columnsIndex).reduce((index, column) => {
+        const { id: columnId, name: columnName, tableId, type: columnType } = column;
+        index[columnId] = { id: columnId, name: columnName, tableId, type: columnType };
+        return index;
+      }, {} as PersistedColumnsIndex);
     }
   }
 
