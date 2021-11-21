@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { FieldType } from '@interfaces/dbms/dbms.interface';
 
-class DbmsColumn {
+class Column {
   public id: string;
   public name: string;
   public tableId: string;
@@ -21,4 +21,4 @@ class DbmsColumn {
   }
 }
 
-export default DbmsColumn;
+export default Column;

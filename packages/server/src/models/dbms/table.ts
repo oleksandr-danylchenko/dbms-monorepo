@@ -1,41 +1,31 @@
 import { nanoid } from 'nanoid';
-import DbmsColumn from '@services/dbms/dbmsColumn';
 import { normalize } from '@utils/normalization.helper';
+import Column from '@models/dbms/column';
 
 export interface ColumnsIndex {
-  [columnId: string]: DbmsColumn;
+  [columnId: string]: Column;
 }
 
-class DbmsTable {
+class Table {
   public id: string;
   public name: string;
   public databaseId: string;
   public columnsIndex: ColumnsIndex;
 
-  constructor({
-    id,
-    name,
-    databaseId,
-    columns,
-  }: {
-    id?: string;
-    name: string;
-    databaseId: string;
-    columns: DbmsColumn[];
-  }) {
+  constructor({ id, name, databaseId, columns }: { id?: string; name: string; databaseId: string; columns: Column[] }) {
     this.id = id || nanoid();
     this.name = name;
     this.databaseId = databaseId;
     this.columnsIndex = normalize(columns);
   }
 
-  get columns(): DbmsColumn[] {
+  get columns(): Column[] {
     return Object.values(this.columnsIndex);
   }
 
-  public getColumn(id: string): DbmsColumn | undefined {
+  public getColumn(id: string): Column | undefined {
     return this.columnsIndex[id];
   }
 }
 
-export default DbmsTable;
+export default Table;
