@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
+import Database from '@models/dbms/database';
+import { DatabaseDto } from '@dtos/database.dto';
+import DatabaseMapper from '@/mappers/database.mapper';
 
 class DbmsController {
   public dbmsService = new DbmsService();
 
   public getDatabases = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databases: Database[] = await this.dbmsService.findAllDatabases();
+      const databasesDtos: DatabaseDto[] = databases.map(DatabaseMapper.toDto);
+      res.status(200).json({ data: databasesDtos, message: 'findAllDatabases' });
     } catch (error) {
       next(error);
     }
