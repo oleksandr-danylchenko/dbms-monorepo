@@ -73,6 +73,30 @@ class DbmsPersistor {
     }
   }
 
+  public async deleteDatabase(database: Database) {
+    const { id, tablesIndex } = database;
+    const tables = Object.values(tablesIndex);
+    const tablesDeletion = tables.map(this.deleteTable);
+    await Promise.all(tablesDeletion);
+
+    const databaseFilePath = this.createDatabasePath(id);
+    return fsPromises.unlink(databaseFilePath);
+  }
+
+  public async deleteTable(table: Table) {
+    const { id, databaseId, columnsIndex } = table;
+    const columns = Object.values(columnsIndex);
+    const columnsDeletion = columns.map(this.deleteColumn);
+    await Promise.all(columnsDeletion);
+
+    const tableFilePath = this.createTablePath(databaseId, id);
+    return fsPromises.unlink(tableFilePath);
+  }
+
+  public async deleteColumn(column: Column) {
+    const { id, name, type } = column;
+  }
+
   public async writeTable(table: Table) {
     const { id, name, databaseId, columnsIndex } = table;
     const tableFilePath = this.createTablePath(databaseId, id);

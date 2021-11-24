@@ -4,7 +4,6 @@ import DbmsPersistor from '@services/dbms/dbmsPersitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
-import { User } from '@interfaces/users.interface';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -51,6 +50,7 @@ class DbmsService {
     if (!database) throw new HttpException(404, `No database ${databaseId} found`);
 
     delete this.databasesIndex[databaseId];
+    return this.dbmsPersistor.deleteDatabase(database);
   }
 }
 
