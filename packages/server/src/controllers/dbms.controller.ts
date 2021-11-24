@@ -19,6 +19,10 @@ class DbmsController {
 
   public getDatabaseById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const database = await this.dbmsService.findDatabaseById(databaseId);
+      const databaseDto = DatabaseMapper.toDto(database);
+      res.status(200).json({ data: databaseDto, message: 'findDatabaseById' });
     } catch (error) {
       next(error);
     }
