@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
 import Database from '@models/dbms/database';
-import { DatabaseDto } from '@dtos/database.dto';
+import { CreateDatabaseDto, DatabaseDto } from '@dtos/database.dto';
 import DatabaseMapper from '@/mappers/database.mapper';
 
 class DbmsController {
@@ -23,6 +23,17 @@ class DbmsController {
       const database = await this.dbmsService.findDatabaseById(databaseId);
       const databaseDto = DatabaseMapper.toDto(database);
       res.status(200).json({ data: databaseDto, message: 'findDatabaseById' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public createDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const databaseData: CreateDatabaseDto = req.body;
+      const createdDatabase: Database = await this.dbmsService.createDatabase(databaseData);
+      const createdDatabaseDto = DatabaseMapper.toDto(createdDatabase);
+      res.status(201).json({ data: createdDatabaseDto, message: 'createDatabase' });
     } catch (error) {
       next(error);
     }

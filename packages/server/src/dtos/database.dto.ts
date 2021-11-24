@@ -1,4 +1,5 @@
 import { PersistedTable } from '@interfaces/dbms/persistedDbms.interface';
+import { IsString } from 'class-validator';
 
 export interface DatabaseDto {
   id: string;
@@ -6,4 +7,9 @@ export interface DatabaseDto {
   tablesIndex: {
     [tableId: string]: Pick<PersistedTable, 'id' | 'name'>;
   };
+}
+
+export class CreateDatabaseDto {
+  @IsString()
+  public name!: string;
 }

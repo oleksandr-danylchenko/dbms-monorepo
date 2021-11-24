@@ -14,6 +14,7 @@ class DbmsRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.dbmsController.getDatabases);
     this.router.get(`${this.path}/:dbId`, this.dbmsController.getDatabaseById);
+    this.router.post(`${this.path}`, this.dbmsController.createDatabase);
     this.router.delete(`${this.path}/:dbId`, this.dbmsController.deleteDatabase);
 
     this.router.get(`${this.path}/:dbId/tables`, this.dbmsController.getTables);
