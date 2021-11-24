@@ -1,5 +1,4 @@
 import fs, { promises as fsPromises } from 'fs';
-import DbmsDatabase, { TablesIndex } from '@services/dbms/dbmsDatabase';
 import {
   PersistedColumn,
   PersistedColumnsIndex,
@@ -7,9 +6,9 @@ import {
   PersistedTable,
   PersistedTablesIndex,
 } from '@interfaces/dbms/persistedDbms.interface';
-import DbmsColumn from '@services/dbms/dbmsColumn';
-import DbmsTable, { ColumnsIndex } from '@services/dbms/dbmsTable';
-
+import Database, { TablesIndex } from '@models/dbms/database';
+import Table, { ColumnsIndex } from '@models/dbms/table';
+import Column from '@models/dbms/column';
 class DbmsPersistor {
   public basePath = `${process.cwd()}/storage`;
   public databasesFolder = `${this.basePath}/databases`;
@@ -22,7 +21,7 @@ class DbmsPersistor {
     fs.mkdirSync(this.recordsFolder, { recursive: true });
   }
 
-  public readDatabases(): DbmsDatabase[] {
+  public readDatabases(): Database[] {
     const persistedDatabases = this.readDatabasesFiles();
     return persistedDatabases.map((database) => {
       const persistedDatabaseTables = this.readDatabaseTablesFiles(database);
@@ -54,7 +53,7 @@ class DbmsPersistor {
     return tablesFiles.map((file) => JSON.parse(file.toString()) as PersistedTable);
   }
 
-  public async writeDatabase(database: DbmsDatabase) {
+  public async writeDatabase(database: Database) {
     const { id, name, tablesIndex } = database;
     const databaseFilePath = this.createDatabasePath(id);
     const persistContent = {
@@ -74,7 +73,7 @@ class DbmsPersistor {
     }
   }
 
-  public async writeTable(table: DbmsTable) {
+  public async writeTable(table: Table) {
     const { id, name, databaseId, columnsIndex } = table;
     const tableFilePath = this.createTablePath(databaseId, id);
     const persistContent = {
@@ -103,18 +102,18 @@ class DbmsPersistor {
     return `${this.tablesFolder}/${databaseId}_${tableId}.json`;
   }
 
-  private static createColumns(columns: PersistedColumn[]): DbmsColumn[] {
-    return columns.map(({ id, name, tableId, type }) => new DbmsColumn({ id, name, tableId, type }));
+  private static createColumns(columns: PersistedColumn[]): Column[] {
+    return columns.map(({ id, name, tableId, type }) => new Column({ id, name, tableId, type }));
   }
 
-  private static createTable(table: PersistedTable, columns: DbmsColumn[]): DbmsTable {
+  private static createTable(table: PersistedTable, columns: Column[]): Table {
     const { id, name, databaseId } = table;
-    return new DbmsTable({ id, name, databaseId, columns });
+    return new Table({ id, name, databaseId, columns });
   }
 
-  private static createDatabase(database: PersistedDatabase, tables: DbmsTable[]): DbmsDatabase {
+  private static createDatabase(database: PersistedDatabase, tables: Table[]): Database {
     const { id, name } = database;
-    return new DbmsDatabase({ id, name, tables });
+    return new Database({ id, name, tables });
   }
 }
 
