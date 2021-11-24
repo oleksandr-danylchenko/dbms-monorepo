@@ -4,6 +4,7 @@ import DbmsPersistor from '@services/dbms/dbmsPersitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
+import { User } from '@interfaces/users.interface';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -31,7 +32,7 @@ class DbmsService {
   }
 
   public async createDatabase(databaseData: CreateDatabaseDto): Promise<Database> {
-    if (isEmpty(databaseData)) throw new HttpException(400, 'There is no database data presented');
+    if (isEmpty(databaseData)) throw new HttpException(404, `There is no database data presented`);
 
     const { name: newDatabaseName } = databaseData;
 
@@ -43,6 +44,13 @@ class DbmsService {
     await this.dbmsPersistor.writeDatabase(newDatabase);
 
     return newDatabase;
+  }
+
+  public async deleteDatabase(databaseId: string): Promise<void> {
+    const database = this.databasesIndex[databaseId];
+    if (!database) throw new HttpException(404, `No database ${databaseId} found`);
+
+    delete this.databasesIndex[databaseId];
   }
 }
 

@@ -11,6 +11,7 @@ class DbmsController {
     try {
       const databases: Database[] = await this.dbmsService.findAllDatabases();
       const databasesDtos: DatabaseDto[] = databases.map(DatabaseMapper.toDto);
+
       res.status(200).json({ data: databasesDtos, message: 'findAllDatabases' });
     } catch (error) {
       next(error);
@@ -22,6 +23,7 @@ class DbmsController {
       const databaseId = req.params.dbId;
       const database = await this.dbmsService.findDatabaseById(databaseId);
       const databaseDto = DatabaseMapper.toDto(database);
+
       res.status(200).json({ data: databaseDto, message: 'findDatabaseById' });
     } catch (error) {
       next(error);
@@ -33,6 +35,7 @@ class DbmsController {
       const databaseData: CreateDatabaseDto = req.body;
       const createdDatabase: Database = await this.dbmsService.createDatabase(databaseData);
       const createdDatabaseDto = DatabaseMapper.toDto(createdDatabase);
+
       res.status(201).json({ data: createdDatabaseDto, message: 'createDatabase' });
     } catch (error) {
       next(error);
@@ -41,6 +44,10 @@ class DbmsController {
 
   public deleteDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      await this.dbmsService.deleteDatabase(databaseId);
+
+      res.status(200).json({ data: { id: databaseId }, message: 'deleteDatabase' });
     } catch (error) {
       next(error);
     }
