@@ -11,12 +11,14 @@ class Table {
   private _name: string;
   private readonly _databaseId: string;
   private readonly _columnsIndex: ColumnsIndex;
+  private _columnsOrderIndex: string[];
 
   constructor({ id, name, databaseId, columns }: { id?: string; name: string; databaseId: string; columns: Column[] }) {
     this._id = id || nanoid();
     this._name = name;
     this._databaseId = databaseId;
     this._columnsIndex = normalize(columns);
+    this._columnsOrderIndex = [];
   }
 
   get id() {
@@ -43,12 +45,28 @@ class Table {
     return Object.values(this._columnsIndex);
   }
 
+  get columnsOrder(): string[] {
+    return this._columnsOrderIndex;
+  }
+
   public getColumn(id: string): Column | undefined {
     return this._columnsIndex[id];
   }
 
   get columnsAmount(): number {
     return this.columnsIds.length;
+  }
+
+  public addColumn(column: Column) {
+    const { id: columnId } = column;
+    this._columnsIndex[columnId] = column;
+    this._columnsOrderIndex.push(columnId);
+  }
+
+  public removeColumn(column: Column) {
+    const { id: columnId } = column;
+    delete this._columnsIndex[columnId];
+    this._columnsOrderIndex = this._columnsOrderIndex.filter((savedColumnId) => savedColumnId !== columnId);
   }
 }
 

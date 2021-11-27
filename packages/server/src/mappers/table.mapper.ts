@@ -9,6 +9,7 @@ class TableMapper {
       name: table.name,
       databaseId: table.databaseId,
       columnsIndex: createDtoColumnsIndex(table.columns),
+      columnsOrder: table.columnsOrder,
     };
 
     function createDtoColumnsIndex(columns: Column[]): TableDto['columnsIndex'] {
