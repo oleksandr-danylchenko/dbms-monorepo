@@ -3,6 +3,9 @@ import DbmsService from '@services/dbms/dbms.service';
 import Database from '@models/dbms/database';
 import { CreateDatabaseDto, DatabaseDto } from '@dtos/database.dto';
 import DatabaseMapper from '@/mappers/database.mapper';
+import Table from '@models/dbms/table';
+import { TableDto } from '@dtos/table.dto';
+import TableMapper from '@/mappers/table.mapper';
 
 class DbmsController {
   public dbmsService = new DbmsService();
@@ -55,6 +58,11 @@ class DbmsController {
 
   public getTables = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tables: Table[] = await this.dbmsService.findAllTablesByDatabaseId(databaseId);
+      const tablesDtos: TableDto[] = tables.map(TableMapper.toDto);
+
+      res.status(200).json({ data: tablesDtos, message: 'findAllTables' });
     } catch (error) {
       next(error);
     }

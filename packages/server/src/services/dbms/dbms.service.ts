@@ -4,6 +4,7 @@ import DbmsPersistor from '@services/dbms/dbmsPersitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
+import Table from '@models/dbms/table';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -51,6 +52,11 @@ class DbmsService {
 
     delete this.databasesIndex[databaseId];
     return this.dbmsPersistor.deleteDatabase(database);
+  }
+
+  public async findAllTablesByDatabaseId(databaseId: string): Promise<Table[]> {
+    const database = await this.findDatabaseById(databaseId);
+    return denormalize(database.tablesIndex);
   }
 }
 
