@@ -16,6 +16,7 @@ export interface PersistedTablesIndex {
 export interface PersistedTable extends PersistedEntity {
   databaseId: string;
   columnsIndex: PersistedColumnsIndex;
+  columnsOrderIndex: string[];
 }
 
 export interface PersistedColumnsIndex {

@@ -61,6 +61,9 @@ class Table {
     return this._columnsOrderIndex;
   }
 
+  /**
+   * Allow only to shuffle the existing ids, but not to add/remove ones
+   */
   public set columnsOrderIndex(value: string[]) {
     this._columnsOrderIndex = value;
   }

@@ -20,5 +20,5 @@ export class CreateTableDto {
 export class UpdateTableDto extends CreateTableDto {
   @IsArray()
   @IsString({ each: true })
-  public orderIndex!: string[];
+  public columnsOrderIndex!: string[];
 }

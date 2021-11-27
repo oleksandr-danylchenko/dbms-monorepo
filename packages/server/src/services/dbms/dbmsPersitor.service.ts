@@ -7,7 +7,7 @@ import {
   PersistedTablesIndex,
 } from '@interfaces/dbms/persistedDbms.interface';
 import Database from '@models/dbms/database';
-import Table, { ColumnsIndex } from '@models/dbms/table';
+import Table from '@models/dbms/table';
 import Column from '@models/dbms/column';
 
 class DbmsPersistor {
@@ -84,13 +84,14 @@ class DbmsPersistor {
   }
 
   public async writeTable(table: Table) {
-    const { id, name, databaseId, columns } = table;
+    const { id, name, databaseId, columns, columnsOrderIndex } = table;
     const tableFilePath = this.createTablePath(databaseId, id);
     const persistContent = {
       id,
       name,
       databaseId,
       columnsIndex: createPersistColumnsIndex(columns),
+      columnsOrderIndex,
     };
     const persistContentStr = JSON.stringify(persistContent);
     return fsPromises.writeFile(tableFilePath, persistContentStr);
@@ -123,8 +124,8 @@ class DbmsPersistor {
   }
 
   private static createTable(table: PersistedTable, columns: Column[]): Table {
-    const { id, name, databaseId } = table;
-    return new Table({ id, name, databaseId, columns });
+    const { id, name, databaseId, columnsOrderIndex } = table;
+    return new Table({ id, name, databaseId, columns, columnsOrderIndex });
   }
 
   private static createDatabase(database: PersistedDatabase, tables: Table[]): Database {

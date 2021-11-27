@@ -122,11 +122,17 @@ class DbmsService {
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
 
-    const { name: updateTableName, orderIndex: updateOrderIndex } = tableData;
+    const { name: updateTableName, columnsOrderIndex: updateOrderIndex } = tableData;
     if (areEmpty(updateTableName, updateOrderIndex)) return table;
 
     const isNameUnique = this.checkUniqueEntityName(tables, updateTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
+
+    const isLengthEqual = table.columnsOrderIndex.length === updateOrderIndex.length;
+    const isIdsEqual = updateOrderIndex.every((columnId) => table.columnsOrderIndex.includes(columnId));
+    if (!isLengthEqual || !isIdsEqual) {
+      throw new HttpException(400, `columnsOrderIndex is malformed or contains not presented columns ids`);
+    }
 
     table.name = updateTableName || table.name;
     table.columnsOrderIndex = updateOrderIndex || table.columnsOrderIndex;
