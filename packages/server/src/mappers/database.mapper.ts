@@ -15,7 +15,7 @@ class DatabaseMapper {
         const tableId = table.id;
         index[tableId] = { id: tableId, name: table.name };
         return index;
-      }, {} as any);
+      }, {} as DatabaseDto['tablesIndex']);
     }
   }
 }

@@ -84,8 +84,7 @@ class DbmsPersistor {
   }
 
   public async deleteTable(table: Table) {
-    const { id, databaseId, columnsIndex } = table;
-    const columns = Object.values(columnsIndex);
+    const { id, databaseId, columns } = table;
     const columnsDeletion = columns.map(this.deleteColumn);
     await Promise.all(columnsDeletion);
 
@@ -96,19 +95,19 @@ class DbmsPersistor {
   public async deleteColumn(column: Column) {}
 
   public async writeTable(table: Table) {
-    const { id, name, databaseId, columnsIndex } = table;
+    const { id, name, databaseId, columns } = table;
     const tableFilePath = this.createTablePath(databaseId, id);
     const persistContent = {
       id,
       name,
       databaseId,
-      columnsIndex: createPersistColumnsIndex(columnsIndex),
+      columnsIndex: createPersistColumnsIndex(columns),
     };
     const persistContentStr = JSON.stringify(persistContent);
     return fsPromises.writeFile(tableFilePath, persistContentStr);
 
-    function createPersistColumnsIndex(columnsIndex: ColumnsIndex): PersistedColumnsIndex {
-      return Object.values(columnsIndex).reduce((index, column) => {
+    function createPersistColumnsIndex(columns: Column[]): PersistedColumnsIndex {
+      return columns.reduce((index, column) => {
         const { id: columnId, name: columnName, tableId, type: columnType } = column;
         index[columnId] = { id: columnId, name: columnName, tableId, type: columnType };
         return index;

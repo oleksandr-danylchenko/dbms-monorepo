@@ -42,7 +42,7 @@ class Database {
   }
 
   get tablesAmount(): number {
-    return this.tables.length;
+    return this.tablesIds.length;
   }
 
   public addTable(table: Table) {

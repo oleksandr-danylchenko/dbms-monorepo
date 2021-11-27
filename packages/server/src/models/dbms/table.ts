@@ -7,24 +7,48 @@ export interface ColumnsIndex {
 }
 
 class Table {
-  public id: string;
-  public name: string;
-  public databaseId: string;
-  public columnsIndex: ColumnsIndex;
+  private readonly _id: string;
+  private _name: string;
+  private readonly _databaseId: string;
+  private readonly _columnsIndex: ColumnsIndex;
 
   constructor({ id, name, databaseId, columns }: { id?: string; name: string; databaseId: string; columns: Column[] }) {
-    this.id = id || nanoid();
-    this.name = name;
-    this.databaseId = databaseId;
-    this.columnsIndex = normalize(columns);
+    this._id = id || nanoid();
+    this._name = name;
+    this._databaseId = databaseId;
+    this._columnsIndex = normalize(columns);
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get databaseId() {
+    return this._databaseId;
+  }
+
+  get columnsIds(): string[] {
+    return Object.keys(this._columnsIndex);
   }
 
   get columns(): Column[] {
-    return Object.values(this.columnsIndex);
+    return Object.values(this._columnsIndex);
   }
 
   public getColumn(id: string): Column | undefined {
-    return this.columnsIndex[id];
+    return this._columnsIndex[id];
+  }
+
+  get columnsAmount(): number {
+    return this.columnsIds.length;
   }
 }
 
