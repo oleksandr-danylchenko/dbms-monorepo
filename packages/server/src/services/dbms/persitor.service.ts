@@ -114,7 +114,7 @@ class DbmsPersistor {
     return fsPromises.unlink(tableFilePath);
   }
 
-  public async readRows(databaseId: string, tableId: string): Promise<Row[]> {
+  private async readRowsLines(databaseId: string, tableId: string): Promise<PersistedRow[]> {
     const rowsFilePath = this.createRowsPath(databaseId, tableId);
 
     let rowsLines: string[] = [];
@@ -128,8 +128,24 @@ class DbmsPersistor {
         throw error;
       }
     }
-    const parsedRows = rowsLines.map((rowLine) => JSON.parse(rowLine));
-    return DbmsPersistor.createRows(parsedRows);
+    return rowsLines.map((rowLine) => JSON.parse(rowLine));
+  }
+
+  public async readRows(databaseId: string, tableId: string): Promise<Row[]> {
+    const rows = await this.readRowsLines(databaseId, tableId);
+    return DbmsPersistor.createRows(rows);
+  }
+
+  public async readProjectedRows(databaseId: string, tableId: string, projectionColumnsIds: string[]): Promise<Row[]> {
+    const rows = await this.readRowsLines(databaseId, tableId);
+    const projectedPersistedRows = rows.map((row) => {
+      const projectedColumnsIndex = projectionColumnsIds.reduce((columnsIndex, columnId) => {
+        columnsIndex[columnId] = row.rowColumnsValuesIndex[columnId];
+        return columnsIndex;
+      }, {} as Record<string, any>);
+      return { ...row, rowColumnsValuesIndex: projectedColumnsIndex };
+    });
+    return DbmsPersistor.createRows(projectedPersistedRows);
   }
 
   public async writeRow(databaseId: string, tableId: string, row: Row) {

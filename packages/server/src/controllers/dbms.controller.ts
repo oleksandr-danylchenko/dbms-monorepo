@@ -215,6 +215,13 @@ class DbmsController {
 
   public getRowsProjection = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const projectionColumnsIds = JSON.parse(req.query.columns as string);
+      const rows = await this.dbmsService.projectRows(databaseId, tableId, projectionColumnsIds);
+      const rowsDtos = rows.map(RowMapper.toDto);
+
+      res.status(200).json({ data: rowsDtos, message: 'projectRows' });
     } catch (error) {
       next(error);
     }

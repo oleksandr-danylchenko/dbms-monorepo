@@ -223,6 +223,13 @@ class DbmsService {
     await this.findTableById(databaseId, tableId);
     return this.persistor.readRows(databaseId, tableId);
   }
+
+  public async projectRows(databaseId: string, tableId: string, projectionColumnsIds: string[]): Promise<Row[]> {
+    if (!Array.isArray(projectionColumnsIds)) throw new HttpException(400, `Projection columns ids are malformed`);
+
+    await this.findTableById(databaseId, tableId);
+    return this.persistor.readProjectedRows(databaseId, tableId, projectionColumnsIds);
+  }
 }
 
 export default DbmsService;
