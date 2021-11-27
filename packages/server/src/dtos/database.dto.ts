@@ -15,8 +15,4 @@ export class CreateDatabaseDto {
   public name!: string;
 }
 
-export class UpdateDatabaseDto {
-  @IsString()
-  @MinLength(1)
-  public name: string | undefined;
-}
+export class UpdateDatabaseDto extends CreateDatabaseDto {}

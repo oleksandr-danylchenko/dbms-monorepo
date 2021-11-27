@@ -17,8 +17,4 @@ export class CreateTableDto {
   public name!: string;
 }
 
-export class UpdateTableDto {
-  @IsString()
-  @MinLength(1)
-  public name!: string;
-}
+export class UpdateTableDto extends CreateTableDto {}
