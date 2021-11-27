@@ -17,23 +17,23 @@ class Database {
     this._tablesIndex = normalize(tables);
   }
 
-  get id() {
+  public get id() {
     return this._id;
   }
 
-  get name() {
+  public get name() {
     return this._name;
   }
 
-  set name(value: string) {
+  public set name(value: string) {
     this._name = value;
   }
 
-  get tablesIds(): string[] {
+  public get tablesIds(): string[] {
     return Object.keys(this._tablesIndex);
   }
 
-  get tables(): Table[] {
+  public get tables(): Table[] {
     return Object.values(this._tablesIndex);
   }
 
@@ -41,7 +41,7 @@ class Database {
     return this._tablesIndex[id];
   }
 
-  get tablesAmount(): number {
+  public get tablesAmount(): number {
     return this.tablesIds.length;
   }
 

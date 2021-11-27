@@ -43,6 +43,20 @@ class DbmsRoute implements Routes {
     );
     this.router.delete(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.deleteTable);
 
+    this.router.get(`${this.path}/:dbId/tables`, this.dbmsController.getTables);
+    this.router.get(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.getTableById);
+    this.router.post(
+      `${this.path}/:dbId/tables`,
+      validationMiddleware(CreateTableDto, 'body'),
+      this.dbmsController.createTable
+    );
+    this.router.put(
+      `${this.path}/:dbId/tables/:tableId`,
+      validationMiddleware(UpdateTableDto, 'body', true),
+      this.dbmsController.updateTable
+    );
+    this.router.delete(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.deleteTable);
+
     this.router.get(`${this.path}/:dbId/tables/:tableId/records`, this.dbmsController.getTableRecords);
     this.router.get(
       `${this.path}/:dbId/tables/:tableId/records/projection`,

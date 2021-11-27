@@ -21,31 +21,31 @@ class Table {
     this._columnsOrderIndex = [];
   }
 
-  get id() {
+  public get id() {
     return this._id;
   }
 
-  get name() {
+  public get name() {
     return this._name;
   }
 
-  set name(value: string) {
+  public set name(value: string) {
     this._name = value;
   }
 
-  get databaseId() {
+  public get databaseId() {
     return this._databaseId;
   }
 
-  get columnsIds(): string[] {
+  public get columnsIds(): string[] {
     return Object.keys(this._columnsIndex);
   }
 
-  get columns(): Column[] {
+  public get columns(): Column[] {
     return Object.values(this._columnsIndex);
   }
 
-  get columnsOrder(): string[] {
+  public get columnsOrder(): string[] {
     return this._columnsOrderIndex;
   }
 
@@ -53,7 +53,7 @@ class Table {
     return this._columnsIndex[id];
   }
 
-  get columnsAmount(): number {
+  public get columnsAmount(): number {
     return this.columnsIds.length;
   }
 
