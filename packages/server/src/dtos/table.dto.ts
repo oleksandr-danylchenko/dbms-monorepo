@@ -1,12 +1,12 @@
-import { PersistedColumn } from '@interfaces/dbms/persistedDbms.interface';
 import { IsString, MinLength } from 'class-validator';
+import { ColumnDto } from '@dtos/column.dto';
 
 export interface TableDto {
   id: string;
   name: string;
   databaseId: string;
   columnsIndex: {
-    [columnId: string]: Pick<PersistedColumn, 'id' | 'name' | 'type'>;
+    [columnId: string]: Pick<ColumnDto, 'id' | 'name' | 'type' | 'tableId'>;
   };
   columnsOrder: string[];
 }
