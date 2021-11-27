@@ -129,6 +129,41 @@ class DbmsController {
     }
   };
 
+  public getColumns = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getColumnById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public createColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public updateColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public deleteColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getTableRecords = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {

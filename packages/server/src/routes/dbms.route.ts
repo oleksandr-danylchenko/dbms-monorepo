@@ -4,6 +4,7 @@ import DbmsController from '@controllers/dbms.controller';
 import validationMiddleware from '@middlewares/validation.middleware';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
+import { CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
 
 class DbmsRoute implements Routes {
   public path = '/databases';
@@ -43,19 +44,19 @@ class DbmsRoute implements Routes {
     );
     this.router.delete(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.deleteTable);
 
-    this.router.get(`${this.path}/:dbId/tables`, this.dbmsController.getTables);
-    this.router.get(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.getTableById);
+    this.router.get(`${this.path}/:dbId/tables/:tableId/columns`, this.dbmsController.getColumns);
+    this.router.get(`${this.path}/:dbId/tables/:tableId/columns/:columnId`, this.dbmsController.getColumnById);
     this.router.post(
-      `${this.path}/:dbId/tables`,
-      validationMiddleware(CreateTableDto, 'body'),
-      this.dbmsController.createTable
+      `${this.path}/:dbId/tables/:tableId/column`,
+      validationMiddleware(CreateColumnDto, 'body'),
+      this.dbmsController.createColumn
     );
     this.router.put(
-      `${this.path}/:dbId/tables/:tableId`,
-      validationMiddleware(UpdateTableDto, 'body', true),
-      this.dbmsController.updateTable
+      `${this.path}/:dbId/tables/:tableId/columns/:columnId`,
+      validationMiddleware(UpdateColumnDto, 'body', true),
+      this.dbmsController.updateColumn
     );
-    this.router.delete(`${this.path}/:dbId/tables/:tableId`, this.dbmsController.deleteTable);
+    this.router.delete(`${this.path}/:dbId/tables/:tableId/columns/:columnId`, this.dbmsController.deleteColumn);
 
     this.router.get(`${this.path}/:dbId/tables/:tableId/records`, this.dbmsController.getTableRecords);
     this.router.get(
