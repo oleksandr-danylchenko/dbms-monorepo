@@ -5,7 +5,7 @@ import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
 import Table from '@models/dbms/table';
-import { CreateTableDto } from '@dtos/table.dto';
+import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -16,6 +16,11 @@ class DbmsService {
   constructor() {
     const databases = this.dbmsPersistor.readDatabases();
     this.databasesIndex = normalize(databases);
+  }
+
+  private checkUniqueEntityName<T extends { name: string }>(entities: T[], newName: string): boolean {
+    const entityWithName = entities.find((entity) => entity.name === newName);
+    return !entityWithName;
   }
 
   get allDatabases(): Database[] {
@@ -37,8 +42,8 @@ class DbmsService {
 
     const { name: newDatabaseName } = databaseData;
 
-    const databaseWithName = this.allDatabases.find((database) => database.name === newDatabaseName);
-    if (databaseWithName) throw new HttpException(409, `Database ${newDatabaseName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(this.allDatabases, newDatabaseName);
+    if (!isNameUnique) throw new HttpException(409, `Database ${newDatabaseName} already exists`);
 
     const newDatabase = new Database({ name: newDatabaseName, tables: [] });
     this.databasesIndex[newDatabase.id] = newDatabase;
@@ -54,8 +59,8 @@ class DbmsService {
     const { name: newDatabaseName } = databaseData;
     if (!newDatabaseName) return database;
 
-    const databaseWithName = this.allDatabases.find((database) => database.name === newDatabaseName);
-    if (databaseWithName) throw new HttpException(409, `Database ${newDatabaseName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(this.allDatabases, newDatabaseName);
+    if (!isNameUnique) throw new HttpException(409, `Database ${newDatabaseName} already exists`);
 
     database.name = newDatabaseName;
     await this.dbmsPersistor.writeDatabase(database);
@@ -97,8 +102,8 @@ class DbmsService {
 
     const { name: newTableName } = tableData;
 
-    const tableWithName = tables.find((table) => table.name === newTableName);
-    if (tableWithName) throw new HttpException(409, `Table ${newTableName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
+    if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
 
     const newTable = new Table({ name: newTableName, databaseId, columns: [] });
     database.addTable(newTable);
@@ -106,6 +111,24 @@ class DbmsService {
     await this.dbmsPersistor.writeTable(newTable);
 
     return newTable;
+  }
+
+  public async updateTable(databaseId: string, tableId: string, tableData: UpdateTableDto): Promise<Table> {
+    if (isEmpty(tableData)) throw new HttpException(400, `There is no table data update presented`);
+    const database = await this.findDatabaseById(databaseId);
+    const tables = database.tables;
+    const table = await this.findTableById(database, tableId);
+
+    const { name: newTableName } = tableData;
+    if (!newTableName) return table;
+
+    const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
+    if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
+
+    table.name = newTableName;
+    await this.dbmsPersistor.writeTable(table);
+
+    return table;
   }
 
   public async deleteTable(databaseId: string, tableId: string): Promise<void> {

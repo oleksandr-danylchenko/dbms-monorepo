@@ -103,6 +103,20 @@ class DbmsController {
     }
   };
 
+  public updateTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const tableData = req.body;
+      const updatedTable = await this.dbmsService.updateTable(databaseId, tableId, tableData);
+      const updatedTableDto = TableMapper.toDto(updatedTable);
+
+      res.status(200).json({ data: updatedTableDto, message: 'updateTable' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public deleteTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const databaseId = req.params.dbId;

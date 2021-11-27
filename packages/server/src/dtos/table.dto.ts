@@ -15,3 +15,9 @@ export class CreateTableDto {
   @MinLength(1)
   public name!: string;
 }
+
+export class UpdateTableDto {
+  @IsString()
+  @MinLength(1)
+  public name!: string;
+}
