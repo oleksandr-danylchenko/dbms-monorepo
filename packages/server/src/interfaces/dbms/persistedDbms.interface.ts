@@ -1,4 +1,5 @@
 import { FieldType } from '@interfaces/dbms/dbms.interface';
+import { RowColumnValuesIndex } from '@models/dbms/row';
 
 interface PersistedEntity {
   id: string;
@@ -28,11 +29,8 @@ export interface PersistedColumn extends PersistedEntity {
   type: FieldType;
 }
 
-export interface PersistedRecord {
+export interface PersistedRow {
+  id: string;
   tableId: string;
-  columnsIndex: {
-    [columnId: string]: {
-      value: unknown;
-    };
-  };
+  rowColumnsValuesIndex: RowColumnValuesIndex;
 }

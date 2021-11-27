@@ -9,17 +9,18 @@ import {
 import Database from '@models/dbms/database';
 import Table from '@models/dbms/table';
 import Column from '@models/dbms/column';
+import Row from '@models/dbms/row';
 
 class DbmsPersistor {
-  public basePath = `${process.cwd()}/storage`;
-  public databasesFolder = `${this.basePath}/databases`;
-  public tablesFolder = `${this.basePath}/tables`;
-  public recordsFolder = `${this.basePath}/records`;
+  public readonly basePath = `${process.cwd()}/storage`;
+  public readonly databasesFolder = `${this.basePath}/databases`;
+  public readonly tablesFolder = `${this.basePath}/tables`;
+  public readonly rowsFolder = `${this.basePath}/rows`;
 
   constructor() {
     fs.mkdirSync(this.databasesFolder, { recursive: true });
     fs.mkdirSync(this.tablesFolder, { recursive: true });
-    fs.mkdirSync(this.recordsFolder, { recursive: true });
+    fs.mkdirSync(this.rowsFolder, { recursive: true });
   }
 
   public readDatabases(): Database[] {
@@ -111,12 +112,24 @@ class DbmsPersistor {
     return fsPromises.unlink(tableFilePath);
   }
 
+  public async writeRow(databaseId: string, tableId: string, row: Row) {
+    const { id, columnValuesIndex } = row;
+    const rowsFilePath = this.createRowsPath(databaseId, tableId);
+    const persistContent = { id, tableId, rowColumnsValuesIndex: columnValuesIndex };
+    const persistContentStr = JSON.stringify(persistContent);
+    return fsPromises.writeFile(rowsFilePath, persistContentStr, { flag: 'a' });
+  }
+
   private createDatabasePath(databaseId: string): string {
     return `${this.databasesFolder}/${databaseId}.json`;
   }
 
   private createTablePath(databaseId: string, tableId: string): string {
     return `${this.tablesFolder}/${databaseId}_${tableId}.json`;
+  }
+
+  private createRowsPath(databaseId: string, tableId: string): string {
+    return `${this.rowsFolder}/${databaseId}_${tableId}_rows.json`;
   }
 
   private static createColumns(columns: PersistedColumn[]): Column[] {
