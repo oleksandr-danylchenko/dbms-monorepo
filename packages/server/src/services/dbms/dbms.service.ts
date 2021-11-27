@@ -5,6 +5,7 @@ import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
 import Table from '@models/dbms/table';
+import { CreateTableDto } from '@dtos/table.dto';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -80,6 +81,24 @@ class DbmsService {
     const table = database.getTable(tableId);
     if (!table) throw new HttpException(404, `No table ${tableId} found`);
     return table;
+  }
+
+  public async createTable(databaseId: string, tableData: CreateTableDto): Promise<Table> {
+    if (isEmpty(tableData)) throw new HttpException(400, `There is no table creation data presented`);
+    const database = await this.findDatabaseById(databaseId);
+    const tables = database.tables;
+
+    const { name: newTableName } = tableData;
+
+    const tableWithName = tables.find((table) => table.name === newTableName);
+    if (tableWithName) throw new HttpException(409, `Table ${newTableName} already exists`);
+
+    const newTable = new Table({ name: newTableName, databaseId, columns: [] });
+    database.addTable(newTable);
+    await this.dbmsPersistor.writeDatabase(database);
+    await this.dbmsPersistor.writeTable(newTable);
+
+    return newTable;
   }
 }
 

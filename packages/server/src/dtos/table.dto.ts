@@ -1,5 +1,5 @@
 import { PersistedColumn } from '@interfaces/dbms/persistedDbms.interface';
-import { IsString } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 
 export interface TableDto {
   id: string;
@@ -12,8 +12,6 @@ export interface TableDto {
 
 export class CreateTableDto {
   @IsString()
+  @MinLength(1)
   public name!: string;
-
-  @IsString()
-  public databaseId!: string;
 }

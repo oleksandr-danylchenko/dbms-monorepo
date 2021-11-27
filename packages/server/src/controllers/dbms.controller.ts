@@ -92,6 +92,12 @@ class DbmsController {
 
   public createTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableData = req.body;
+      const createdTable = await this.dbmsService.createTable(databaseId, tableData);
+      const createdTableDto = TableMapper.toDto(createdTable);
+
+      res.status(201).json({ data: createdTableDto, message: 'createTable' });
     } catch (error) {
       next(error);
     }

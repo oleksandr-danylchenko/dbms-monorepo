@@ -44,6 +44,10 @@ class Database {
   get tablesAmount(): number {
     return this.tables.length;
   }
+
+  public addTable(table: Table) {
+    this._tablesIndex[table.id] = table;
+  }
 }
 
 export default Database;
