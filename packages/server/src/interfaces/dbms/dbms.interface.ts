@@ -4,4 +4,5 @@ export enum FieldType {
   char = 'char',
   string = 'string',
   picture = 'picture',
+  color = 'color',
 }

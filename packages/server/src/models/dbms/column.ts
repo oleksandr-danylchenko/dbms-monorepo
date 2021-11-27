@@ -1,19 +1,20 @@
 import { nanoid } from 'nanoid';
 import { FieldType } from '@interfaces/dbms/dbms.interface';
+import DbmsValidation, { Validator } from '@services/dbms/validation.service';
 
 class Column {
   private readonly _id: string;
   private _name: string;
   private readonly _tableId: string;
   private _type: FieldType;
-  private _validationFunction: (value: unknown) => boolean;
+  private _validator: Validator;
 
   constructor({ id, name, tableId, type }: { id?: string; name: string; tableId: string; type: FieldType }) {
     this._id = id || nanoid();
     this._name = name;
     this._tableId = tableId;
     this._type = type;
-    this._validationFunction = () => true;
+    this._validator = () => true;
   }
 
   public get id() {
@@ -37,12 +38,12 @@ class Column {
   }
 
   public set type(value: FieldType) {
-    // TODO Add assigning for the validation function under the hood
     this._type = value;
+    this._validator = DbmsValidation.getValidatorByType(value);
   }
 
   public validate(value: unknown): boolean {
-    return this._validationFunction(value);
+    return this._validator(value);
   }
 }
 
