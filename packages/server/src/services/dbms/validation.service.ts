@@ -1,6 +1,6 @@
 import { FieldType } from '@interfaces/dbms/dbms.interface';
 
-export type Validator = <T = unknown>(value: T) => boolean;
+export type Validator = (value: unknown) => boolean;
 
 export type TypeValidationIndex = {
   [type in FieldType]: Validator;
@@ -8,10 +8,10 @@ export type TypeValidationIndex = {
 
 class DbmsValidation {
   private static readonly _typeValidationIndex: TypeValidationIndex = {
-    integer: () => true,
-    real: () => true,
-    char: () => true,
-    string: () => true,
+    integer: (value) => Number.isSafeInteger(value),
+    real: (value) => Number.isFinite(value),
+    char: (value) => typeof value === 'string' && value.length === 1,
+    string: (value) => typeof value === 'string',
     picture: () => true,
     color: () => true,
   };
