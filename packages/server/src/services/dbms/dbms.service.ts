@@ -8,15 +8,16 @@ import Table from '@models/dbms/table';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
 import Column from '@models/dbms/column';
 import { CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
+import Row from '@models/dbms/row';
 
 class DbmsService {
-  public dbmsPersistor = new DbmsPersistor();
+  public persistor = new DbmsPersistor();
   public databasesIndex: {
     [databaseId: string]: Database;
   };
 
   constructor() {
-    const databases = this.dbmsPersistor.readDatabases();
+    const databases = this.persistor.readDatabases();
     this.databasesIndex = normalize(databases);
   }
 
@@ -49,7 +50,7 @@ class DbmsService {
 
     const newDatabase = new Database({ name: newDatabaseName, tables: [] });
     this.databasesIndex[newDatabase.id] = newDatabase;
-    await this.dbmsPersistor.writeDatabase(newDatabase);
+    await this.persistor.writeDatabase(newDatabase);
 
     return newDatabase;
   }
@@ -65,7 +66,7 @@ class DbmsService {
     if (!isNameUnique) throw new HttpException(409, `Database ${updateDatabaseName} already exists`);
 
     database.name = updateDatabaseName;
-    await this.dbmsPersistor.writeDatabase(database);
+    await this.persistor.writeDatabase(database);
 
     return database;
   }
@@ -75,7 +76,7 @@ class DbmsService {
     if (!database) throw new HttpException(404, `No database ${databaseId} found`);
 
     delete this.databasesIndex[databaseId];
-    await this.dbmsPersistor.deleteDatabase(database);
+    await this.persistor.deleteDatabase(database);
     return;
   }
 
@@ -110,8 +111,8 @@ class DbmsService {
 
     const newTable = new Table({ name: newTableName, databaseId });
     database.addTable(newTable);
-    await this.dbmsPersistor.writeDatabase(database);
-    await this.dbmsPersistor.writeTable(newTable);
+    await this.persistor.writeDatabase(database);
+    await this.persistor.writeTable(newTable);
 
     return newTable;
   }
@@ -136,7 +137,7 @@ class DbmsService {
 
     table.name = updateTableName || table.name;
     table.columnsOrderIndex = updateOrderIndex || table.columnsOrderIndex;
-    await this.dbmsPersistor.writeTable(table);
+    await this.persistor.writeTable(table);
 
     return table;
   }
@@ -146,8 +147,8 @@ class DbmsService {
     const table = await this.findTableById(database, tableId);
 
     database.removeTable(tableId);
-    await this.dbmsPersistor.writeDatabase(database);
-    await this.dbmsPersistor.deleteTable(table);
+    await this.persistor.writeDatabase(database);
+    await this.persistor.deleteTable(table);
     return;
   }
 
@@ -179,7 +180,7 @@ class DbmsService {
 
     const newColumn = new Column({ name: newColumnName, type: newColumnType, tableId });
     table.addColumn(newColumn);
-    await this.dbmsPersistor.writeTable(table);
+    await this.persistor.writeTable(table);
 
     return newColumn;
   }
@@ -204,7 +205,7 @@ class DbmsService {
 
     column.name = updateColumnName || column.name;
     column.type = updateColumnType || column.type;
-    await this.dbmsPersistor.writeTable(table);
+    await this.persistor.writeTable(table);
 
     return column;
   }
@@ -214,8 +215,13 @@ class DbmsService {
     const column = await this.findColumnByIdWithTable(table, columnId);
 
     table.removeColumn(column);
-    await this.dbmsPersistor.writeTable(table);
+    await this.persistor.writeTable(table);
     return;
+  }
+
+  public async findAllRows(databaseId: string, tableId: string): Promise<Row[]> {
+    await this.findTableById(databaseId, tableId);
+    return this.persistor.readRows(databaseId, tableId);
   }
 }
 

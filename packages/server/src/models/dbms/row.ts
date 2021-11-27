@@ -5,22 +5,27 @@ export interface RowColumnValue {
   value: any;
 }
 
-export interface RowColumnValuesIndex {
+export interface RowColumnsValuesIndex {
   [columnId: string]: RowColumnValue;
 }
 
 class Row {
   private readonly _id: string;
   private readonly _tableId: string;
-  private readonly _columnValuesIndex: RowColumnValuesIndex;
+  private readonly _columnsValuesIndex: RowColumnsValuesIndex;
 
-  constructor({ id, tableId, values }: { id: string; tableId: string; values: RowColumnValue[] }) {
+  constructor({
+    id,
+    tableId,
+    columnsValuesIndex,
+  }: {
+    id: string;
+    tableId: string;
+    columnsValuesIndex: RowColumnsValuesIndex;
+  }) {
     this._id = id || nanoid();
     this._tableId = tableId;
-    this._columnValuesIndex = values.reduce((index, value) => {
-      index[value.columnId] = value;
-      return index;
-    }, {} as RowColumnValuesIndex);
+    this._columnsValuesIndex = columnsValuesIndex;
   }
 
   public get id(): string {
@@ -31,12 +36,12 @@ class Row {
     return this._tableId;
   }
 
-  public get columnValuesIndex(): RowColumnValuesIndex {
-    return this._columnValuesIndex;
+  public get columnsValuesIndex(): RowColumnsValuesIndex {
+    return this._columnsValuesIndex;
   }
 
   public getRowColumnValue(columnId: string): any {
-    return this._columnValuesIndex[columnId];
+    return this._columnsValuesIndex[columnId];
   }
 
   public getColumnValue(columnId: string): any {

@@ -3,6 +3,7 @@ import {
   PersistedColumn,
   PersistedColumnsIndex,
   PersistedDatabase,
+  PersistedRow,
   PersistedTable,
   PersistedTablesIndex,
 } from '@interfaces/dbms/persistedDbms.interface';
@@ -10,6 +11,7 @@ import Database from '@models/dbms/database';
 import Table from '@models/dbms/table';
 import Column from '@models/dbms/column';
 import Row from '@models/dbms/row';
+import { EOL } from 'os';
 
 class DbmsPersistor {
   public readonly basePath = `${process.cwd()}/storage`;
@@ -112,11 +114,29 @@ class DbmsPersistor {
     return fsPromises.unlink(tableFilePath);
   }
 
-  public async writeRow(databaseId: string, tableId: string, row: Row) {
-    const { id, columnValuesIndex } = row;
+  public async readRows(databaseId: string, tableId: string): Promise<Row[]> {
     const rowsFilePath = this.createRowsPath(databaseId, tableId);
-    const persistContent = { id, tableId, rowColumnsValuesIndex: columnValuesIndex };
-    const persistContentStr = JSON.stringify(persistContent);
+
+    let rowsLines: string[] = [];
+    try {
+      const rowsFile = await fsPromises.readFile(rowsFilePath);
+      rowsLines = rowsFile.toString().split(EOL).filter(Boolean);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        await fsPromises.writeFile(rowsFilePath, '');
+      } else {
+        throw error;
+      }
+    }
+    const parsedRows = rowsLines.map((rowLine) => JSON.parse(rowLine));
+    return DbmsPersistor.createRows(parsedRows);
+  }
+
+  public async writeRow(databaseId: string, tableId: string, row: Row) {
+    const { id, columnsValuesIndex } = row;
+    const rowsFilePath = this.createRowsPath(databaseId, tableId);
+    const persistContent = { id, tableId, rowColumnsValuesIndex: columnsValuesIndex };
+    const persistContentStr = JSON.stringify(persistContent) + EOL;
     return fsPromises.writeFile(rowsFilePath, persistContentStr, { flag: 'a' });
   }
 
@@ -132,8 +152,9 @@ class DbmsPersistor {
     return `${this.rowsFolder}/${databaseId}_${tableId}_rows.json`;
   }
 
-  private static createColumns(columns: PersistedColumn[]): Column[] {
-    return columns.map(({ id, name, tableId, type }) => new Column({ id, name, tableId, type }));
+  private static createDatabase(database: PersistedDatabase, tables: Table[]): Database {
+    const { id, name } = database;
+    return new Database({ id, name, tables });
   }
 
   private static createTable(table: PersistedTable, columns: Column[]): Table {
@@ -141,9 +162,14 @@ class DbmsPersistor {
     return new Table({ id, name, databaseId, columns, columnsOrderIndex });
   }
 
-  private static createDatabase(database: PersistedDatabase, tables: Table[]): Database {
-    const { id, name } = database;
-    return new Database({ id, name, tables });
+  private static createColumns(columns: PersistedColumn[]): Column[] {
+    return columns.map(({ id, name, tableId, type }) => new Column({ id, name, tableId, type }));
+  }
+
+  private static createRows(rows: PersistedRow[]): Row[] {
+    return rows.map(
+      ({ id, tableId, rowColumnsValuesIndex }) => new Row({ id, tableId, columnsValuesIndex: rowColumnsValuesIndex })
+    );
   }
 }
 

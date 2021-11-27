@@ -3,6 +3,7 @@ import DbmsService from '@services/dbms/dbms.service';
 import DatabaseMapper from '@/mappers/database.mapper';
 import TableMapper from '@/mappers/table.mapper';
 import ColumnMapper from '@/mappers/column.mapper';
+import RowMapper from '@/mappers/row.mapper';
 
 class DbmsController {
   public dbmsService = new DbmsService();
@@ -201,6 +202,12 @@ class DbmsController {
 
   public getRows = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const rows = await this.dbmsService.findAllRows(databaseId, tableId);
+      const rowsDtos = rows.map(RowMapper.toDto);
+
+      res.status(200).json({ data: rowsDtos, message: 'findAllRows' });
     } catch (error) {
       next(error);
     }
