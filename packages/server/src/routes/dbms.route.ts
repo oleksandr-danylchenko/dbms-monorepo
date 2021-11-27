@@ -47,7 +47,7 @@ class DbmsRoute implements Routes {
     this.router.get(`${this.path}/:dbId/tables/:tableId/columns`, this.dbmsController.getColumns);
     this.router.get(`${this.path}/:dbId/tables/:tableId/columns/:columnId`, this.dbmsController.getColumnById);
     this.router.post(
-      `${this.path}/:dbId/tables/:tableId/column`,
+      `${this.path}/:dbId/tables/:tableId/columns`,
       validationMiddleware(CreateColumnDto, 'body'),
       this.dbmsController.createColumn
     );

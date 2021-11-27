@@ -83,17 +83,6 @@ class DbmsPersistor {
     return fsPromises.unlink(databaseFilePath);
   }
 
-  public async deleteTable(table: Table) {
-    const { id, databaseId, columns } = table;
-    const columnsDeletion = columns.map(this.deleteColumn);
-    await Promise.all(columnsDeletion);
-
-    const tableFilePath = this.createTablePath(databaseId, id);
-    return fsPromises.unlink(tableFilePath);
-  }
-
-  public async deleteColumn(column: Column) {}
-
   public async writeTable(table: Table) {
     const { id, name, databaseId, columns } = table;
     const tableFilePath = this.createTablePath(databaseId, id);
@@ -113,6 +102,12 @@ class DbmsPersistor {
         return index;
       }, {} as PersistedColumnsIndex);
     }
+  }
+
+  public async deleteTable(table: Table) {
+    const { id, databaseId } = table;
+    const tableFilePath = this.createTablePath(databaseId, id);
+    return fsPromises.unlink(tableFilePath);
   }
 
   private createDatabasePath(databaseId: string): string {

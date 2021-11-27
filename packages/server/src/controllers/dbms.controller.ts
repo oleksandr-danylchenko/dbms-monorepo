@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
 import DatabaseMapper from '@/mappers/database.mapper';
 import TableMapper from '@/mappers/table.mapper';
+import ColumnMapper from '@/mappers/column.mapper';
 
 class DbmsController {
   public dbmsService = new DbmsService();
@@ -123,7 +124,7 @@ class DbmsController {
       const tableId = req.params.tableId;
       await this.dbmsService.deleteTable(databaseId, tableId);
 
-      res.status(200).json({ data: { id: tableId, databaseId: databaseId }, message: 'deleteTable' });
+      res.status(200).json({ data: { id: tableId, databaseId }, message: 'deleteTable' });
     } catch (error) {
       next(error);
     }
@@ -131,6 +132,12 @@ class DbmsController {
 
   public getColumns = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const columns = await this.dbmsService.findAllColumns(databaseId, tableId);
+      const columnsDtos = columns.map(ColumnMapper.toDto);
+
+      res.status(200).json({ data: columnsDtos, message: 'findAllColumns' });
     } catch (error) {
       next(error);
     }
@@ -138,6 +145,13 @@ class DbmsController {
 
   public getColumnById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const columnId = req.params.columnId;
+      const column = await this.dbmsService.findColumnById(databaseId, tableId, columnId);
+      const columnDto = ColumnMapper.toDto(column);
+
+      res.status(200).json({ data: columnDto, message: 'findColumnById' });
     } catch (error) {
       next(error);
     }
@@ -145,6 +159,13 @@ class DbmsController {
 
   public createColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const columnData = req.body;
+      const createdColumn = await this.dbmsService.createColumn(databaseId, tableId, columnData);
+      const createdColumnDto = ColumnMapper.toDto(createdColumn);
+
+      res.status(201).json({ data: createdColumnDto, message: 'createColumn' });
     } catch (error) {
       next(error);
     }
@@ -152,6 +173,14 @@ class DbmsController {
 
   public updateColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const columnId = req.params.columnId;
+      const columnData = req.body;
+      const updatedColumn = await this.dbmsService.updateColumn(databaseId, tableId, columnId, columnData);
+      const updatedColumnDto = ColumnMapper.toDto(updatedColumn);
+
+      res.status(200).json({ data: updatedColumnDto, message: 'updateColumn' });
     } catch (error) {
       next(error);
     }
@@ -159,6 +188,12 @@ class DbmsController {
 
   public deleteColumn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const columnId = req.params.columnId;
+      await this.dbmsService.deleteColumn(databaseId, tableId, columnId);
+
+      res.status(200).json({ data: { id: columnId, databaseId, tableId }, message: 'deleteColumn' });
     } catch (error) {
       next(error);
     }

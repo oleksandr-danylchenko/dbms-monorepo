@@ -37,16 +37,12 @@ class Column {
   }
 
   public set type(value: FieldType) {
+    // TODO Add assigning for the validation function under the hood
     this._type = value;
   }
 
   public validate(value: unknown): boolean {
     return this._validationFunction(value);
-  }
-
-  public set validationFunction(value: (value: unknown) => boolean) {
-    // TODO Move to separate file with defined validations
-    this._validationFunction = value;
   }
 }
 

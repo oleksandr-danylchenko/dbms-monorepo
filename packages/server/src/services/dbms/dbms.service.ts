@@ -6,6 +6,8 @@ import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { isEmpty } from '@utils/util.helper';
 import Table from '@models/dbms/table';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
+import Column from '@models/dbms/column';
+import { CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
 
 class DbmsService {
   public dbmsPersistor = new DbmsPersistor();
@@ -56,13 +58,13 @@ class DbmsService {
     if (isEmpty(databaseData)) throw new HttpException(400, `There is no database data update presented`);
     const database = await this.findDatabaseById(databaseId);
 
-    const { name: newDatabaseName } = databaseData;
-    if (!newDatabaseName) return database;
+    const { name: updateDatabaseName } = databaseData;
+    if (!updateDatabaseName) return database;
 
-    const isNameUnique = this.checkUniqueEntityName(this.allDatabases, newDatabaseName);
-    if (!isNameUnique) throw new HttpException(409, `Database ${newDatabaseName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(this.allDatabases, updateDatabaseName);
+    if (!isNameUnique) throw new HttpException(409, `Database ${updateDatabaseName} already exists`);
 
-    database.name = newDatabaseName;
+    database.name = updateDatabaseName;
     await this.dbmsPersistor.writeDatabase(database);
 
     return database;
@@ -73,7 +75,8 @@ class DbmsService {
     if (!database) throw new HttpException(404, `No database ${databaseId} found`);
 
     delete this.databasesIndex[databaseId];
-    return this.dbmsPersistor.deleteDatabase(database);
+    await this.dbmsPersistor.deleteDatabase(database);
+    return;
   }
 
   public async findAllTablesByDatabaseId(databaseId: string): Promise<Table[]> {
@@ -119,13 +122,13 @@ class DbmsService {
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
 
-    const { name: newTableName } = tableData;
-    if (!newTableName) return table;
+    const { name: updateTableName } = tableData;
+    if (!updateTableName) return table;
 
-    const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
-    if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(tables, updateTableName);
+    if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
 
-    table.name = newTableName;
+    table.name = updateTableName;
     await this.dbmsPersistor.writeTable(table);
 
     return table;
@@ -137,7 +140,75 @@ class DbmsService {
 
     database.removeTable(tableId);
     await this.dbmsPersistor.writeDatabase(database);
-    return this.dbmsPersistor.deleteTable(table);
+    await this.dbmsPersistor.deleteTable(table);
+    return;
+  }
+
+  public async findAllColumns(databaseId: string, tableId: string): Promise<Column[]> {
+    const table = await this.findTableById(databaseId, tableId);
+    return table.columns;
+  }
+
+  public async findColumnById(databaseId: string, tableId: string, columnId: string): Promise<Column> {
+    const table = await this.findTableById(databaseId, tableId);
+    return this.findColumnByIdWithTable(table, columnId);
+  }
+
+  public async findColumnByIdWithTable(table: Table, columnId: string): Promise<Column> {
+    const column = table.getColumn(columnId);
+    if (!column) throw new HttpException(404, `No column ${columnId} found`);
+    return column;
+  }
+
+  public async createColumn(databaseId: string, tableId: string, columnData: CreateColumnDto): Promise<Column> {
+    if (isEmpty(columnData)) throw new HttpException(400, `There is no column creation data presented`);
+    const table = await this.findTableById(databaseId, tableId);
+    const columns = table.columns;
+
+    const { name: newColumnName, type: newColumnType } = columnData;
+
+    const isNameUnique = this.checkUniqueEntityName(columns, newColumnName);
+    if (!isNameUnique) throw new HttpException(409, `Column ${newColumnName} already exists`);
+
+    const newColumn = new Column({ name: newColumnName, type: newColumnType, tableId });
+    table.addColumn(newColumn);
+    await this.dbmsPersistor.writeTable(table);
+
+    return newColumn;
+  }
+
+  public async updateColumn(
+    databaseId: string,
+    tableId: string,
+    columnId: string,
+    columnData: UpdateColumnDto
+  ): Promise<Column> {
+    if (isEmpty(columnData)) throw new HttpException(400, `There is no column data update presented`);
+
+    const table = await this.findTableById(databaseId, tableId);
+    const columns = table.columns;
+    const column = await this.findColumnByIdWithTable(table, columnId);
+
+    const { name: updateColumnName, type: updateColumnType } = columnData;
+    if (!updateColumnName && !updateColumnType) return column;
+
+    const isNameUnique = this.checkUniqueEntityName(columns, updateColumnName);
+    if (!isNameUnique) throw new HttpException(409, `Column ${updateColumnName} already exists`);
+
+    column.name = updateColumnName || column.name;
+    column.type = updateColumnType || column.type;
+    await this.dbmsPersistor.writeTable(table);
+
+    return column;
+  }
+
+  public async deleteColumn(databaseId: string, tableId: string, columnId: string): Promise<void> {
+    const table = await this.findTableById(databaseId, tableId);
+    const column = await this.findColumnByIdWithTable(table, columnId);
+
+    table.removeColumn(column);
+    await this.dbmsPersistor.writeTable(table);
+    return;
   }
 }
 
