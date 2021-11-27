@@ -7,22 +7,38 @@ export interface TablesIndex {
 }
 
 class Database {
-  public id: string;
-  public name: string;
-  public tablesIndex: TablesIndex;
+  private readonly _id: string;
+  private _name: string;
+  private readonly _tablesIndex: TablesIndex;
 
   constructor({ id, name, tables }: { id?: string; name: string; tables: Table[] }) {
-    this.id = id || nanoid();
-    this.name = name;
-    this.tablesIndex = normalize(tables);
+    this._id = id || nanoid();
+    this._name = name;
+    this._tablesIndex = normalize(tables);
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get tablesIds(): string[] {
+    return Object.keys(this._tablesIndex);
   }
 
   get tables(): Table[] {
-    return Object.values(this.tablesIndex);
+    return Object.values(this._tablesIndex);
   }
 
   public getTable(id: string): Table | undefined {
-    return this.tablesIndex[id];
+    return this._tablesIndex[id];
   }
 
   get tablesAmount(): number {
