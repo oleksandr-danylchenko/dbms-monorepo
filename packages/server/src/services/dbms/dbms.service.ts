@@ -1,6 +1,6 @@
 import { denormalize, normalize } from '@utils/normalization.helper';
 import Database from '@models/dbms/database';
-import DbmsPersistor from '@services/dbms/dbmsPersitor.service';
+import DbmsPersistor from '@services/dbms/persitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { areEmpty, isEmpty } from '@utils/util.helper';
