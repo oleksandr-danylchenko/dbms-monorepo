@@ -58,6 +58,13 @@ class DbmsService {
     const database = await this.findDatabaseById(databaseId);
     return denormalize(database.tablesIndex);
   }
+
+  public async findTableById(databaseId: string, tableId: string): Promise<Table> {
+    const database = await this.findDatabaseById(databaseId);
+    const table = database.tablesIndex[tableId];
+    if (!table) throw new HttpException(404, `No table ${tableId} found`);
+    return table;
+  }
 }
 
 export default DbmsService;

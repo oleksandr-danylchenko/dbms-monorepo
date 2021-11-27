@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
-import Database from '@models/dbms/database';
-import { CreateDatabaseDto, DatabaseDto } from '@dtos/database.dto';
+import { CreateDatabaseDto } from '@dtos/database.dto';
 import DatabaseMapper from '@/mappers/database.mapper';
-import Table from '@models/dbms/table';
-import { TableDto } from '@dtos/table.dto';
 import TableMapper from '@/mappers/table.mapper';
 
 class DbmsController {
@@ -12,8 +9,8 @@ class DbmsController {
 
   public getDatabases = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const databases: Database[] = await this.dbmsService.findAllDatabases();
-      const databasesDtos: DatabaseDto[] = databases.map(DatabaseMapper.toDto);
+      const databases = await this.dbmsService.findAllDatabases();
+      const databasesDtos = databases.map(DatabaseMapper.toDto);
 
       res.status(200).json({ data: databasesDtos, message: 'findAllDatabases' });
     } catch (error) {
@@ -36,7 +33,7 @@ class DbmsController {
   public createDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const databaseData: CreateDatabaseDto = req.body;
-      const createdDatabase: Database = await this.dbmsService.createDatabase(databaseData);
+      const createdDatabase = await this.dbmsService.createDatabase(databaseData);
       const createdDatabaseDto = DatabaseMapper.toDto(createdDatabase);
 
       res.status(201).json({ data: createdDatabaseDto, message: 'createDatabase' });
@@ -59,8 +56,8 @@ class DbmsController {
   public getTables = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const databaseId = req.params.dbId;
-      const tables: Table[] = await this.dbmsService.findAllTablesByDatabaseId(databaseId);
-      const tablesDtos: TableDto[] = tables.map(TableMapper.toDto);
+      const tables = await this.dbmsService.findAllTablesByDatabaseId(databaseId);
+      const tablesDtos = tables.map(TableMapper.toDto);
 
       res.status(200).json({ data: tablesDtos, message: 'findAllTables' });
     } catch (error) {
@@ -70,6 +67,12 @@ class DbmsController {
 
   public getTableById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const table = await this.dbmsService.findTableById(databaseId, tableId);
+      const tableDto = TableMapper.toDto(table);
+
+      res.status(200).json({ data: tableDto, message: 'findTableById' });
     } catch (error) {
       next(error);
     }
