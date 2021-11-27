@@ -76,9 +76,16 @@ class DbmsService {
     return database.tables;
   }
 
-  public async findTableById(databaseId: string, tableId: string): Promise<Table> {
-    const database = await this.findDatabaseById(databaseId);
-    const table = database.getTable(tableId);
+  public async findTableById(databaseId: string, tableId: string): Promise<Table>;
+  public async findTableById(database: Database, tableId: string): Promise<Table>;
+  public async findTableById(database: string | Database, tableId: string): Promise<Table> {
+    let table: Table | undefined;
+    if (database instanceof Database) {
+      table = database.getTable(tableId);
+    } else {
+      const databaseEntity = await this.findDatabaseById(database);
+      table = databaseEntity.getTable(tableId);
+    }
     if (!table) throw new HttpException(404, `No table ${tableId} found`);
     return table;
   }
@@ -99,6 +106,15 @@ class DbmsService {
     await this.dbmsPersistor.writeTable(newTable);
 
     return newTable;
+  }
+
+  public async deleteTable(databaseId: string, tableId: string): Promise<void> {
+    const database = await this.findDatabaseById(databaseId);
+    const table = await this.findTableById(database, tableId);
+
+    database.removeTable(tableId);
+    await this.dbmsPersistor.writeDatabase(database);
+    return this.dbmsPersistor.deleteTable(table);
   }
 }
 

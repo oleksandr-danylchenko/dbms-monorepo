@@ -48,6 +48,10 @@ class Database {
   public addTable(table: Table) {
     this._tablesIndex[table.id] = table;
   }
+
+  public removeTable(tableId: string) {
+    delete this._tablesIndex[tableId];
+  }
 }
 
 export default Database;

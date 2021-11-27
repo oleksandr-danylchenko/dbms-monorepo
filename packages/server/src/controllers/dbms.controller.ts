@@ -105,6 +105,11 @@ class DbmsController {
 
   public deleteTable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      await this.dbmsService.deleteTable(databaseId, tableId);
+
+      res.status(200).json({ data: { id: tableId, databaseId: databaseId }, message: 'deleteTable' });
     } catch (error) {
       next(error);
     }
