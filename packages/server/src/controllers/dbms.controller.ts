@@ -32,11 +32,23 @@ class DbmsController {
 
   public createDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const databaseData: CreateDatabaseDto = req.body;
+      const databaseData = req.body;
       const createdDatabase = await this.dbmsService.createDatabase(databaseData);
       const createdDatabaseDto = DatabaseMapper.toDto(createdDatabase);
 
       res.status(201).json({ data: createdDatabaseDto, message: 'createDatabase' });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public updateDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const databaseId = req.params.dbId;
+      const databaseData = req.body;
+      const updatedDatabase = await this.dbmsService.updateDatabase(databaseId, databaseData);
+      const updatedDatabaseDto = DatabaseMapper.toDto(updatedDatabase);
+
+      res.status(201).json({ data: updatedDatabaseDto, message: 'updateDatabase' });
     } catch (error) {
       next(error);
     }
