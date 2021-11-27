@@ -108,7 +108,7 @@ class DbmsService {
     const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
 
-    const newTable = new Table({ name: newTableName, databaseId, columns: [] });
+    const newTable = new Table({ name: newTableName, databaseId });
     database.addTable(newTable);
     await this.dbmsPersistor.writeDatabase(database);
     await this.dbmsPersistor.writeTable(newTable);
@@ -128,7 +128,8 @@ class DbmsService {
     const isNameUnique = this.checkUniqueEntityName(tables, updateTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
 
-    table.name = updateTableName;
+    table.name = updateTableName || table.name;
+    table.columnsOrderIndex = updateOrderIndex || table.columnsOrderIndex;
     await this.dbmsPersistor.writeTable(table);
 
     return table;

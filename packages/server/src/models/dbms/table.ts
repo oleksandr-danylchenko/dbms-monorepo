@@ -13,12 +13,24 @@ class Table {
   private readonly _columnsIndex: ColumnsIndex;
   private _columnsOrderIndex: string[];
 
-  constructor({ id, name, databaseId, columns }: { id?: string; name: string; databaseId: string; columns: Column[] }) {
+  constructor({
+    id,
+    name,
+    databaseId,
+    columns,
+    columnsOrderIndex,
+  }: {
+    id?: string;
+    name: string;
+    databaseId: string;
+    columns?: Column[];
+    columnsOrderIndex?: string[];
+  }) {
     this._id = id || nanoid();
     this._name = name;
     this._databaseId = databaseId;
-    this._columnsIndex = normalize(columns);
-    this._columnsOrderIndex = [];
+    this._columnsIndex = normalize(columns || []);
+    this._columnsOrderIndex = columnsOrderIndex || [];
   }
 
   public get id() {
@@ -45,8 +57,12 @@ class Table {
     return Object.values(this._columnsIndex);
   }
 
-  public get columnsOrder(): string[] {
+  public get columnsOrderIndex(): string[] {
     return this._columnsOrderIndex;
+  }
+
+  public set columnsOrderIndex(value: string[]) {
+    this._columnsOrderIndex = value;
   }
 
   public getColumn(id: string): Column | undefined {

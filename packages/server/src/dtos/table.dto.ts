@@ -1,4 +1,4 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsArray, IsString, MinLength } from 'class-validator';
 import { ColumnDto } from '@dtos/column.dto';
 
 export interface TableDto {
@@ -17,4 +17,8 @@ export class CreateTableDto {
   public name!: string;
 }
 
-export class UpdateTableDto extends CreateTableDto {}
+export class UpdateTableDto extends CreateTableDto {
+  @IsArray()
+  @IsString({ each: true })
+  public orderIndex!: string[];
+}
