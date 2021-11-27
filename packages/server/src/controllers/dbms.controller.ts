@@ -199,35 +199,35 @@ class DbmsController {
     }
   };
 
-  public getTableRecords = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getRows = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
     }
   };
 
-  public getTableRecordsProjection = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getRowsProjection = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
     }
   };
 
-  public createTableRecordById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public createRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
     }
   };
 
-  public updateTableRecord = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public updateRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);
     }
   };
 
-  public deleteTableRecord = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public deleteRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
     } catch (error) {
       next(error);

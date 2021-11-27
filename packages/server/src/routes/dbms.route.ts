@@ -58,14 +58,11 @@ class DbmsRoute implements Routes {
     );
     this.router.delete(`${this.path}/:dbId/tables/:tableId/columns/:columnId`, this.dbmsController.deleteColumn);
 
-    this.router.get(`${this.path}/:dbId/tables/:tableId/records`, this.dbmsController.getTableRecords);
-    this.router.get(
-      `${this.path}/:dbId/tables/:tableId/records/projection`,
-      this.dbmsController.getTableRecordsProjection
-    );
-    this.router.post(`${this.path}/:dbId/tables/records`, this.dbmsController.createTableRecordById);
-    this.router.put(`${this.path}/:dbId/tables/:tableId/records/:recordId`, this.dbmsController.updateTableRecord);
-    this.router.delete(`${this.path}/:dbId/tables/:tableId/records/:recordId`, this.dbmsController.deleteTableRecord);
+    this.router.get(`${this.path}/:dbId/tables/:tableId/rows`, this.dbmsController.getRows);
+    this.router.get(`${this.path}/:dbId/tables/:tableId/rows/projection`, this.dbmsController.getRowsProjection);
+    this.router.post(`${this.path}/:dbId/tables/:tableId/rows`, this.dbmsController.createRow);
+    this.router.put(`${this.path}/:dbId/tables/:tableId/rows/:rowId`, this.dbmsController.updateRow);
+    this.router.delete(`${this.path}/:dbId/tables/:tableId/rows/:rowId`, this.dbmsController.deleteRow);
   }
 }
 
