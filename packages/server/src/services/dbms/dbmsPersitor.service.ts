@@ -6,9 +6,10 @@ import {
   PersistedTable,
   PersistedTablesIndex,
 } from '@interfaces/dbms/persistedDbms.interface';
-import Database, { TablesIndex } from '@models/dbms/database';
+import Database from '@models/dbms/database';
 import Table, { ColumnsIndex } from '@models/dbms/table';
 import Column from '@models/dbms/column';
+
 class DbmsPersistor {
   public basePath = `${process.cwd()}/storage`;
   public databasesFolder = `${this.basePath}/databases`;
@@ -54,18 +55,18 @@ class DbmsPersistor {
   }
 
   public async writeDatabase(database: Database) {
-    const { id, name, tablesIndex } = database;
+    const { id, name, tables } = database;
     const databaseFilePath = this.createDatabasePath(id);
     const persistContent = {
       id,
       name,
-      tablesIndex: createPersistTablesIndex(tablesIndex),
+      tablesIndex: createPersistTablesIndex(tables),
     };
     const persistContentStr = JSON.stringify(persistContent);
     return fsPromises.writeFile(databaseFilePath, persistContentStr);
 
-    function createPersistTablesIndex(tablesIndex: TablesIndex): PersistedTablesIndex {
-      return Object.values(tablesIndex).reduce((index, table) => {
+    function createPersistTablesIndex(tables: Table[]): PersistedTablesIndex {
+      return tables.reduce((index, table) => {
         const tableId = table.id;
         index[tableId] = { id: tableId };
         return index;
@@ -74,8 +75,7 @@ class DbmsPersistor {
   }
 
   public async deleteDatabase(database: Database) {
-    const { id, tablesIndex } = database;
-    const tables = Object.values(tablesIndex);
+    const { id, tables } = database;
     const tablesDeletion = tables.map(this.deleteTable);
     await Promise.all(tablesDeletion);
 
@@ -93,9 +93,7 @@ class DbmsPersistor {
     return fsPromises.unlink(tableFilePath);
   }
 
-  public async deleteColumn(column: Column) {
-    const { id, name, type } = column;
-  }
+  public async deleteColumn(column: Column) {}
 
   public async writeTable(table: Table) {
     const { id, name, databaseId, columnsIndex } = table;

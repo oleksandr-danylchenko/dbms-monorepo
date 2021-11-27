@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
-import { CreateDatabaseDto } from '@dtos/database.dto';
 import DatabaseMapper from '@/mappers/database.mapper';
 import TableMapper from '@/mappers/table.mapper';
 
@@ -41,6 +40,7 @@ class DbmsController {
       next(error);
     }
   };
+
   public updateDatabase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const databaseId = req.params.dbId;

@@ -2,8 +2,7 @@ import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
 import DbmsController from '@controllers/dbms.controller';
 import validationMiddleware from '@middlewares/validation.middleware';
-import { CreateUserDto } from '@dtos/users.dto';
-import { CreateDatabaseDto } from '@dtos/database.dto';
+import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 
 class DbmsRoute implements Routes {
   public path = '/databases';
@@ -24,7 +23,7 @@ class DbmsRoute implements Routes {
     );
     this.router.put(
       `${this.path}/:dbId`,
-      validationMiddleware(CreateUserDto, 'body', true),
+      validationMiddleware(UpdateDatabaseDto, 'body', true),
       this.dbmsController.updateDatabase
     );
     this.router.delete(`${this.path}/:dbId`, this.dbmsController.deleteDatabase);
