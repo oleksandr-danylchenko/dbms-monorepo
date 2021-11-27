@@ -3,7 +3,7 @@ import Database from '@models/dbms/database';
 import DbmsPersistor from '@services/dbms/dbmsPersitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
-import { isEmpty } from '@utils/util.helper';
+import { areEmpty, isEmpty } from '@utils/util.helper';
 import Table from '@models/dbms/table';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
 import Column from '@models/dbms/column';
@@ -122,8 +122,8 @@ class DbmsService {
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
 
-    const { name: updateTableName } = tableData;
-    if (!updateTableName) return table;
+    const { name: updateTableName, orderIndex: updateOrderIndex } = tableData;
+    if (areEmpty(updateTableName, updateOrderIndex)) return table;
 
     const isNameUnique = this.checkUniqueEntityName(tables, updateTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
@@ -190,7 +190,7 @@ class DbmsService {
     const column = await this.findColumnByIdWithTable(table, columnId);
 
     const { name: updateColumnName, type: updateColumnType } = columnData;
-    if (!updateColumnName && !updateColumnType) return column;
+    if (areEmpty(updateColumnName, updateColumnType)) return column;
 
     const isNameUnique = this.checkUniqueEntityName(columns, updateColumnName);
     if (!isNameUnique) throw new HttpException(409, `Column ${updateColumnName} already exists`);

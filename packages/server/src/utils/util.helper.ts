@@ -17,3 +17,5 @@ export const isEmpty = (value: string | number | object): boolean => {
     return false;
   }
 };
+
+export const areEmpty = (...values: (string | number | object)[]): boolean => values.every((value) => isEmpty(value));
