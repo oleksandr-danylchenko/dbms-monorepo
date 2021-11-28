@@ -241,7 +241,7 @@ class DbmsService {
 
     const { columnsValuesIndex: rowColumnsValuesIndex } = rowData;
 
-    const { errorMessage } = DbmsValidation.validateRowValues(columnsIndex, rowColumnsValuesIndex);
+    const { errorMessage } = DbmsValidation.validateRowCreationValues(columnsIndex, rowColumnsValuesIndex);
     if (errorMessage !== null) {
       throw new HttpException(400, errorMessage);
     }
@@ -250,6 +250,11 @@ class DbmsService {
     await this.persistor.writeRow(databaseId, tableId, newRow);
 
     return newRow;
+  }
+
+  public async deleteRow(databaseId: string, tableId: string, rowId: string): Promise<void> {
+    await this.persistor.removeRow(databaseId, tableId, rowId);
+    return;
   }
 }
 

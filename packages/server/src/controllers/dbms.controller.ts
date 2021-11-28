@@ -241,15 +241,14 @@ class DbmsController {
     }
   };
 
-  public updateRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-    } catch (error) {
-      next(error);
-    }
-  };
-
   public deleteRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const rowId = req.params.rowId;
+      await this.dbmsService.deleteRow(databaseId, tableId, rowId);
+
+      res.status(200).json({ data: { id: rowId, databaseId, tableId }, message: 'deleteRow' });
     } catch (error) {
       next(error);
     }

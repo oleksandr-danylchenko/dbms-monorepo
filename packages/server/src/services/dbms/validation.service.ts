@@ -22,7 +22,7 @@ class DbmsValidation {
     return this._typeValidationIndex[type];
   }
 
-  public static validateRowValues(
+  public static validateRowCreationValues(
     columnsIndex: ColumnsIndex,
     rowColumnsValuesIndex: RowColumnsValuesIndex
   ): { errorMessage: string | null } {

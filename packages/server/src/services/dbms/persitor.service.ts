@@ -156,6 +156,18 @@ class DbmsPersistor {
     return fsPromises.writeFile(rowsFilePath, persistContentStr, { flag: 'a' });
   }
 
+  public async removeRow(databaseId: string, tableId: string, rowId: string) {
+    const rows = await this.readRowsLines(databaseId, tableId);
+    const rowsWithoutRemoved = rows.filter((row) => row.id !== rowId);
+    return this.writePersistedRows(databaseId, tableId, rowsWithoutRemoved);
+  }
+
+  private async writePersistedRows(databaseId: string, tableId: string, rows: PersistedRow[]) {
+    const rowsFilePath = this.createRowsPath(databaseId, tableId);
+    const persistContentStr = rows.map((row) => `${JSON.stringify(row)}${EOL}`);
+    return fsPromises.writeFile(rowsFilePath, persistContentStr);
+  }
+
   private createDatabasePath(databaseId: string): string {
     return `${this.databasesFolder}/${databaseId}.json`;
   }

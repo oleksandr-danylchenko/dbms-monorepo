@@ -11,5 +11,3 @@ export class CreateRowDto {
   @IsObject()
   columnsValuesIndex!: RowColumnsValuesIndex;
 }
-
-export class UpdateRowDto extends CreateRowDto {}
