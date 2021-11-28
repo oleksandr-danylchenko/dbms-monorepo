@@ -15,6 +15,7 @@
     "resolveJsonModule": true,
     "importHelpers": true,
     "strict": true,
+    "useUnknownInCatchVariables": false,
     "noFallthroughCasesInSwitch": true,
     "outDir": "./dist"
   },
