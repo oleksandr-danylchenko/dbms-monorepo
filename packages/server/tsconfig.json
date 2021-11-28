@@ -16,7 +16,8 @@
       "@types/*": ["types/*"],
       "@constants/*": ["constants/*"],
       "@config/*": ["config/*"]
-    }
+    },
+    "outDir": "./dist"
   },
   "include": ["src"]
 }

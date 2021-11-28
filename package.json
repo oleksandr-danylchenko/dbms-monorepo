@@ -8,8 +8,8 @@
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
-    "postinstall": "echo 'Installed dependecies from the root package.json'",
-    "build": "echo 'Dont build please'"
+    "build": "echo 'Nothing to build from here'",
+    "start-server": "cd packages/server && yarn start"
   },
   "workspaces": {
     "packages": [

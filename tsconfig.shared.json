@@ -17,7 +17,6 @@
     "strict": true,
     "useUnknownInCatchVariables": false,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./dist"
   },
   "exclude": [
     "node_modules"
