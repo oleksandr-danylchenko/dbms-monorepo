@@ -1,4 +1,6 @@
 import { FieldType } from '@interfaces/dbms/dbms.interface';
+import { ColumnsIndex } from '@models/dbms/table';
+import { RowColumnsValuesIndex } from '@models/dbms/row';
 
 export type Validator = (value: unknown) => boolean;
 
@@ -18,6 +20,30 @@ class DbmsValidation {
 
   public static getValidatorByType(type: FieldType): Validator {
     return this._typeValidationIndex[type];
+  }
+
+  public static validateRowValues(
+    columnsIndex: ColumnsIndex,
+    rowColumnsValuesIndex: RowColumnsValuesIndex
+  ): { errorMessage: string | null } {
+    for (const columnId in rowColumnsValuesIndex) {
+      if (!(columnId in columnsIndex)) {
+        return { errorMessage: `Column ${columnId} is not presented for the table` };
+      }
+
+      const column = columnsIndex[columnId];
+      const rowColumnValue = rowColumnsValuesIndex[columnId].value;
+
+      const isValueValid = column.validate(rowColumnValue);
+      if (!isValueValid) {
+        const { name, type } = column;
+        return {
+          errorMessage: `Value ${rowColumnValue} doesn't satisfy type ${type} constraints for the column ${name}`,
+        };
+      }
+    }
+
+    return { errorMessage: null };
   }
 }
 
