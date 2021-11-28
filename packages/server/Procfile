@@ -1,1 +1,1 @@
-web: yarn workspaces focus -A && yarn start-server
+web: yarn workspaces focus server -A && yarn start-server
