@@ -1,1 +1,1 @@
-web: pwd && yarn start
+web: pwd && ls -a && cat ./package.json && yarn run start
