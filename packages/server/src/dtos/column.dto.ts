@@ -19,4 +19,8 @@ export class CreateColumnDto {
   public type!: FieldType;
 }
 
-export class UpdateColumnDto extends CreateColumnDto {}
+export class UpdateColumnDto {
+  @IsString()
+  @MinLength(1)
+  public name!: string;
+}

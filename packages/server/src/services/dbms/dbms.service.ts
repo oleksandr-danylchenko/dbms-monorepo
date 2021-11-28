@@ -200,14 +200,13 @@ class DbmsService {
     const columns = table.columns;
     const column = await this.findColumnByIdWithTable(table, columnId);
 
-    const { name: updateColumnName, type: updateColumnType } = columnData;
-    if (areEmpty(updateColumnName, updateColumnType)) return column;
+    const { name: updateColumnName } = columnData;
+    if (isEmpty(updateColumnName)) return column;
 
     const isNameUnique = this.checkUniqueEntityName(columns, updateColumnName);
     if (!isNameUnique) throw new HttpException(409, `Column ${updateColumnName} already exists`);
 
     column.name = updateColumnName || column.name;
-    column.type = updateColumnType || column.type;
     await this.persistor.writeTable(table);
 
     return column;

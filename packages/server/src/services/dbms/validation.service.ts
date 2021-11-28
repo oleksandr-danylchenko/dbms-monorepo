@@ -35,7 +35,7 @@ class DbmsValidation {
 
     for (const columnId in rowColumnsValuesIndex) {
       if (!(columnId in columnsIndex)) {
-        return { errorMessage: `Column ${columnId} is not presented for the table` };
+        return { errorMessage: `Column "${columnId}" is not presented for the table` };
       }
 
       const column = columnsIndex[columnId];
@@ -45,7 +45,7 @@ class DbmsValidation {
       if (!isValueValid) {
         const { name, type } = column;
         return {
-          errorMessage: `Value ${rowColumnValue} doesn't satisfy type ${type} constraints for the column ${name}`,
+          errorMessage: `Value "${rowColumnValue}" doesn't satisfy type "${type}" constraints for the column "${name}"`,
         };
       }
     }
