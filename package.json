@@ -8,9 +8,8 @@
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
-    "heroku-postbuild": "yarn workspaces focus -A",
     "build": "echo 'Nothing to build from here'",
-    "start-server": "cd packages/server && yarn start"
+    "start-server": "cd packages/server && yarn install && yarn start"
   },
   "workspaces": {
     "packages": [
