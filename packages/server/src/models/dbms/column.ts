@@ -14,7 +14,7 @@ class Column {
     this._name = name;
     this._tableId = tableId;
     this._type = type;
-    this._validator = () => true;
+    this._validator = DbmsValidation.getValidatorByType(type);
   }
 
   public get id() {
