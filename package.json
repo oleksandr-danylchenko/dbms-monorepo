@@ -7,6 +7,10 @@
   "author": "Oleksandr Danylchenko",
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
+  "scripts": {
+    "build": "yarn workspaces foreach run build",
+    "start": "yarn workspaces server start"
+  },
   "workspaces": {
     "packages": [
       "packages/*"
