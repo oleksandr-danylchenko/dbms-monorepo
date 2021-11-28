@@ -19,7 +19,7 @@ class Row {
     tableId,
     columnsValuesIndex,
   }: {
-    id: string;
+    id?: string;
     tableId: string;
     columnsValuesIndex: RowColumnsValuesIndex;
   }) {

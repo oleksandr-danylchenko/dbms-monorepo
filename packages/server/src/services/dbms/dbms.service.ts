@@ -9,6 +9,8 @@ import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
 import Column from '@models/dbms/column';
 import { CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
 import Row from '@models/dbms/row';
+import { CreateRowDto } from '@dtos/row.dto';
+import DbmsValidation from '@services/dbms/validation.service';
 
 class DbmsService {
   public persistor = new DbmsPersistor();
@@ -170,6 +172,7 @@ class DbmsService {
 
   public async createColumn(databaseId: string, tableId: string, columnData: CreateColumnDto): Promise<Column> {
     if (isEmpty(columnData)) throw new HttpException(400, `There is no column creation data presented`);
+
     const table = await this.findTableById(databaseId, tableId);
     const columns = table.columns;
 
@@ -229,6 +232,25 @@ class DbmsService {
 
     await this.findTableById(databaseId, tableId);
     return this.persistor.readProjectedRows(databaseId, tableId, projectionColumnsIds);
+  }
+
+  public async createRow(databaseId: string, tableId: string, rowData: CreateRowDto): Promise<Row> {
+    if (isEmpty(rowData)) throw new HttpException(400, `There is no column creation data presented`);
+
+    const table = await this.findTableById(databaseId, tableId);
+    const columnsIndex = table.columnsIndex;
+
+    const { columnsValuesIndex: rowColumnsValuesIndex } = rowData;
+
+    const { errorMessage } = DbmsValidation.validateRowValues(columnsIndex, rowColumnsValuesIndex);
+    if (errorMessage !== null) {
+      throw new HttpException(400, errorMessage);
+    }
+
+    const newRow = new Row({ tableId, columnsValuesIndex: rowColumnsValuesIndex });
+    await this.persistor.writeRow(databaseId, tableId, newRow);
+
+    return newRow;
   }
 }
 

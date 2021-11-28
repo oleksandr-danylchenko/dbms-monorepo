@@ -57,6 +57,10 @@ class Table {
     return Object.values(this._columnsIndex);
   }
 
+  public get columnsIndex(): ColumnsIndex {
+    return this._columnsIndex;
+  }
+
   public get columnsOrderIndex(): string[] {
     return this._columnsOrderIndex;
   }

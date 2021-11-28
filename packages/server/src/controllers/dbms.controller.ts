@@ -229,6 +229,13 @@ class DbmsController {
 
   public createRow = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+      const databaseId = req.params.dbId;
+      const tableId = req.params.tableId;
+      const rowData = req.body;
+      const createdRow = await this.dbmsService.createRow(databaseId, tableId, rowData);
+      const createdRowDto = RowMapper.toDto(createdRow);
+
+      res.status(201).json({ data: createdRowDto, message: 'createRow' });
     } catch (error) {
       next(error);
     }
