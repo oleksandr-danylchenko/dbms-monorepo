@@ -2128,6 +2128,7 @@ __metadata:
     "@types/jsonwebtoken": ^8.5.4
     "@types/morgan": ^1.9.3
     "@types/supertest": ^2.0.11
+    "@types/validator": ^13.7.0
     "@types/winston": ^2.4.4
     "@typescript-eslint/eslint-plugin": ^4.28.2
     "@typescript-eslint/parser": ^4.28.2
@@ -2932,6 +2933,13 @@ __metadata:
   dependencies:
     source-map: ^0.6.1
   checksum: def36fd2c698a33d8f67f5e21aab926eb9bda2d7951eab544941e1feb1231f020ff1c210d840dcc0fc9f07b5d22ef8b566887ddec9753b8b9f7223cceaa70993
+  languageName: node
+  linkType: hard
+
+"@types/validator@npm:^13.7.0":
+  version: 13.7.0
+  resolution: "@types/validator@npm:13.7.0"
+  checksum: 93b1ea1c24efc851db72f86da8e8cb85c16790ae9c6f8edc351048843224f3a2d3596fb8b207443d64300b88638d079f7da9b91a0d9b4426ef7f5f95189b7e85
   languageName: node
   linkType: hard
 

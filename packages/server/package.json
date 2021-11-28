@@ -5,11 +5,11 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "server-start": "yarn server-build && cross-env NODE_ENV=production node dist/server.js",
-    "server-dev": "cross-env NODE_ENV=development nodemon",
-    "server-build": "tsc && npx tsc-alias",
-    "server-lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "server-lint:fix": "yarn server-lint -- --fix"
+    "start": "yarn build && cross-env NODE_ENV=production node dist/server.js",
+    "dev": "cross-env NODE_ENV=development nodemon",
+    "build": "tsc && npx tsc-alias",
+    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
+    "lint:fix": "yarn lint -- --fix"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -44,6 +44,7 @@
     "@types/jsonwebtoken": "^8.5.4",
     "@types/morgan": "^1.9.3",
     "@types/supertest": "^2.0.11",
+    "@types/validator": "^13.7.0",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",

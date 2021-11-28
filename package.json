@@ -8,8 +8,8 @@
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
-    "build": "yarn workspaces server build",
-    "start": "yarn workspaces server start"
+    "build-server": "cd packages/server && yarn build",
+    "start-server": "cd packages/server && yarn start"
   },
   "workspaces": {
     "packages": [
