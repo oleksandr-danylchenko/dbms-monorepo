@@ -8,6 +8,7 @@
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
+    "postinstall": "echo 'Installed dependecies from the root package.json'",
     "build": "npm_config_yes=true yarn workspaces foreach run build",
     "start": "yarn workspaces foreach run start"
   },
