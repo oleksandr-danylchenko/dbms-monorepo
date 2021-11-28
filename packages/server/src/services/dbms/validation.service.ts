@@ -1,6 +1,7 @@
 import { FieldType } from '@interfaces/dbms/dbms.interface';
 import { ColumnsIndex } from '@models/dbms/table';
 import { RowColumnsValuesIndex } from '@models/dbms/row';
+import { isRgbColor } from 'class-validator';
 
 export type Validator = (value: unknown) => boolean;
 
@@ -14,8 +15,8 @@ class DbmsValidation {
     real: (value) => Number.isFinite(value),
     char: (value) => typeof value === 'string' && value.length === 1,
     string: (value) => typeof value === 'string',
-    picture: () => true,
-    color: () => true,
+    picture: (value) => isRgbColor(value),
+    color: (value) => isRgbColor(value),
   };
 
   public static getValidatorByType(type: FieldType): Validator {
