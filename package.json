@@ -9,11 +9,7 @@
   "packageManager": "yarn@3.1.0",
   "scripts": {
     "build": "npm_config_yes=true yarn workspaces foreach run build",
-    "start": "npm_config_yes=true yarn workspaces foreach run start",
-    "build-server": "cd packages/server && yarn build",
-    "start-server": "cd packages/server && yarn start" ,
-    "start-client": "cd packages/client && yarn start",
-    "build-client": "cd packages/client && yarn build"
+    "start": "yarn workspaces foreach run start"
   },
   "workspaces": {
     "packages": [
