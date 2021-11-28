@@ -26,6 +26,13 @@ class DbmsValidation {
     columnsIndex: ColumnsIndex,
     rowColumnsValuesIndex: RowColumnsValuesIndex
   ): { errorMessage: string | null } {
+    const columns = Object.values(columnsIndex);
+    const missingRowColumns = columns.filter(({ id: columnId }) => !rowColumnsValuesIndex[columnId]);
+    if (missingRowColumns.length > 0) {
+      const columnsNames = missingRowColumns.map(({ id, name }) => `(${id}:${name})`).join(', ');
+      return { errorMessage: `Row column missing [${columnsNames}] columns` };
+    }
+
     for (const columnId in rowColumnsValuesIndex) {
       if (!(columnId in columnsIndex)) {
         return { errorMessage: `Column ${columnId} is not presented for the table` };

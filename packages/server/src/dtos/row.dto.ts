@@ -1,5 +1,5 @@
 import { RowColumnsValuesIndex } from '@models/dbms/row';
-import { IsJSON } from 'class-validator';
+import { IsObject } from 'class-validator';
 
 export interface RowDto {
   id: string;
@@ -8,7 +8,7 @@ export interface RowDto {
 }
 
 export class CreateRowDto {
-  @IsJSON()
+  @IsObject()
   columnsValuesIndex!: RowColumnsValuesIndex;
 }
 
