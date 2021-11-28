@@ -4,8 +4,6 @@
     "src"
   ],
   "compilerOptions": {
-    "skipLibCheck": true,
-    "isolatedModules": true,
     "noEmit": true
   }
 }
