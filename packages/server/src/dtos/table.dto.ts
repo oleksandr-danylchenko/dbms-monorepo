@@ -8,7 +8,7 @@ export interface TableDto {
   columnsIndex: {
     [columnId: string]: Pick<ColumnDto, 'id' | 'name' | 'type' | 'tableId'>;
   };
-  columnsOrder: string[];
+  columnsOrderIndex: string[];
 }
 
 export class CreateTableDto {
