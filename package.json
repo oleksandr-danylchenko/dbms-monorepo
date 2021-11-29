@@ -8,8 +8,7 @@
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
-    "build": "echo 'Nothing to build from here'",
-    "start-server": "cd packages/server && yarn start"
+    "build": "echo 'Nothing to build from here'"
   },
   "workspaces": {
     "packages": [
