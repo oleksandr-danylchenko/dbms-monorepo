@@ -1,5 +1,4 @@
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
-import { databasesApi } from './index';
 import { Database } from '../../../models/dbms';
 
 export const databasesAdapter = createEntityAdapter<Database>({
@@ -17,8 +16,3 @@ export const transformDatabase = (response: unknown): Database => {
   const responseDatabase = (response as { data: unknown }).data;
   return responseDatabase as Database;
 };
-
-export const upsertDatabase = (database: Database) =>
-  databasesApi.util.updateQueryData('getDatabases', undefined, (draftDatabases) => {
-    databasesAdapter.upsertOne(draftDatabases || databasesInitialState, database);
-  });
