@@ -24,5 +24,6 @@ export const baseQueryWithApiHost: BaseQueryFn<string | FetchArgs, unknown, Fetc
 export const dbmsApi = createApi({
   reducerPath: 'dbmsApi',
   baseQuery: baseQueryWithApiHost,
+  tagTypes: ['Database', 'Table', 'Row'],
   endpoints: () => ({}),
 });
