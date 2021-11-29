@@ -1,10 +1,28 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { API_HOST } from '../../constants';
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/dist/query/react';
+import { RootState } from '../store';
+
+export const baseQueryWithApiHost: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
+  const state = api.getState() as RootState;
+  const {
+    application: {
+      api: { host },
+    },
+  } = state;
+  return fetchBaseQuery({ baseUrl: host })(args, api, extraOptions);
+};
 
 export const dbmsApi = createApi({
-  reducerPath: 'todoBoardApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_HOST, // TODO Replace with the Redux value selection
-  }),
+  reducerPath: 'dbmsApi',
+  baseQuery: baseQueryWithApiHost,
   endpoints: () => ({}),
 });
