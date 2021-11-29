@@ -2,17 +2,6 @@
   "name": "@oleksandr/dbms-client",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/react": "^17.0.34",
-    "@types/react-dom": "^17.0.11",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.4.4",
-    "web-vitals": "^1.0.1"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -32,7 +21,25 @@
       "last 1 safari version"
     ]
   },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.6.2",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/react": "^17.0.34",
+    "@types/react-dom": "^17.0.11",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.0.2",
+    "react-scripts": "4.0.3",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.4",
+    "typescript": "^4.4.4",
+    "web-vitals": "^1.0.1"
+  },
   "devDependencies": {
+    "@types/react-router": "^5.1.17",
+    "@types/react-router-dom": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
     "eslint": "^7.28.0",
