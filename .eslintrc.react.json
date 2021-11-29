@@ -45,10 +45,9 @@
     ],
     "import/no-extraneous-dependencies": [
       "error", {
-        "devDependencies": false,
+        "devDependencies": true,
         "optionalDependencies": false,
-        "peerDependencies": false,
-        "packageDir": "./"
+        "peerDependencies": false
       }
     ],
     "no-shadow": "off",
