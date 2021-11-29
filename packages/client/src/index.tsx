@@ -2,14 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css';
 import { Provider } from 'react-redux';
+import { Router } from 'react-router';
 import reportWebVitals from './reportWebVitals';
 import { store } from './redux/store';
+import { history } from './navigation/Routing';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <h1>Hello!</h1>
-      {/* <Router history={history}>/!* <Routing /> *!/</Router> */}
+      <Router history={history}>
+        <h1>Hello!</h1>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
