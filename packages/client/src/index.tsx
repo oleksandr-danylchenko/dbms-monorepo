@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import reportWebVitals from './reportWebVitals';
 import { store } from './redux/store';
-import { history } from './navigation/Routing';
+import Routing, { history } from './navigation/Routing';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router history={history}>
-        <h1>Hello!</h1>
+        <Routing />
       </Router>
     </Provider>
   </React.StrictMode>,
