@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css';
-import App from './App';
+import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
+import { store } from './redux/store';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <h1>Hello!</h1>
+      {/* <Router history={history}>/!* <Routing /> *!/</Router> */}
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

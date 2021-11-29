@@ -43,6 +43,14 @@
         "tsx": "never"
       }
     ],
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "devDependencies": false,
+        "optionalDependencies": false,
+        "peerDependencies": false,
+        "packageDir": "./"
+      }
+    ],
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": [
       "error"

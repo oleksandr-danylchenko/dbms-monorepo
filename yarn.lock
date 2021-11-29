@@ -2133,6 +2133,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.2.0
     husky: ">=6"
     lint-staged: ">=10"
+    loglevel: ^1.8.0
     react: ^17.0.2
     react-dom: ^17.0.2
     react-redux: ^7.2.6
@@ -2140,6 +2141,7 @@ __metadata:
     react-scripts: 4.0.3
     semantic-ui-css: ^2.4.1
     semantic-ui-react: ^2.0.4
+    status-code-enum: ^1.0.0
     typescript: ^4.4.4
     web-vitals: ^1.0.1
   languageName: unknown
@@ -10759,7 +10761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:^1.6.8":
+"loglevel@npm:^1.6.8, loglevel@npm:^1.8.0":
   version: 1.8.0
   resolution: "loglevel@npm:1.8.0"
   checksum: 41aeea17de24aba8dba68084a31fe9189648bce4f39c1277e021bb276c3c53a75b0d337395919cf271068ad40ecefabad0e4fdeb4a8f11908beee532b898f4a7
@@ -15279,6 +15281,13 @@ __metadata:
     define-property: ^0.2.5
     object-copy: ^0.1.0
   checksum: 8657485b831f79e388a437260baf22784540417a9b29e11572c87735df24c22b84eda42107403a64b30861b2faf13df9f7fc5525d51f9d1d2303aba5cbf4e12c
+  languageName: node
+  linkType: hard
+
+"status-code-enum@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "status-code-enum@npm:1.0.0"
+  checksum: 60615ce5c404aa3df738ea077b4f10d67d98d302c19d0f7736f630279ab7dc6a991c486d532d2b663171a1df601d2d898a4dc89f8a69cd108ce9c3f15af9542c
   languageName: node
   linkType: hard
 
