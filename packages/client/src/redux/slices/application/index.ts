@@ -3,11 +3,11 @@ import { API_HOST } from '../../../constants';
 import { selectDefinedProperties } from '../../../utils/objects';
 
 export interface ApplicationState {
-  activeIds: {
+  activeIds: Partial<{
     databaseId: string;
     tableId: string;
     columnId: string;
-  };
+  }>;
 
   /**
    * Defines urls for the Core API and required applications
