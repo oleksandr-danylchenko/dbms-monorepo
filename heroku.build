@@ -6,6 +6,7 @@ then
   then
     echo "Building @oleksandr/dbms-client"
     yarn workspace @oleksandr/dbms-client build
+    cp packages/client/static.json ./
     exit
   elif [ "$NODE_APP" == "server" ]
   then
