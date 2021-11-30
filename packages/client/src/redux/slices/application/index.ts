@@ -47,7 +47,6 @@ export const applicationsSlice = createSlice({
   },
 });
 
-// eslint-disable-next-line no-empty-pattern
-export const {} = applicationsSlice.actions;
+export const { updateActiveIds } = applicationsSlice.actions;
 
 export default applicationsSlice.reducer;

@@ -8,9 +8,9 @@ const ROUTE_POSTFIX = '| Dbms';
 
 const Routing: FC = () => (
   <Switch>
-    <PublicRoute exact path="/" title={`Databases ${ROUTE_POSTFIX}`} component={Databases} />
+    <PublicRoute exact path="/databases" title={`Databases ${ROUTE_POSTFIX}`} component={Databases} />
     <Route path="/*">
-      <Redirect to="/" />
+      <Redirect to="/databases" />
     </Route>
   </Switch>
 );

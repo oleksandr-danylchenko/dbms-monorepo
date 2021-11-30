@@ -27,7 +27,7 @@ const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, pla
   }, [placeholderElementsAmount]);
 
   return (
-    <Sidebar animation="push" vertical visible={!error}>
+    <Sidebar animation="push" vertical visible={!error} inverted>
       <Header className={styles.PageSidebar__Header}>{title}</Header>
       <Menu vertical fluid className={styles.PageSidebar__Menu}>
         {isLoading ? menuPlaceholderElement : items}
