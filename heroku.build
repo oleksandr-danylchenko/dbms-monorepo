@@ -2,7 +2,7 @@
 
 if [ -n "$NODE_APP" ]
 then
-  if [ "$NODE_APP" == "frontend" ]
+  if [ "$NODE_APP" == "client" ]
   then
     echo "Building @oleksandr/dbms-client"
     yarn workspace @oleksandr/dbms-client build
