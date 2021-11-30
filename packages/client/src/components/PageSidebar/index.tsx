@@ -15,7 +15,7 @@ const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, pla
   const menuPlaceholderElement = useMemo(() => {
     return [...Array(placeholderElementsAmount).keys()].map((value) => (
       <Menu.Item key={value}>
-        <Placeholder>
+        <Placeholder inverted>
           <Placeholder.Header>
             <Placeholder.Line />
           </Placeholder.Header>
@@ -28,7 +28,7 @@ const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, pla
   }, [placeholderElementsAmount]);
 
   return (
-    <Segment padded={false} inverted className={clsx(error && styles.PageSidebar_hidden)}>
+    <Segment padded={false} inverted className={clsx(styles.PageSidebar, error && styles.PageSidebar_hidden)}>
       <Header>{title}</Header>
       <Menu secondary vertical fluid inverted>
         {isLoading ? menuPlaceholderElement : items}

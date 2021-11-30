@@ -25,7 +25,7 @@ const DatabasesCards: FC = () => {
   return (
     <Card.Group centered doubling stackable>
       {databases.map((database) => (
-        <Card>
+        <Card key={database.id}>
           <Card.Content>
             <Card.Header>{database.name}</Card.Header>
             <Card.Meta>{database.id}</Card.Meta>
@@ -38,7 +38,9 @@ const DatabasesCards: FC = () => {
                   </Menu.Item>
                 )}
                 {Object.values(database.tablesIndex).map((table) => (
-                  <Menu.Item onClick={() => handleTableClick(table.id)}>{table.id}</Menu.Item>
+                  <Menu.Item key={table.id} onClick={() => handleTableClick(table.id)}>
+                    {table.id}
+                  </Menu.Item>
                 ))}
               </Menu>
             </Card.Description>

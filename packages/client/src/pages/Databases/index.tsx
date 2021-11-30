@@ -15,7 +15,7 @@ const Databases: FC = () => {
   const databases = useAppSelector(selectAllDatabases);
 
   return (
-    <Grid columns="equal">
+    <Grid row={1} columns="equal" padded="vertically" className={styles.Databases__Content}>
       <Grid.Column width={3}>
         <DatabasesSidebar />
       </Grid.Column>
