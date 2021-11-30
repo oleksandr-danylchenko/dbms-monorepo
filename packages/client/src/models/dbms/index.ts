@@ -20,7 +20,7 @@ export interface Table {
   name: string;
   databaseId: string;
   columnsIndex: {
-    [columnId: string]: Pick<Column, 'id' | 'name' | 'type' | 'tableId'>;
+    [columnId: string]: Column;
   };
   columnsOrderIndex: string[];
 }

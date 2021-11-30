@@ -1,4 +1,8 @@
 import { Selector } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+
+// https://stackoverflow.com/a/69943586/10963661
+export const stateSelector = (state: RootState) => () => state;
 
 export const undefinedResultSelector = () => ({ data: undefined });
 
