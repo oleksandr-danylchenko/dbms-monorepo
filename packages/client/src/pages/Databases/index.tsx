@@ -1,11 +1,12 @@
 import { FC } from 'react';
 import { useHistory } from 'react-router';
-import { Header, Segment, Sidebar } from 'semantic-ui-react';
+import { Grid, Header, Segment, Sidebar } from 'semantic-ui-react';
 import { useGetDatabasesQuery } from '../../redux/queries/databases';
 import { useAppSelector } from '../../redux/hooks/app/useAppSelector';
 import { selectAllDatabases } from '../../redux/selectors/databases';
 import styles from './styles.module.scss';
 import DatabasesSidebar from './Sidebar';
+import DatabasesCards from './Cards';
 
 const Databases: FC = () => {
   const history = useHistory();
@@ -14,14 +15,14 @@ const Databases: FC = () => {
   const databases = useAppSelector(selectAllDatabases);
 
   return (
-    <Sidebar.Pushable as={Segment} className={styles.Databases}>
-      <DatabasesSidebar />
-      <Sidebar.Pusher>
-        <Segment basic>
-          <Header as="h3">Application Contenthfdhdf</Header>
-        </Segment>
-      </Sidebar.Pusher>
-    </Sidebar.Pushable>
+    <Grid columns="equal">
+      <Grid.Column width={3}>
+        <DatabasesSidebar />
+      </Grid.Column>
+      <Grid.Column>
+        <DatabasesCards />
+      </Grid.Column>
+    </Grid>
   );
 };
 

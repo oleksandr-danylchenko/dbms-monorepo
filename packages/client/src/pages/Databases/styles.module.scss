@@ -1,3 +1,5 @@
 .Databases {
-  min-height: 100vh;
+  &__Content {
+    min-height: 100vh;
+  }
 }

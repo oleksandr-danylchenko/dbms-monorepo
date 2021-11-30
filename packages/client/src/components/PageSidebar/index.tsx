@@ -1,5 +1,6 @@
 import { FC, ReactElement, useMemo } from 'react';
-import { Header, Menu, Placeholder, Sidebar } from 'semantic-ui-react';
+import { Header, Menu, Placeholder, Segment } from 'semantic-ui-react';
+import clsx from 'clsx';
 import styles from './styles.module.scss';
 
 interface PageSidebarProps {
@@ -27,12 +28,12 @@ const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, pla
   }, [placeholderElementsAmount]);
 
   return (
-    <Sidebar animation="push" vertical visible={!error} inverted>
-      <Header className={styles.PageSidebar__Header}>{title}</Header>
-      <Menu vertical fluid className={styles.PageSidebar__Menu}>
+    <Segment padded={false} inverted className={clsx(error && styles.PageSidebar_hidden)}>
+      <Header>{title}</Header>
+      <Menu secondary vertical fluid inverted>
         {isLoading ? menuPlaceholderElement : items}
       </Menu>
-    </Sidebar>
+    </Segment>
   );
 };
 

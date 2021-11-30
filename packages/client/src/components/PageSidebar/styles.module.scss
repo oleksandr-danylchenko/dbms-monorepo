@@ -1,13 +1,7 @@
 @import "src/styles";
 
 .PageSidebar {
-  &__Header {
-    margin-top: rem(15px) !important;
-    margin-left: rem(15px) !important;
-  }
-
-  &__Menu {
-    border-radius: 0 !important;
-    box-shadow: none !important;
+  &_hidden {
+    visibility: hidden;
   }
 }
