@@ -11,7 +11,7 @@ const reducers = combineReducers({
 export const store = configureStore({
   reducer: reducers,
   devTools: true,
-  middleware: (getDefaultMiddleware) => [dbmsApi.middleware, rtkQueryErrorLogger],
+  middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), dbmsApi.middleware, rtkQueryErrorLogger],
 });
 
 export type RootState = ReturnType<typeof store.getState>;
