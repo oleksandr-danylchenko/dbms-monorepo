@@ -55,10 +55,10 @@
     "@typescript-eslint/no-shadow": [
       "error"
     ],
-    "@typescript-eslint/explicit-function-return-type":[
-      "error",
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
       {
-        "allowExpressions":true
+        "allowExpressions": true
       }
     ],
     "max-len": [
