@@ -4,16 +4,14 @@ import { Header, Segment, Sidebar } from 'semantic-ui-react';
 import { useGetDatabasesQuery } from '../../redux/queries/databases';
 import { useAppSelector } from '../../redux/hooks/app/useAppSelector';
 import { selectAllDatabases } from '../../redux/selectors/databases';
-import DatabasesSidebar from './Sidebar';
 import styles from './styles.module.scss';
+import DatabasesSidebar from './Sidebar';
 
 const Databases: FC = () => {
   const history = useHistory();
 
   const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
   const databases = useAppSelector(selectAllDatabases);
-
-  console.log(databases);
 
   return (
     <Sidebar.Pushable as={Segment} className={styles.Databases}>
