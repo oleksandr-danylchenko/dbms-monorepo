@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -n "$NODE_APP" ]
+then
+  if [ "$NODE_APP" == "frontend" ]
+  then
+    echo "Building @oleksandr/dbms-client"
+    yarn workspace @oleksandr/dbms-client build
+    exit
+  elif [ "$NODE_APP" == "server" ]
+  then
+    echo "Building @oleksandr/dbms-server"
+    yarn workspace @oleksandr/dbms-server build
+    exit
+  else
+    echo "Invalid NODE_APP value $NODE_APP"
+    exit
+  fi
+else
+  echo -e "NODE_APP not set"
+fi
