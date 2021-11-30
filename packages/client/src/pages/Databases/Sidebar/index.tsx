@@ -30,6 +30,7 @@ const DatabasesSidebar: FC = () => {
     return databases.map((database) => (
       <Menu.Item
         key={database.id}
+        link
         active={database.id === activeDatabaseId}
         onClick={() => handleDatabaseClick(database.id)}
       >

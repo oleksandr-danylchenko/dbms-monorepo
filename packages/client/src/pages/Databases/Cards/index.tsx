@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { Card, Icon, Menu } from 'semantic-ui-react';
+import { FC, useMemo } from 'react';
+import { Card, Icon, Menu, Placeholder } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useGetDatabasesQuery } from '../../../redux/queries/databases';
@@ -22,10 +22,31 @@ const DatabasesCards: FC = () => {
     history.push(`/databases/${activeDatabaseId}/table/${tableId}`);
   };
 
-  return (
-    <Card.Group centered doubling stackable>
-      {databases.map((database) => (
-        <Card key={database.id}>
+  const cardsPlaceholderElement = useMemo(() => {
+    const placeholderElementsAmount = 4;
+    return [...Array(placeholderElementsAmount).keys()].map((value) => (
+      <Card key={value}>
+        <Card.Content>
+          <Placeholder>
+            <Placeholder.Header>
+              <Placeholder.Line length="long" />
+            </Placeholder.Header>
+            <Placeholder.Paragraph>
+              <Placeholder.Line length="very long" />
+              <Placeholder.Line length="long" />
+              <Placeholder.Line length="long" />
+              <Placeholder.Line length="long" />
+            </Placeholder.Paragraph>
+          </Placeholder>
+        </Card.Content>
+      </Card>
+    ));
+  }, []);
+
+  const databasesCards = useMemo(
+    () =>
+      databases.map((database) => (
+        <Card key={database.id} link>
           <Card.Content>
             <Card.Header>{database.name}</Card.Header>
             <Card.Meta>{database.id}</Card.Meta>
@@ -46,7 +67,13 @@ const DatabasesCards: FC = () => {
             </Card.Description>
           </Card.Content>
         </Card>
-      ))}
+      )),
+    [databases, handleTableClick]
+  );
+
+  return (
+    <Card.Group centered doubling stackable>
+      {isDatabasesLoading ? cardsPlaceholderElement : databasesCards}
     </Card.Group>
   );
 };

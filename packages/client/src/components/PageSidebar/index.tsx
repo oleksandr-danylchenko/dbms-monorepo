@@ -12,20 +12,22 @@ interface PageSidebarProps {
 }
 
 const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, placeholderElementsAmount = 7 }) => {
-  const menuPlaceholderElement = useMemo(() => {
-    return [...Array(placeholderElementsAmount).keys()].map((value) => (
-      <Menu.Item key={value}>
-        <Placeholder inverted>
-          <Placeholder.Header>
-            <Placeholder.Line />
-          </Placeholder.Header>
-          <Placeholder.Paragraph>
-            <Placeholder.Line />
-          </Placeholder.Paragraph>
-        </Placeholder>
-      </Menu.Item>
-    ));
-  }, [placeholderElementsAmount]);
+  const menuPlaceholderElement = useMemo(
+    () =>
+      [...Array(placeholderElementsAmount).keys()].map((value) => (
+        <Menu.Item key={value}>
+          <Placeholder inverted>
+            <Placeholder.Header>
+              <Placeholder.Line />
+            </Placeholder.Header>
+            <Placeholder.Paragraph>
+              <Placeholder.Line />
+            </Placeholder.Paragraph>
+          </Placeholder>
+        </Menu.Item>
+      )),
+    [placeholderElementsAmount]
+  );
 
   return (
     <Segment padded={false} inverted className={clsx(styles.PageSidebar, error && styles.PageSidebar_hidden)}>
