@@ -4,6 +4,7 @@
     "src"
   ],
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "downlevelIteration": true
   }
 }

@@ -18,7 +18,8 @@
     "useUnknownInCatchVariables": false,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "downlevelIteration": true
   },
   "exclude": [
     "node_modules"
