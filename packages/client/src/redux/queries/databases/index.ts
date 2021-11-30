@@ -64,7 +64,7 @@ export const databasesApi = dbmsApi.injectEndpoints({
         }
       },
     }),
-    deleteDatabase: build.mutation<{ id: number }, { databaseId: string }>({
+    deleteDatabase: build.mutation<{ id: string }, { databaseId: string }>({
       query({ databaseId }) {
         return {
           url: API.DATABASE(databaseId),
