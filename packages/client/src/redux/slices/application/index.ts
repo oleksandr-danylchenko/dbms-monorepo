@@ -1,7 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { API_HOST } from '../../../constants';
+import { selectDefinedProperties } from '../../../utils/objects';
 
 export interface ApplicationState {
+  activeIds: {
+    databaseId: string;
+    tableId: string;
+    columnId: string;
+  };
+
   /**
    * Defines urls for the Core API and required applications
    */
@@ -22,7 +29,7 @@ export interface ApplicationCoursesIndex {
 }
 
 const initialState = {
-  coursesIndex: {},
+  activeIds: {},
   api: {
     host: API_HOST,
   },
@@ -31,7 +38,14 @@ const initialState = {
 export const applicationsSlice = createSlice({
   name: 'application',
   initialState,
-  reducers: {},
+  reducers: {
+    updateActiveIds: (state, action: PayloadAction<Partial<ApplicationState['activeIds']>>) => {
+      state.activeIds = {
+        ...state.activeIds,
+        ...selectDefinedProperties(action.payload),
+      };
+    },
+  },
 });
 
 // eslint-disable-next-line no-empty-pattern
