@@ -6,7 +6,6 @@ export interface ApplicationState {
   activeIds: Partial<{
     databaseId: string;
     tableId: string;
-    columnId: string;
   }>;
 
   /**

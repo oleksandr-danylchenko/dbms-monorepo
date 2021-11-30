@@ -2,8 +2,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { tablesAdapter, tablesInitialState } from '../../queries/tables/tables_cache_helper';
 import { tablesApi } from '../../queries/tables';
-import { selectActiveDatabaseId } from '../application';
-import { undefinedResultSelector } from '../utils';
+import { selectActiveDatabaseId, selectActiveTableId } from '../application';
+import { stateSelector, undefinedResultSelector } from '../utils';
 
 const selectTablesResult = createSelector(selectActiveDatabaseId, (databaseId) =>
   !databaseId ? undefinedResultSelector : tablesApi.endpoints.getTables.select({ databaseId })
@@ -19,3 +19,7 @@ export const {
   selectById: selectTableById,
   selectIds: selectTablesIds,
 } = tablesAdapter.getSelectors((state: RootState) => selectTablesData(state) || tablesInitialState);
+
+const selectActiveTable = createSelector(stateSelector, selectActiveTableId, (getState, activeTableId) =>
+  !activeTableId ? undefined : selectTableById(getState(), activeTableId)
+);
