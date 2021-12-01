@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import styles from './styles.module.scss';
 
 interface PageSidebarProps {
-  title?: string;
+  title?: string | ReactElement;
   items: ReactElement[];
   isLoading?: boolean;
   error?: boolean;

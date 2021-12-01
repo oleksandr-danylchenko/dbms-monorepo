@@ -26,21 +26,23 @@ const DatabasesSidebar: FC = () => {
     [dispatch, history]
   );
 
-  const databasesSidebarItems = useMemo(() => {
-    return databases.map((database) => (
-      <Menu.Item
-        key={database.id}
-        link
-        active={database.id === activeDatabaseId}
-        onClick={() => handleDatabaseClick(database.id)}
-      >
-        <Menu.Header>{database.name}</Menu.Header>
-        <Menu.Menu>
-          <Menu.Item>{database.id}</Menu.Item>
-        </Menu.Menu>
-      </Menu.Item>
-    ));
-  }, [activeDatabaseId, databases, handleDatabaseClick]);
+  const databasesSidebarItems = useMemo(
+    () =>
+      databases.map((database) => (
+        <Menu.Item
+          key={database.id}
+          link
+          active={database.id === activeDatabaseId}
+          onClick={() => handleDatabaseClick(database.id)}
+        >
+          <Menu.Header>{database.name}</Menu.Header>
+          <Menu.Menu>
+            <Menu.Item>{database.id}</Menu.Item>
+          </Menu.Menu>
+        </Menu.Item>
+      )),
+    [activeDatabaseId, databases, handleDatabaseClick]
+  );
 
   return (
     <PageSidebar
