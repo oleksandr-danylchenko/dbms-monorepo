@@ -19,7 +19,3 @@ export const {
   selectById: selectTableById,
   selectIds: selectTablesIds,
 } = tablesAdapter.getSelectors((state: RootState) => selectTablesData(state) || tablesInitialState);
-
-const selectActiveTable = createSelector(stateSelector, selectActiveTableId, (getState, activeTableId) =>
-  !activeTableId ? undefined : selectTableById(getState(), activeTableId)
-);

@@ -10,5 +10,6 @@ export const API = {
     `${API.COLUMNS(databaseId, tableId)}/${columnId}`,
 
   ROWS: (databaseId: string, tableId: string): string => `${API.TABLE(databaseId, tableId)}/rows`,
+  ROWS_PROJECTION: (databaseId: string, tableId: string): string => `${API.ROWS(databaseId, tableId)}/projection`,
   ROW: (databaseId: string, tableId: string, rowId: string): string => `${API.ROWS(databaseId, tableId)}/${rowId}`,
 };
