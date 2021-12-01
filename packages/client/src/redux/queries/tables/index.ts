@@ -63,6 +63,7 @@ export const tablesApi = dbmsApi.injectEndpoints({
             draftTable.columnsOrderIndex = table.columnsOrderIndex;
           })
         );
+
         try {
           await queryFulfilled;
         } catch {
@@ -72,20 +73,23 @@ export const tablesApi = dbmsApi.injectEndpoints({
       },
     }),
     deleteTable: build.mutation<{ id: string; databaseId: string }, { databaseId: string; tableId: string }>({
-      query({ databaseId, tableId }) {
-        return {
-          url: API.TABLE(databaseId, tableId),
-          method: 'DELETE',
-        };
-      },
+      query: ({ databaseId, tableId }) => ({
+        url: API.TABLE(databaseId, tableId),
+        method: 'DELETE',
+      }),
       invalidatesTags: (result) => (result ? [{ type: 'Database', id: result.databaseId }] : []),
       async onQueryStarted({ databaseId, tableId }, { dispatch, queryFulfilled }) {
-        await queryFulfilled;
-        dispatch(
+        const patchTablesResult = dispatch(
           tablesApi.util.updateQueryData('getTables', { databaseId }, (draftTables) => {
             tablesAdapter.removeOne(draftTables || tablesInitialState, tableId);
           })
         );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchTablesResult.undo();
+        }
       },
     }),
   }),

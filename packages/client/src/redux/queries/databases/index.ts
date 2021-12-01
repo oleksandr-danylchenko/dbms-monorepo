@@ -74,19 +74,22 @@ export const databasesApi = dbmsApi.injectEndpoints({
       },
     }),
     deleteDatabase: build.mutation<{ id: string }, { databaseId: string }>({
-      query({ databaseId }) {
-        return {
-          url: API.DATABASE(databaseId),
-          method: 'DELETE',
-        };
-      },
+      query: ({ databaseId }) => ({
+        url: API.DATABASE(databaseId),
+        method: 'DELETE',
+      }),
       async onQueryStarted({ databaseId }, { dispatch, queryFulfilled }) {
-        await queryFulfilled;
-        dispatch(
+        const patchDatabasesResult = dispatch(
           databasesApi.util.updateQueryData('getDatabases', undefined, (draftDatabases) => {
             databasesAdapter.removeOne(draftDatabases || databasesInitialState, databaseId);
           })
         );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchDatabasesResult.undo();
+        }
       },
     }),
   }),
