@@ -27,14 +27,13 @@ const TablesSidebar: FC = () => {
 
   const handleTableClick = useCallback(
     (tableId: string): void => {
-      dispatch(updateActiveIds({ tableId }));
       history.push(`/databases/${activeDatabase?.id}/tables/${tableId}/rows`);
     },
-    [activeDatabase?.id, dispatch, history]
+    [activeDatabase?.id, history]
   );
 
   const tablesTitle = useMemo(() => {
-    return <>Tables for {activeDatabase?.name}</>;
+    return <>Tables {activeDatabase?.name && `for ${activeDatabase.name}`}</>;
   }, [activeDatabase?.name]);
 
   const databasesSidebarItems = useMemo(

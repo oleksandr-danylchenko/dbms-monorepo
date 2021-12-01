@@ -2,27 +2,33 @@ import { FC, useCallback, useMemo } from 'react';
 import { Card, Icon, Label, Menu, Placeholder } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
-import { useGetDatabasesQuery } from '../../../redux/queries/databases';
-import { selectAllDatabases } from '../../../redux/selectors/databases';
 import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
-import { updateActiveIds } from '../../../redux/slices/application';
-import { Database } from '../../../models/dbms';
+import { Table } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
+import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
+import { selectAllTables } from '../../../redux/selectors/tables';
+import { selectActiveDatabaseId } from '../../../redux/selectors/application';
+import styles from './styles.module.scss';
 
-const DatabasesCards: FC = () => {
+const TablesCards: FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
-  const databases = useAppSelector(selectAllDatabases);
+  const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
 
-  const handleDatabaseClick = useCallback(
-    (databaseId: string): void => {
-      dispatch(updateActiveIds({ databaseId }));
-      history.push(`/databases/${databaseId}`);
+  const {
+    isLoading: isTablesLoading,
+    isUninitialized: isTablesUninitialized,
+    error: tablesError,
+  } = useActiveDatabaseTables();
+  const tables = useAppSelector(selectAllTables);
+
+  const handleTableClick = useCallback(
+    (tableId: string): void => {
+      history.push(`/databases/${activeDatabaseId}/tables/${tableId}/rows`);
     },
-    [dispatch, history]
+    [activeDatabaseId, history]
   );
 
   const cardsPlaceholderElement = useMemo(() => {
@@ -46,58 +52,65 @@ const DatabasesCards: FC = () => {
     ));
   }, []);
 
-  const creteTablesElements = useCallback((database: Database) => {
-    const tables = Object.values(database.tablesIndex);
-    if (!tables.length) {
+  const creteColumnsElements = useCallback((table: Table) => {
+    const { columnsIndex } = table;
+    const columns = Object.values(columnsIndex);
+    if (!columns.length) {
       return (
         <Menu vertical fluid>
           <Menu.Item>
-            No tables presented <Icon name="dont" />
+            No columns presented <Icon name="columns" />
           </Menu.Item>
         </Menu>
       );
     }
 
+    const columnsOrder = table.columnsOrderIndex;
+
     return (
       <Menu vertical fluid>
         <Menu.Item>
-          Tables
+          Columns
           <Label circular color="grey">
-            {tables.length}
+            {columns.length}
           </Label>
         </Menu.Item>
-        <Menu.Item link>
-          Show all
-          <Icon name="angle right" />
-        </Menu.Item>
+        {columnsOrder.map((columnId) => {
+          const { name: columnName, type: columnType } = columnsIndex[columnId];
+          return (
+            <Menu.Item className={styles.TablesCards__Column}>
+              <span>{columnName}</span> <strong>{columnType}</strong>
+            </Menu.Item>
+          );
+        })}
       </Menu>
     );
   }, []);
 
-  const databasesCards = useMemo(
+  const tablesCards = useMemo(
     () =>
-      databases.map((database) => (
-        <Card key={database.id} link onClick={() => handleDatabaseClick(database.id)}>
+      tables.map((table) => (
+        <Card key={table.id} link onClick={() => handleTableClick(table.id)}>
           <Card.Content>
-            <Card.Header>{database.name}</Card.Header>
-            <Card.Meta>{database.id}</Card.Meta>
-            <Card.Description>{creteTablesElements(database)}</Card.Description>
+            <Card.Header>{table.name}</Card.Header>
+            <Card.Meta>{table.id}</Card.Meta>
+            <Card.Description>{creteColumnsElements(table)}</Card.Description>
           </Card.Content>
         </Card>
       )),
-    [creteTablesElements, databases, handleDatabaseClick]
+    [creteColumnsElements, handleTableClick, tables]
   );
 
-  if (databasesError) {
-    const fetchingError = toFetchError(databasesError);
+  if (tablesError) {
+    const fetchingError = toFetchError(tablesError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
   return (
     <Card.Group centered doubling stackable>
-      {isDatabasesLoading ? cardsPlaceholderElement : databasesCards}
+      {isTablesLoading || isTablesUninitialized ? cardsPlaceholderElement : tablesCards}
     </Card.Group>
   );
 };
 
-export default DatabasesCards;
+export default TablesCards;

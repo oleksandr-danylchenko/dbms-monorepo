@@ -19,10 +19,9 @@ const DatabasesCards: FC = () => {
 
   const handleDatabaseClick = useCallback(
     (databaseId: string): void => {
-      dispatch(updateActiveIds({ databaseId }));
       history.push(`/databases/${databaseId}/tables`);
     },
-    [dispatch, history]
+    [history]
   );
 
   const cardsPlaceholderElement = useMemo(() => {
@@ -52,7 +51,7 @@ const DatabasesCards: FC = () => {
       return (
         <Menu vertical fluid>
           <Menu.Item>
-            No tables presented <Icon name="dont" />
+            No tables presented <Icon name="table" />
           </Menu.Item>
         </Menu>
       );

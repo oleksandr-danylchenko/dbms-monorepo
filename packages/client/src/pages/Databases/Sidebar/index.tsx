@@ -6,11 +6,8 @@ import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { selectAllDatabases } from '../../../redux/selectors/databases';
 import PageSidebar from '../../../components/PageSidebar';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
-import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
-import { updateActiveIds } from '../../../redux/slices/application';
 
 const DatabasesSidebar: FC = () => {
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
@@ -20,10 +17,9 @@ const DatabasesSidebar: FC = () => {
 
   const handleDatabaseClick = useCallback(
     (databaseId: string): void => {
-      dispatch(updateActiveIds({ databaseId }));
       history.push(`/databases/${databaseId}/tables`);
     },
-    [dispatch, history]
+    [history]
   );
 
   const databasesSidebarItems = useMemo(
