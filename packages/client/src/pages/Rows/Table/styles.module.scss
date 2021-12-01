@@ -1,0 +1,8 @@
+@import "src/styles";
+
+.TablesCards {
+  &__Column {
+    display: flex !important;
+    @include flexbox($alignItems: center, $justifyContent: space-between);
+  }
+}
