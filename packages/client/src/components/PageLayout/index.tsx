@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './styles.module.scss';
 
 interface PageLayoutProps {
-  header?: string;
+  header?: string | ReactElement;
   backLink?: string;
   sidebar: ReactElement;
   content: ReactElement;
