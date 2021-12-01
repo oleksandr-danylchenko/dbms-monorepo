@@ -15,7 +15,14 @@ const Rows: FC = () => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId, tableId: paramsTableId }));
   }, [dispatch, paramsDatabaseId, paramsTableId]);
 
-  return <PageLayout sidebar={<TablesSidebar />} content={<RowsTable />} />;
+  return (
+    <PageLayout
+      header="Table rows"
+      backLink={`/databases/${paramsDatabaseId}/tables`}
+      sidebar={<TablesSidebar />}
+      content={<RowsTable />}
+    />
+  );
 };
 
 export default Rows;

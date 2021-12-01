@@ -1,16 +1,31 @@
 import { FC, ReactElement } from 'react';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import styles from './styles.module.scss';
 
 interface PageLayoutProps {
+  header?: string;
+  backLink?: string;
   sidebar: ReactElement;
   content: ReactElement;
 }
 
-const PageLayout: FC<PageLayoutProps> = ({ sidebar, content }) => (
-  <Grid row={1} columns="equal" padded className={styles.PageLayout}>
+const PageLayout: FC<PageLayoutProps> = ({ header, backLink, sidebar, content }) => (
+  <Grid columns="equal" padded className={styles.PageLayout}>
     <Grid.Column width={3}>{sidebar}</Grid.Column>
-    <Grid.Column>{content}</Grid.Column>
+    <Grid.Column>
+      {(header || backLink) && (
+        <Segment inverted className={styles.PageLayout__Header}>
+          {backLink && (
+            <Link to={backLink}>
+              <Icon name="arrow left" />
+            </Link>
+          )}
+          {header && <Header>{header}</Header>}
+        </Segment>
+      )}
+      {content}
+    </Grid.Column>
   </Grid>
 );
 
