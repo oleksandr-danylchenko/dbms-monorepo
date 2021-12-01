@@ -20,7 +20,7 @@ const DatabasesCards: FC = () => {
   const handleDatabaseClick = useCallback(
     (databaseId: string): void => {
       dispatch(updateActiveIds({ databaseId }));
-      history.push(`/databases/${databaseId}`);
+      history.push(`/databases/${databaseId}/tables`);
     },
     [dispatch, history]
   );
