@@ -5,6 +5,7 @@
   ],
   "compilerOptions": {
     "noEmit": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "declaration": false
   }
 }
