@@ -1,18 +1,17 @@
 import { FC, useMemo } from 'react';
-import { Card, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
-import { useHistory } from 'react-router';
+import { Container, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
-import { Table } from '../../../models/dbms';
 import { useActiveTable } from '../../../redux/hooks/tables';
-import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import { toFetchError } from '../../../utils/errors';
 import ErrorHeader from '../../../components/ErrorHeader';
+import { useActiveTableRows } from '../../../redux/hooks/rows';
+import { selectAllRows } from '../../../redux/selectors/rows';
 
 const RowsTable: FC = () => {
-  const history = useHistory();
-
-  const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
   const { data: activeTable, isLoading: isActiveTableLoading, error: activeTableError } = useActiveTable();
+
+  const { isLoading, error: rowsError } = useActiveTableRows();
+  const rows = useAppSelector(selectAllRows);
 
   const tablePlaceholderElement = useMemo(() => {
     const placeholderRowsAmount = 5;
@@ -36,12 +35,13 @@ const RowsTable: FC = () => {
     );
   }, []);
 
-  if (isActiveTableLoading) {
+  if (isActiveTableLoading || isLoading) {
     return tablePlaceholderElement;
   }
 
-  if (activeTableError) {
-    const fetchingError = toFetchError(activeTableError);
+  if (activeTableError || rowsError) {
+    const sharedError = activeTableError || rowsError;
+    const fetchingError = toFetchError(sharedError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
@@ -51,17 +51,19 @@ const RowsTable: FC = () => {
         <UiTable.Row>
           {activeTable?.columnsOrderIndex?.map((columnId) => {
             const { name: columnName } = activeTable.columnsIndex[columnId];
-            return <UiTable.HeaderCell>{columnName}</UiTable.HeaderCell>;
+            return <UiTable.HeaderCell key={columnId}>{columnName}</UiTable.HeaderCell>;
           })}
         </UiTable.Row>
       </UiTable.Header>
       <UiTable.Body>
-        <UiTable.Row>
-          {activeTable?.columnsOrderIndex?.map((columnId) => {
-            const { name: columnName } = activeTable.columnsIndex[columnId];
-            return <UiTable.Cell>{columnName}</UiTable.Cell>;
-          })}
-        </UiTable.Row>
+        {rows.map((row) => (
+          <UiTable.Row key={row.id}>
+            {activeTable?.columnsOrderIndex?.map((columnId) => {
+              const { value } = row.columnsValuesIndex[columnId];
+              return <UiTable.Cell key={columnId}>{value}</UiTable.Cell>;
+            })}
+          </UiTable.Row>
+        ))}
       </UiTable.Body>
     </UiTable>
   );
