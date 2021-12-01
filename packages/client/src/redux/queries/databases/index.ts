@@ -9,16 +9,19 @@ import {
   transformDatabase,
   transformDatabases,
 } from './databases_cache_helper';
+import { providesEntitiesTags, providesTag } from '../../services/cache_tags_generator';
 
 export const databasesApi = dbmsApi.injectEndpoints({
   endpoints: (build) => ({
     getDatabases: build.query<EntityState<Database>, void>({
       query: () => API.DATABASES,
       transformResponse: transformDatabases,
+      providesTags: (result) => providesEntitiesTags(result, 'Database'),
     }),
     getDatabase: build.query<Database, { databaseId: string }>({
       query: ({ databaseId }) => API.DATABASE(databaseId),
       transformResponse: transformDatabase,
+      providesTags: (result) => providesTag(result, 'Database'),
       async onQueryStarted({ databaseId }, { dispatch, queryFulfilled }) {
         const { data: database } = await queryFulfilled;
         dispatch(
@@ -52,15 +55,21 @@ export const databasesApi = dbmsApi.injectEndpoints({
       }),
       transformResponse: transformDatabase,
       async onQueryStarted({ databaseId, database }, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
+        const patchDatabasesResult = dispatch(
           databasesApi.util.updateQueryData('getDatabases', undefined, (draftDatabases) => {
             databasesAdapter.updateOne(draftDatabases || databasesInitialState, { id: databaseId, changes: database });
+          })
+        );
+        const patchDatabaseResult = dispatch(
+          databasesApi.util.updateQueryData('getDatabase', { databaseId }, (draftDatabase) => {
+            draftDatabase.name = database.name;
           })
         );
         try {
           await queryFulfilled;
         } catch {
-          patchResult.undo();
+          patchDatabasesResult.undo();
+          patchDatabaseResult.undo();
         }
       },
     }),

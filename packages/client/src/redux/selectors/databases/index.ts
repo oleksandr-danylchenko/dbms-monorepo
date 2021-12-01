@@ -18,9 +18,9 @@ export const {
   selectIds: selectDatabasesIds,
 } = databasesAdapter.getSelectors((state: RootState) => selectDatabasesData(state) || databasesInitialState);
 
-// Can be not used. Just valuable as an example of usage of the selector inside the selector
-export const selectActiveDatabase = createSelector(
-  stateSelector,
-  selectActiveDatabaseId,
-  (getState, activeDatabaseId) => (!activeDatabaseId ? undefined : selectDatabaseById(getState(), activeDatabaseId))
-);
+// // Can be not used. Just valuable as an example of usage of the selector inside the selector
+// export const selectActiveDatabase = createSelector(
+//   stateSelector,
+//   selectActiveDatabaseId,
+//   (getState, activeDatabaseId) => (!activeDatabaseId ? undefined : selectDatabaseById(getState(), activeDatabaseId))
+// );
