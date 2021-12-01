@@ -8,7 +8,7 @@ interface PageLayoutProps {
 }
 
 const PageLayout: FC<PageLayoutProps> = ({ sidebar, content }) => (
-  <Grid row={1} columns="equal" padded="vertically" className={styles.PageLayout}>
+  <Grid row={1} columns="equal" padded className={styles.PageLayout}>
     <Grid.Column width={3}>{sidebar}</Grid.Column>
     <Grid.Column>{content}</Grid.Column>
   </Grid>
