@@ -5,10 +5,10 @@ import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useGetDatabasesQuery } from '../../../redux/queries/databases';
 import { selectAllDatabases } from '../../../redux/selectors/databases';
 import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
-import { updateActiveIds } from '../../../redux/slices/application';
 import { Database } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
+import CardActions from '../../../components/CardActions';
 
 const DatabasesCards: FC = () => {
   const dispatch = useAppDispatch();
@@ -81,6 +81,9 @@ const DatabasesCards: FC = () => {
             <Card.Header>{database.name}</Card.Header>
             <Card.Meta>{database.id}</Card.Meta>
             <Card.Description>{creteTablesElements(database)}</Card.Description>
+          </Card.Content>
+          <Card.Content extra textAlign="right">
+            <CardActions onEditClick={() => undefined} onDeleteClick={() => undefined} />
           </Card.Content>
         </Card>
       )),

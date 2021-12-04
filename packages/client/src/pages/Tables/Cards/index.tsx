@@ -10,6 +10,7 @@ import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
 import { selectAllTables } from '../../../redux/selectors/tables';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import styles from './styles.module.scss';
+import CardActions from '../../../components/CardActions';
 
 const TablesCards: FC = () => {
   const dispatch = useAppDispatch();
@@ -95,6 +96,9 @@ const TablesCards: FC = () => {
             <Card.Header>{table.name}</Card.Header>
             <Card.Meta>{table.id}</Card.Meta>
             <Card.Description>{creteColumnsElements(table)}</Card.Description>
+          </Card.Content>
+          <Card.Content extra textAlign="right">
+            <CardActions onEditClick={() => undefined} onDeleteClick={() => undefined} />
           </Card.Content>
         </Card>
       )),
