@@ -27,12 +27,6 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
       ...databaseFormState,
     };
 
-    // Ignore if nothing has changed
-    if (updatedDatabase.name === modifyingDatabase?.name) {
-      onClose();
-      return;
-    }
-
     updateDatabase({ databaseId, database: updatedDatabase })
       .unwrap()
       .then(() => onClose());
