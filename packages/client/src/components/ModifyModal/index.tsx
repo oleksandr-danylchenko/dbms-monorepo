@@ -1,18 +1,20 @@
 import { FC, ReactElement } from 'react';
 import { Button, Icon, Modal } from 'semantic-ui-react';
+import { StrictModalProps } from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
 import { BindingAction } from '../../models/functions';
 
 interface ModifyModalProps {
   open?: boolean;
   header: string | ReactElement;
   content: string | ReactElement;
+  size?: StrictModalProps['size'];
   onClose: BindingAction;
   onSave: BindingAction;
 }
 
-const ModifyModal: FC<ModifyModalProps> = ({ open, header, content, onClose, onSave }) => {
+const ModifyModal: FC<ModifyModalProps> = ({ open, header, content, size, onClose, onSave }) => {
   return (
-    <Modal open={open} onClose={onClose} dimmer="blurring">
+    <Modal open={open} onClose={onClose} size={size} dimmer="blurring">
       <Modal.Header>{header}</Modal.Header>
       <Modal.Content>{content}</Modal.Content>
       <Modal.Actions>
