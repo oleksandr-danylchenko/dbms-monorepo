@@ -30,11 +30,13 @@ const PageSidebar: FC<PageSidebarProps> = ({ title, items, isLoading, error, pla
   );
 
   return (
-    <Segment padded={false} inverted className={clsx(styles.PageSidebar, error && styles.PageSidebar_hidden)}>
+    <Segment padded={false} inverted className={clsx(styles.PageSidebar)}>
       <Header>{title}</Header>
-      <Menu secondary vertical fluid inverted>
-        {isLoading ? menuPlaceholderElement : items}
-      </Menu>
+      {!error && (
+        <Menu secondary vertical fluid inverted>
+          {isLoading ? menuPlaceholderElement : items}
+        </Menu>
+      )}
     </Segment>
   );
 };
