@@ -4,8 +4,7 @@ import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import PageSidebar from '../../../components/PageSidebar';
 import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
-import { updateActiveIds } from '../../../redux/slices/application';
-import { selectAllTables } from '../../../redux/selectors/tables';
+import { selectNameSortedTables } from '../../../redux/selectors/tables';
 import { useActiveDatabase } from '../../../redux/hooks/databases';
 import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
 import { selectActiveTableId } from '../../../redux/selectors/application';
@@ -23,7 +22,7 @@ const TablesSidebar: FC = () => {
     isUninitialized: isTablesUninitialized,
     error: tablesError,
   } = useActiveDatabaseTables();
-  const tables = useAppSelector(selectAllTables);
+  const tables = useAppSelector(selectNameSortedTables);
 
   const handleTableClick = useCallback(
     (tableId: string): void => {

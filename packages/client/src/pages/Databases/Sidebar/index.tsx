@@ -3,9 +3,9 @@ import { Menu } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useGetDatabasesQuery } from '../../../redux/queries/databases';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
-import { selectAllDatabases } from '../../../redux/selectors/databases';
 import PageSidebar from '../../../components/PageSidebar';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
+import { selectNameSortedDatabases } from '../../../redux/selectors/databases';
 
 const DatabasesSidebar: FC = () => {
   const history = useHistory();
@@ -13,7 +13,7 @@ const DatabasesSidebar: FC = () => {
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
 
   const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
-  const databases = useAppSelector(selectAllDatabases);
+  const databases = useAppSelector(selectNameSortedDatabases);
 
   const handleDatabaseClick = useCallback(
     (databaseId: string): void => {

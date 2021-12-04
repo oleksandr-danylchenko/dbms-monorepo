@@ -7,7 +7,7 @@ import { Table } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
 import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
-import { selectAllTables } from '../../../redux/selectors/tables';
+import { selectNameSortedTables } from '../../../redux/selectors/tables';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import styles from './styles.module.scss';
 import CardActions from '../../../components/CardActions';
@@ -23,7 +23,7 @@ const TablesCards: FC = () => {
     isUninitialized: isTablesUninitialized,
     error: tablesError,
   } = useActiveDatabaseTables();
-  const tables = useAppSelector(selectAllTables);
+  const tables = useAppSelector(selectNameSortedTables);
 
   const handleTableClick = useCallback(
     (tableId: string): void => {

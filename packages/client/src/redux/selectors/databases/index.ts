@@ -2,8 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { databasesApi } from '../../queries/databases';
 import { databasesAdapter, databasesInitialState } from '../../queries/databases/databases_cache_helper';
-import { stateSelector } from '../utils';
-import { selectActiveDatabaseId } from '../application';
 
 const selectDatabasesResult = databasesApi.endpoints.getDatabases.select();
 
@@ -21,6 +19,7 @@ export const {
 export const selectNameSortedDatabases = createSelector(selectAllDatabases, (databases) =>
   databases.sort(({ name: dbNameA }, { name: dbNameB }) => dbNameA.localeCompare(dbNameB))
 );
+
 // // Can be not used. Just valuable as an example of usage of the selector inside the selector
 // export const selectActiveDatabase = createSelector(
 //   stateSelector,
