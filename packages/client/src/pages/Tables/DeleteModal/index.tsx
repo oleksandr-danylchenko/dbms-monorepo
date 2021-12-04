@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { BindingAction } from '../../../models/functions';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
-import { selectDatabaseById } from '../../../redux/selectors/databases';
 import DeleteModal from '../../../components/DeleteModal';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import { useDeleteTableMutation } from '../../../redux/queries/tables';
+import { selectTableById } from '../../../redux/selectors/tables';
 
 interface TableDeleteModalProps {
   tableId: string;
@@ -13,7 +13,7 @@ interface TableDeleteModalProps {
 
 const TableDeleteModal: FC<TableDeleteModalProps> = ({ tableId, onClose }) => {
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
-  const deletingTable = useAppSelector((state) => selectDatabaseById(state, tableId));
+  const deletingTable = useAppSelector((state) => selectTableById(state, tableId));
   const [deleteTable] = useDeleteTableMutation();
 
   const handleDeleteTable = (): void => {
