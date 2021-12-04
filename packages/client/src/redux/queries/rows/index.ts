@@ -3,7 +3,8 @@ import { dbmsApi } from '../index';
 import { Row } from '../../../models/dbms';
 import { API } from '../api_routes';
 import { providesEntitiesTags } from '../../services/cache_tags_generator';
-import { rowsAdapter, rowsInitialState, transformRows } from './rows_cache_helper';
+import { rowsAdapter, rowsInitialState, transformRow, transformRows } from './rows_cache_helper';
+import { CreateRowDto } from '../../../dtos';
 
 export const rowsApi = dbmsApi.injectEndpoints({
   endpoints: (build) => ({
@@ -20,6 +21,22 @@ export const rowsApi = dbmsApi.injectEndpoints({
       transformResponse: transformRows,
       keepUnusedDataFor: 0,
     }),
+    addRow: build.mutation<Row, { databaseId: string; tableId: string; row: CreateRowDto }>({
+      query: ({ databaseId, tableId, row }) => ({
+        url: API.ROWS(databaseId, tableId),
+        method: 'POST',
+        body: row,
+      }),
+      transformResponse: transformRow,
+      async onQueryStarted({ databaseId, tableId, row }, { dispatch, queryFulfilled }) {
+        const { data: newRow } = await queryFulfilled;
+        dispatch(
+          rowsApi.util.updateQueryData('getRows', { databaseId, tableId }, (draftRows) => {
+            rowsAdapter.addOne(draftRows || rowsInitialState, newRow);
+          })
+        );
+      },
+    }),
     deleteRow: build.mutation<
       { id: string; databaseId: string; tableId: string },
       { databaseId: string; tableId: string; rowId: string }
@@ -34,7 +51,6 @@ export const rowsApi = dbmsApi.injectEndpoints({
             rowsAdapter.removeOne(draftRows || rowsInitialState, rowId);
           })
         );
-        // TODO Handle deletion from the projection cache
 
         try {
           await queryFulfilled;
@@ -47,4 +63,4 @@ export const rowsApi = dbmsApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetRowsQuery, useGetRowsProjectionQuery, useDeleteRowMutation } = rowsApi;
+export const { useGetRowsQuery, useGetRowsProjectionQuery, useAddRowMutation, useDeleteRowMutation } = rowsApi;

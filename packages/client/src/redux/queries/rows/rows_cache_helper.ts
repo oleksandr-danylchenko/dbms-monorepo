@@ -9,3 +9,8 @@ export const transformRows = (response: unknown): EntityState<Row> => {
   const rows = responseRows as Row[];
   return rowsAdapter.setMany(rowsInitialState, rows);
 };
+
+export const transformRow = (response: unknown): Row => {
+  const responseRow = (response as { data: unknown }).data;
+  return responseRow as Row;
+};
