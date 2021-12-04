@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, ReactElement, useMemo } from 'react';
 import { Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
@@ -7,6 +7,7 @@ import ErrorHeader from '../../../components/ErrorHeader';
 import { useActiveTableRows } from '../../../redux/hooks/rows';
 import { selectAllRows } from '../../../redux/selectors/rows';
 import styles from './styles.module.scss';
+import { FieldType } from '../../../models/dbms';
 
 const RowsTable: FC = () => {
   const { data: activeTable, isLoading: isActiveTableLoading, error: activeTableError } = useActiveTable();
@@ -46,6 +47,18 @@ const RowsTable: FC = () => {
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
+  const formatCellValue = ({ type, value }: { type: FieldType; value: string }): string | ReactElement => {
+    if (type === FieldType.color) {
+      return (
+        <span className={styles.RowsTable__ColorCell}>
+          {value} <span style={{ backgroundColor: value }} />
+        </span>
+      );
+    }
+
+    return value;
+  };
+
   return (
     <UiTable celled>
       <UiTable.Header>
@@ -69,8 +82,11 @@ const RowsTable: FC = () => {
         {rows.map((row) => (
           <UiTable.Row key={row.id}>
             {activeTable?.columnsOrderIndex?.map((columnId) => {
-              const { value } = row.columnsValuesIndex[columnId];
-              return <UiTable.Cell key={columnId}>{value}</UiTable.Cell>;
+              const { type: columnType } = activeTable.columnsIndex[columnId];
+              const { value: columnValue } = row.columnsValuesIndex[columnId];
+              return (
+                <UiTable.Cell key={columnId}>{formatCellValue({ type: columnType, value: columnValue })}</UiTable.Cell>
+              );
             })}
           </UiTable.Row>
         ))}
