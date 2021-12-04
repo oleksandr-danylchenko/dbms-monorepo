@@ -14,7 +14,7 @@ interface DatabaseModifyModalProps {
 
 const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose }) => {
   const modifyingDatabase = useAppSelector((state) => selectDatabaseById(state, databaseId));
-  const [updateDatabase] = useUpdateDatabaseMutation();
+  const [updateDatabase, { isLoading: isUpdateLoading, error: updateError }] = useUpdateDatabaseMutation();
 
   const [databaseFormState, setDatabaseFormState] = useState<UpdateDatabaseDto>({
     name: modifyingDatabase?.name || '',
@@ -30,13 +30,14 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
     const updatedDatabase: UpdateDatabaseDto = {
       ...databaseFormState,
     };
-    updateDatabase({ databaseId, database: updatedDatabase });
-    onClose();
+    updateDatabase({ databaseId, database: updatedDatabase })
+      .unwrap()
+      .then(() => onClose());
   };
 
   const databaseForm = useMemo(() => {
     return (
-      <Form>
+      <Form loading={isUpdateLoading}>
         <Form.Input
           name="name"
           label="Name"
@@ -47,7 +48,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
         />
       </Form>
     );
-  }, [databaseFormState.name]);
+  }, [databaseFormState.name, isUpdateLoading]);
 
   return (
     <ModifyModal
@@ -55,6 +56,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
       header={`Modifying database ${modifyingDatabase?.name}`}
       content={databaseForm}
       size="tiny"
+      isLoading={isUpdateLoading}
       onClose={onClose}
       onSave={handleSaveDatabase}
     />

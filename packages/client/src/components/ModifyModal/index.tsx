@@ -8,11 +8,12 @@ interface ModifyModalProps {
   header: string | ReactElement;
   content: string | ReactElement;
   size?: StrictModalProps['size'];
+  isLoading?: boolean;
   onClose: BindingAction;
   onSave: BindingAction;
 }
 
-const ModifyModal: FC<ModifyModalProps> = ({ open, header, content, size, onClose, onSave }) => {
+const ModifyModal: FC<ModifyModalProps> = ({ open, header, content, size, isLoading, onClose, onSave }) => {
   return (
     <Modal open={open} onClose={onClose} size={size} dimmer="blurring">
       <Modal.Header>{header}</Modal.Header>
@@ -21,7 +22,7 @@ const ModifyModal: FC<ModifyModalProps> = ({ open, header, content, size, onClos
         <Button basic color="grey" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="black" onClick={onSave}>
+        <Button color="black" loading={isLoading} onClick={onSave}>
           <Icon name="save" /> Save
         </Button>
       </Modal.Actions>
