@@ -52,24 +52,19 @@ export const tablesApi = dbmsApi.injectEndpoints({
       transformResponse: transformTable,
       invalidatesTags: (result) => (result ? [{ type: 'Database', id: result.databaseId }] : []),
       async onQueryStarted({ databaseId, tableId, table }, { dispatch, queryFulfilled }) {
-        const patchTablesResult = dispatch(
-          tablesApi.util.updateQueryData('getTables', { databaseId }, (draftTables) => {
-            tablesAdapter.updateOne(draftTables || tablesInitialState, { id: tableId, changes: table });
-          })
-        );
-        const patchTableResult = dispatch(
-          tablesApi.util.updateQueryData('getTable', { databaseId, tableId }, (draftTable) => {
-            draftTable.name = table.name;
-            draftTable.columnsOrderIndex = table.columnsOrderIndex;
-          })
-        );
+        const { data: updatedTable } = await queryFulfilled;
 
-        try {
-          await queryFulfilled;
-        } catch {
-          patchTablesResult.undo();
-          patchTableResult.undo();
-        }
+        dispatch(
+          tablesApi.util.updateQueryData('getTables', { databaseId }, (draftTables) => {
+            tablesAdapter.updateOne(draftTables || tablesInitialState, { id: tableId, changes: updatedTable });
+          })
+        );
+        dispatch(
+          tablesApi.util.updateQueryData('getTable', { databaseId, tableId }, (draftTable) => {
+            draftTable.name = updatedTable.name;
+            draftTable.columnsOrderIndex = updatedTable.columnsOrderIndex;
+          })
+        );
       },
     }),
     deleteTable: build.mutation<{ id: string; databaseId: string }, { databaseId: string; tableId: string }>({
