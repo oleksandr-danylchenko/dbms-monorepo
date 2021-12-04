@@ -21,7 +21,7 @@ const PageLayout: FC<PageLayoutProps> = ({ header, backLink, sidebar, content })
               <Icon name="arrow left" />
             </Link>
           )}
-          {header && <Header>{header}</Header>}
+          {header && <Header className={styles.PageLayout__HeaderContent}>{header}</Header>}
         </Segment>
       )}
       {content}

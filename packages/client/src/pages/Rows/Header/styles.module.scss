@@ -1,0 +1,6 @@
+@import "src/styles";
+
+.RowsHeader {
+  @include flexbox($alignItems: center, $justifyContent: space-between);
+  width: 100%;
+}

@@ -1,29 +1,37 @@
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import PageLayout from '../../components/PageLayout';
 import { useAppDispatch } from '../../redux/hooks/app/useAppDispatch';
 import { updateActiveIds } from '../../redux/slices/application';
 import RowsTable from './RowsTable';
 import TablesSidebar from '../Tables/Sidebar';
-import { useActiveTable } from '../../redux/hooks/tables';
+import RowsHeader from './Header';
 
 const Rows: FC = () => {
   const dispatch = useAppDispatch();
 
-  const { databaseId: paramsDatabaseId, tableId: paramsTableId } = useParams<{ databaseId: string; tableId: string }>();
-  const { data: activeTable } = useActiveTable();
+  const [isCreatingRow, setCreatingRow] = useState(false);
 
+  const { databaseId: paramsDatabaseId, tableId: paramsTableId } = useParams<{ databaseId: string; tableId: string }>();
   useEffect(() => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId, tableId: paramsTableId }));
   }, [dispatch, paramsDatabaseId, paramsTableId]);
 
+  const handleRowCreateClick = useCallback(() => setCreatingRow(true), []);
+
   return (
-    <PageLayout
-      header={<>Rows {activeTable?.name && `for ${activeTable.name}`}</>}
-      backLink={`/databases/${paramsDatabaseId}/tables`}
-      sidebar={<TablesSidebar />}
-      content={<RowsTable />}
-    />
+    <>
+      <PageLayout
+        header={<RowsHeader onCreateClick={handleRowCreateClick} />}
+        backLink={`/databases/${paramsDatabaseId}/tables`}
+        sidebar={<TablesSidebar />}
+        content={<RowsTable />}
+      />
+      {isCreatingRow && (
+        // <RowCreateModal onClose={() => setCreatingRow(false)} />
+        <h2>H</h2>
+      )}
+    </>
   );
 };
 
