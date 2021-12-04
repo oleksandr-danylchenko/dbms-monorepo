@@ -5,8 +5,5 @@ import { useGetDatabaseQuery } from '../../queries/databases';
 
 export const useActiveDatabase = () => {
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
-
-  console.log(activeDatabaseId);
-
   return useGetDatabaseQuery(activeDatabaseId ? { databaseId: activeDatabaseId } : skipToken);
 };

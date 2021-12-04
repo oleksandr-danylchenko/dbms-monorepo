@@ -4,14 +4,18 @@ import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useGetDatabasesQuery } from '../../../redux/queries/databases';
 import { selectAllDatabases } from '../../../redux/selectors/databases';
-import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
 import { Database } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
 import CardActions from '../../../components/CardActions';
+import { BindingCallback1 } from '../../../models/functions';
 
-const DatabasesCards: FC = () => {
-  const dispatch = useAppDispatch();
+interface DatabasesCardsProps {
+  onEditClick: BindingCallback1<{ databaseId: string }>;
+  onDeleteClick: BindingCallback1<{ databaseId: string }>;
+}
+
+const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick }) => {
   const history = useHistory();
 
   const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
@@ -83,11 +87,14 @@ const DatabasesCards: FC = () => {
             <Card.Description>{creteTablesElements(database)}</Card.Description>
           </Card.Content>
           <Card.Content extra textAlign="right">
-            <CardActions onEditClick={() => undefined} onDeleteClick={() => undefined} />
+            <CardActions
+              onEditClick={() => onEditClick({ databaseId: database.id })}
+              onDeleteClick={() => onDeleteClick({ databaseId: database.id })}
+            />
           </Card.Content>
         </Card>
       )),
-    [creteTablesElements, databases, handleDatabaseClick]
+    [creteTablesElements, databases, handleDatabaseClick, onDeleteClick, onEditClick]
   );
 
   if (databasesError) {
