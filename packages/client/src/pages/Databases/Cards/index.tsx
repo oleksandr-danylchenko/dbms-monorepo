@@ -8,14 +8,16 @@ import { Database } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
 import CardActions from '../../../components/CardActions';
-import { BindingCallback1 } from '../../../models/functions';
+import { BindingAction, BindingCallback1 } from '../../../models/functions';
+import CreationCard from '../../../components/CreationCard';
 
 interface DatabasesCardsProps {
+  onCreateClick: BindingAction;
   onEditClick: BindingCallback1<{ databaseId: string }>;
   onDeleteClick: BindingCallback1<{ databaseId: string; databaseName: string }>;
 }
 
-const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick }) => {
+const DatabasesCards: FC<DatabasesCardsProps> = ({ onCreateClick, onEditClick, onDeleteClick }) => {
   const history = useHistory();
 
   const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
@@ -77,25 +79,26 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick })
     );
   }, []);
 
-  const databasesCards = useMemo(
-    () =>
-      databases.map((database) => (
-        <Card key={database.id} link onClick={() => handleDatabaseClick(database.id)}>
-          <Card.Content>
-            <Card.Header>{database.name}</Card.Header>
-            <Card.Meta>{database.id}</Card.Meta>
-            <Card.Description>{creteTablesElements(database)}</Card.Description>
-          </Card.Content>
-          <Card.Content extra textAlign="right">
-            <CardActions
-              onEditClick={() => onEditClick({ databaseId: database.id })}
-              onDeleteClick={() => onDeleteClick({ databaseId: database.id, databaseName: database.name })}
-            />
-          </Card.Content>
-        </Card>
-      )),
-    [creteTablesElements, handleDatabaseClick, databases, onDeleteClick, onEditClick]
-  );
+  const databasesCards = useMemo(() => {
+    const entitiesCards = databases.map((database) => (
+      <Card key={database.id} link onClick={() => handleDatabaseClick(database.id)}>
+        <Card.Content>
+          <Card.Header>{database.name}</Card.Header>
+          <Card.Meta>{database.id}</Card.Meta>
+          <Card.Description>{creteTablesElements(database)}</Card.Description>
+        </Card.Content>
+        <Card.Content extra textAlign="right">
+          <CardActions
+            onEditClick={() => onEditClick({ databaseId: database.id })}
+            onDeleteClick={() => onDeleteClick({ databaseId: database.id, databaseName: database.name })}
+          />
+        </Card.Content>
+      </Card>
+    ));
+    const creationCard = <CreationCard header="Create a new database" onClick={onCreateClick} />;
+
+    return [entitiesCards, creationCard];
+  }, [creteTablesElements, databases, handleDatabaseClick, onCreateClick, onDeleteClick, onEditClick]);
 
   if (databasesError) {
     const fetchingError = toFetchError(databasesError);

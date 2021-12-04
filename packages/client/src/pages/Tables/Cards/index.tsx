@@ -67,7 +67,6 @@ const TablesCards: FC = () => {
     }
 
     const columnsOrder = table.columnsOrderIndex;
-
     return (
       <Menu vertical fluid>
         <Menu.Item>

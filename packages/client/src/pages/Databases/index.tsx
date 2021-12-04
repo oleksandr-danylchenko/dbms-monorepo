@@ -9,6 +9,10 @@ const Databases: FC = () => {
   const [editDatabaseId, setEditDatabaseId] = useState<string>();
   const [deleteDatabaseId, setDeleteDatabaseId] = useState<string>();
 
+  const handleDatabaseCreateClick = useCallback(() => {
+    console.log('I want to create a db');
+  }, []);
+
   const handleDatabaseEditClick = useCallback(
     ({ databaseId }: { databaseId: string }) => setEditDatabaseId(databaseId),
     []
@@ -24,7 +28,13 @@ const Databases: FC = () => {
       <PageLayout
         header="Databases"
         sidebar={<DatabasesSidebar />}
-        content={<DatabasesCards onEditClick={handleDatabaseEditClick} onDeleteClick={handleDatabaseDeleteClick} />}
+        content={
+          <DatabasesCards
+            onCreateClick={handleDatabaseCreateClick}
+            onEditClick={handleDatabaseEditClick}
+            onDeleteClick={handleDatabaseDeleteClick}
+          />
+        }
       />
       {editDatabaseId && (
         <DatabaseModifyModal databaseId={editDatabaseId} onClose={() => setEditDatabaseId(undefined)} />
