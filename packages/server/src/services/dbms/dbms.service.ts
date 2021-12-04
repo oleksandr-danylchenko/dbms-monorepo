@@ -58,14 +58,14 @@ class DbmsService {
   }
 
   public async updateDatabase(databaseId: string, databaseData: UpdateDatabaseDto): Promise<Database> {
+    if (isEmpty(databaseData)) throw new HttpException(400, `There is no database data update presented`);
     const database = await this.findDatabaseById(databaseId);
-
-    if (isEmpty(databaseData)) return database;
 
     const { name: updateDatabaseName } = databaseData;
     if (!updateDatabaseName) return database;
 
-    const isNameUnique = this.checkUniqueEntityName(this.allDatabases, updateDatabaseName);
+    const isNameUnique =
+      database.name === updateDatabaseName || this.checkUniqueEntityName(this.allDatabases, updateDatabaseName);
     if (!isNameUnique) throw new HttpException(409, `Database ${updateDatabaseName} already exists`);
 
     database.name = updateDatabaseName;
@@ -122,16 +122,16 @@ class DbmsService {
   }
 
   public async updateTable(databaseId: string, tableId: string, tableData: UpdateTableDto): Promise<Table> {
+    if (isEmpty(tableData)) throw new HttpException(400, `There is no table data update presented`);
+
     const database = await this.findDatabaseById(databaseId);
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
 
-    if (isEmpty(tableData)) return table;
-
     const { name: updateTableName, columnsOrderIndex: updateOrderIndex } = tableData;
     if (areEmpty(updateTableName, updateOrderIndex)) return table;
 
-    const isNameUnique = this.checkUniqueEntityName(tables, updateTableName);
+    const isNameUnique = table.name === updateTableName || this.checkUniqueEntityName(tables, updateTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
 
     const isLengthEqual = table.columnsOrderIndex.length === updateOrderIndex.length;
@@ -206,7 +206,7 @@ class DbmsService {
     const { name: updateColumnName } = columnData;
     if (isEmpty(updateColumnName)) return column;
 
-    const isNameUnique = this.checkUniqueEntityName(columns, updateColumnName);
+    const isNameUnique = column.name === updateColumnName || this.checkUniqueEntityName(columns, updateColumnName);
     if (!isNameUnique) throw new HttpException(409, `Column ${updateColumnName} already exists`);
 
     column.name = updateColumnName || column.name;
