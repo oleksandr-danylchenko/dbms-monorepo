@@ -18,7 +18,7 @@ export const rowsApi = dbmsApi.injectEndpoints({
         params: { columnsIds },
       }),
       transformResponse: transformRows,
-      providesTags: (result) => providesEntitiesTags(result, 'Row'),
+      keepUnusedDataFor: 0,
     }),
     deleteRow: build.mutation<
       { id: string; databaseId: string; tableId: string },
