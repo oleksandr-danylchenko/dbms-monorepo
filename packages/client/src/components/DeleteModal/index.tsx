@@ -5,16 +5,16 @@ import { BindingAction } from '../../models/functions';
 interface DeleteModalProps {
   open?: boolean;
   header: string | ReactElement;
-  onCancel: BindingAction;
+  onClose: BindingAction;
   onDelete: BindingAction;
 }
 
-const DeleteModal: FC<DeleteModalProps> = ({ open, header, onCancel, onDelete }) => {
+const DeleteModal: FC<DeleteModalProps> = ({ open, header, onClose, onDelete }) => {
   return (
-    <Modal basic onClose={onCancel} open={open} size="tiny" dimmer="blurring">
+    <Modal onClose={onClose} open={open} size="tiny" dimmer="blurring">
       <Modal.Header>{header}</Modal.Header>
       <Modal.Actions>
-        <Button basic color="grey" onClick={onCancel}>
+        <Button basic color="grey" onClick={onClose}>
           Cancel
         </Button>
         <Button color="google plus" onClick={onDelete}>

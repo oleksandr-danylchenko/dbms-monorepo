@@ -7,12 +7,12 @@ import ModifyModal from '../../../components/ModifyModal';
 import { useUpdateDatabaseMutation } from '../../../redux/queries/databases';
 import { UpdateDatabaseDto } from '../../../dtos';
 
-interface ModifyModalProps {
+interface DatabaseModifyModalProps {
   databaseId: string;
   onClose: BindingAction;
 }
 
-const DatabaseModifyModal: FC<ModifyModalProps> = ({ databaseId, onClose }) => {
+const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose }) => {
   const modifyingDatabase = useAppSelector((state) => selectDatabaseById(state, databaseId));
   const [updateDatabase] = useUpdateDatabaseMutation();
 

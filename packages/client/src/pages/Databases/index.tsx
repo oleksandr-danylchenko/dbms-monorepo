@@ -2,28 +2,21 @@ import { FC, useCallback, useState } from 'react';
 import DatabasesSidebar from './Sidebar';
 import DatabasesCards from './Cards';
 import PageLayout from '../../components/PageLayout';
-import { useDeleteDatabaseMutation } from '../../redux/queries/databases';
 import DatabaseModifyModal from './ModifyModal';
+import DatabaseDeleteModal from './DeleteModal';
 
 const Databases: FC = () => {
-  const [selectedDatabaseId, setSelectedDatabaseId] = useState<string>();
-  // const selectedDatabase = useAppSelector((state) => selectDatabaseById(state, selectedDatabaseId || ''));
+  const [editDatabaseId, setEditDatabaseId] = useState<string>();
+  const [deleteDatabaseId, setDeleteDatabaseId] = useState<string>();
 
-  const [deleteDatabase] = useDeleteDatabaseMutation();
-
-  const handleDatabaseEditClick = useCallback(({ databaseId }: { databaseId: string }) => {
-    setSelectedDatabaseId(databaseId);
-  }, []);
+  const handleDatabaseEditClick = useCallback(
+    ({ databaseId }: { databaseId: string }) => setEditDatabaseId(databaseId),
+    []
+  );
 
   const handleDatabaseDeleteClick = useCallback(
-    ({ databaseId, databaseName }: { databaseId: string; databaseName: string }) => {
-      // eslint-disable-next-line no-alert
-      const shouldDelete = window.confirm(`Do want to delete the database ${databaseName}?`);
-      if (shouldDelete) {
-        deleteDatabase({ databaseId });
-      }
-    },
-    [deleteDatabase]
+    ({ databaseId }: { databaseId: string }) => setDeleteDatabaseId(databaseId),
+    []
   );
 
   return (
@@ -33,8 +26,11 @@ const Databases: FC = () => {
         sidebar={<DatabasesSidebar />}
         content={<DatabasesCards onEditClick={handleDatabaseEditClick} onDeleteClick={handleDatabaseDeleteClick} />}
       />
-      {selectedDatabaseId && (
-        <DatabaseModifyModal databaseId={selectedDatabaseId} onClose={() => setSelectedDatabaseId(undefined)} />
+      {editDatabaseId && (
+        <DatabaseModifyModal databaseId={editDatabaseId} onClose={() => setEditDatabaseId(undefined)} />
+      )}
+      {deleteDatabaseId && (
+        <DatabaseDeleteModal databaseId={deleteDatabaseId} onClose={() => setDeleteDatabaseId(undefined)} />
       )}
     </>
   );
