@@ -17,14 +17,14 @@ const DatabaseDeleteModal: FC<DatabaseDeleteModalProps> = ({ databaseId, onClose
   const handleDeleteDatabase = (): void => {
     if (!deletingDatabase?.id) return;
 
-    deleteDatabase({ databaseId: deletingDatabase.id });
+    deleteDatabase({ databaseId });
     onClose();
   };
 
   return (
     <DeleteModal
       open={!!deletingDatabase}
-      header={`Do you want to delete ${deletingDatabase?.name}?`}
+      header={`Do you want to delete database ${deletingDatabase?.name}?`}
       onClose={onClose}
       onDelete={handleDeleteDatabase}
     />
