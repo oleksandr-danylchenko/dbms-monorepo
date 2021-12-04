@@ -58,8 +58,9 @@ class DbmsService {
   }
 
   public async updateDatabase(databaseId: string, databaseData: UpdateDatabaseDto): Promise<Database> {
-    if (isEmpty(databaseData)) throw new HttpException(400, `There is no database data update presented`);
     const database = await this.findDatabaseById(databaseId);
+
+    if (isEmpty(databaseData)) return database;
 
     const { name: updateDatabaseName } = databaseData;
     if (!updateDatabaseName) return database;
@@ -103,6 +104,7 @@ class DbmsService {
 
   public async createTable(databaseId: string, tableData: CreateTableDto): Promise<Table> {
     if (isEmpty(tableData)) throw new HttpException(400, `There is no table creation data presented`);
+
     const database = await this.findDatabaseById(databaseId);
     const tables = database.tables;
 
@@ -120,10 +122,11 @@ class DbmsService {
   }
 
   public async updateTable(databaseId: string, tableId: string, tableData: UpdateTableDto): Promise<Table> {
-    if (isEmpty(tableData)) throw new HttpException(400, `There is no table data update presented`);
     const database = await this.findDatabaseById(databaseId);
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
+
+    if (isEmpty(tableData)) return table;
 
     const { name: updateTableName, columnsOrderIndex: updateOrderIndex } = tableData;
     if (areEmpty(updateTableName, updateOrderIndex)) return table;
