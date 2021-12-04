@@ -1,32 +1,24 @@
-import { FC } from 'react';
-import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { SemanticICONS } from 'semantic-ui-react/dist/commonjs/generic';
+import { FC, ReactElement } from 'react';
+import { Button, Icon, Modal } from 'semantic-ui-react';
 import { BindingAction } from '../../models/functions';
 
 interface DeleteModalProps {
   open?: boolean;
-  entityName: string;
-  icon?: SemanticICONS;
+  header: string | ReactElement;
   onCancel: BindingAction;
-  onPermit: BindingAction;
+  onDelete: BindingAction;
 }
 
-const DeleteModal: FC<DeleteModalProps> = ({ open, entityName, icon = 'trash alternate', onCancel, onPermit }) => {
+const DeleteModal: FC<DeleteModalProps> = ({ open, header, onCancel, onDelete }) => {
   return (
     <Modal basic onClose={onCancel} open={open} size="tiny" dimmer="blurring">
-      <Header icon>
-        <Icon name={icon} />
-        Delete {entityName}
-      </Header>
-      <Modal.Content>
-        <p>Are you really want to delete {entityName}?</p>
-      </Modal.Content>
+      <Modal.Header>{header}</Modal.Header>
       <Modal.Actions>
-        <Button basic color="grey" inverted onClick={onCancel}>
-          <Icon name="remove" /> No
+        <Button basic color="grey" onClick={onCancel}>
+          Cancel
         </Button>
-        <Button color="black" inverted onClick={onPermit}>
-          <Icon name="checkmark" /> Yes
+        <Button color="google plus" onClick={onDelete}>
+          <Icon name="trash" /> Delete
         </Button>
       </Modal.Actions>
     </Modal>
