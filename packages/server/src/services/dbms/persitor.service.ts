@@ -156,6 +156,16 @@ class DbmsPersistor {
     return fsPromises.writeFile(rowsFilePath, persistContentStr, { flag: 'a' });
   }
 
+  public async deleteRowsColumn(databaseId: string, tableId: string, columnId: string) {
+    const rows = await this.readRowsLines(databaseId, tableId);
+    const rowsWithoutColumn = rows.map((row) => {
+      const columnsValuesIndex = { ...row.rowColumnsValuesIndex };
+      delete columnsValuesIndex[columnId];
+      return { ...row, rowColumnsValuesIndex: columnsValuesIndex };
+    });
+    return this.writePersistedRows(databaseId, tableId, rowsWithoutColumn);
+  }
+
   public async removeRow(databaseId: string, tableId: string, rowId: string) {
     const rows = await this.readRowsLines(databaseId, tableId);
     const rowsWithoutRemoved = rows.filter((row) => row.id !== rowId);

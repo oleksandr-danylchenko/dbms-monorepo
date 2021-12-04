@@ -218,6 +218,7 @@ class DbmsService {
 
     table.removeColumn(column);
     await this.persistor.writeTable(table);
+    await this.persistor.deleteRowsColumn(databaseId, tableId, columnId);
     return;
   }
 
