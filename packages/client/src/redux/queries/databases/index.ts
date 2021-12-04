@@ -54,23 +54,22 @@ export const databasesApi = dbmsApi.injectEndpoints({
         body: database,
       }),
       transformResponse: transformDatabase,
-      async onQueryStarted({ databaseId, database }, { dispatch, queryFulfilled }) {
-        const patchDatabasesResult = dispatch(
+      async onQueryStarted({ databaseId }, { dispatch, queryFulfilled }) {
+        const { data: updatedDatabase } = await queryFulfilled;
+
+        dispatch(
           databasesApi.util.updateQueryData('getDatabases', undefined, (draftDatabases) => {
-            databasesAdapter.updateOne(draftDatabases || databasesInitialState, { id: databaseId, changes: database });
+            databasesAdapter.updateOne(draftDatabases || databasesInitialState, {
+              id: databaseId,
+              changes: updatedDatabase,
+            });
           })
         );
-        const patchDatabaseResult = dispatch(
+        dispatch(
           databasesApi.util.updateQueryData('getDatabase', { databaseId }, (draftDatabase) => {
-            draftDatabase.name = database.name;
+            draftDatabase.name = updatedDatabase.name;
           })
         );
-        try {
-          await queryFulfilled;
-        } catch {
-          patchDatabasesResult.undo();
-          patchDatabaseResult.undo();
-        }
       },
     }),
     deleteDatabase: build.mutation<{ id: string }, { databaseId: string }>({
