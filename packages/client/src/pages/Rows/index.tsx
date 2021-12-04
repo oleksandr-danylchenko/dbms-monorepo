@@ -6,6 +6,7 @@ import { updateActiveIds } from '../../redux/slices/application';
 import RowsTable from './RowsTable';
 import TablesSidebar from '../Tables/Sidebar';
 import RowsHeader from './Header';
+import RowsCreateModal from './CreateModal';
 
 const Rows: FC = () => {
   const dispatch = useAppDispatch();
@@ -27,10 +28,7 @@ const Rows: FC = () => {
         sidebar={<TablesSidebar />}
         content={<RowsTable />}
       />
-      {isCreatingRow && (
-        // <RowCreateModal onClose={() => setCreatingRow(false)} />
-        <h2>H</h2>
-      )}
+      {isCreatingRow && <RowsCreateModal onClose={() => setCreatingRow(false)} />}
     </>
   );
 };
