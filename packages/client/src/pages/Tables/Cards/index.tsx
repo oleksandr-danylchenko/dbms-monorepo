@@ -78,7 +78,7 @@ const TablesCards: FC = () => {
         {columnsOrder.map((columnId) => {
           const { name: columnName, type: columnType } = columnsIndex[columnId];
           return (
-            <Menu.Item className={styles.TablesCards__Column}>
+            <Menu.Item key={columnId} className={styles.TablesCards__Column}>
               <span>{columnName}</span> <strong>{columnType}</strong>
             </Menu.Item>
           );

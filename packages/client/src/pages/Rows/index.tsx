@@ -5,11 +5,13 @@ import { useAppDispatch } from '../../redux/hooks/app/useAppDispatch';
 import { updateActiveIds } from '../../redux/slices/application';
 import RowsTable from './Table';
 import TablesSidebar from '../Tables/Sidebar';
+import { useActiveTable } from '../../redux/hooks/tables';
 
 const Rows: FC = () => {
   const dispatch = useAppDispatch();
 
   const { databaseId: paramsDatabaseId, tableId: paramsTableId } = useParams<{ databaseId: string; tableId: string }>();
+  const { data: activeTable } = useActiveTable();
 
   useEffect(() => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId, tableId: paramsTableId }));
@@ -17,7 +19,7 @@ const Rows: FC = () => {
 
   return (
     <PageLayout
-      header="Table rows"
+      header={<>Rows {activeTable?.name && `for ${activeTable.name}`}</>}
       backLink={`/databases/${paramsDatabaseId}/tables`}
       sidebar={<TablesSidebar />}
       content={<RowsTable />}

@@ -16,7 +16,7 @@ const TablesSidebar: FC = () => {
 
   const activeTableId = useAppSelector(selectActiveTableId);
 
-  const { data: activeDatabase } = useActiveDatabase();
+  const { data: activeDatabase, isFetching: isDatabaseFetching } = useActiveDatabase();
 
   const {
     isLoading: isTablesLoading,
