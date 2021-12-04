@@ -14,7 +14,7 @@ import CreationCard from '../../../components/CreationCard';
 interface DatabasesCardsProps {
   onCreateClick: BindingAction;
   onEditClick: BindingCallback1<{ databaseId: string }>;
-  onDeleteClick: BindingCallback1<{ databaseId: string; databaseName: string }>;
+  onDeleteClick: BindingCallback1<{ databaseId: string }>;
 }
 
 const DatabasesCards: FC<DatabasesCardsProps> = ({ onCreateClick, onEditClick, onDeleteClick }) => {
@@ -90,7 +90,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onCreateClick, onEditClick, o
         <Card.Content extra textAlign="right">
           <CardActions
             onEditClick={() => onEditClick({ databaseId: database.id })}
-            onDeleteClick={() => onDeleteClick({ databaseId: database.id, databaseName: database.name })}
+            onDeleteClick={() => onDeleteClick({ databaseId: database.id })}
           />
         </Card.Content>
       </Card>

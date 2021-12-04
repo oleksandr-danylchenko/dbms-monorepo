@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { Form, Message } from 'semantic-ui-react';
 import { BindingAction } from '../../../models/functions';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
@@ -22,7 +22,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
   });
 
   // TODO Remove duplication
-  const handleSaveDatabase = (): void => {
+  const handleSaveDatabase = useCallback(() => {
     const updatedDatabase: UpdateDatabaseDto = {
       ...databaseFormState,
     };
@@ -30,12 +30,12 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
     updateDatabase({ databaseId, database: updatedDatabase })
       .unwrap()
       .then(() => onClose());
-  };
+  }, [databaseFormState, databaseId, onClose, updateDatabase]);
 
   const databaseForm = useMemo(() => {
     const updateFetchError = updateError as { status: number; data: { message: string } };
     return (
-      <Form loading={isUpdateLoading} error={!!updateFetchError}>
+      <Form onSubmit={handleSaveDatabase} loading={isUpdateLoading} error={!!updateFetchError}>
         <Form.Input
           name="name"
           label="Name"
@@ -47,7 +47,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
         <Message error header={updateFetchError?.status || ''} content={updateFetchError?.data?.message || ''} />
       </Form>
     );
-  }, [databaseFormState.name, handleDatabaseFormChange, isUpdateLoading, updateError]);
+  }, [databaseFormState.name, handleDatabaseFormChange, handleSaveDatabase, isUpdateLoading, updateError]);
 
   if (!modifyingDatabase) {
     onClose();

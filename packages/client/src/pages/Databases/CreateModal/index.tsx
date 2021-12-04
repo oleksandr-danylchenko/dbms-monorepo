@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { Form, Message } from 'semantic-ui-react';
 import { BindingAction } from '../../../models/functions';
 import ModifyModal from '../../../components/ModifyModal';
@@ -18,7 +18,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   });
 
   // TODO Remove duplication
-  const handleSaveDatabase = (): void => {
+  const handleSaveDatabase = useCallback(() => {
     const creationDatabase: CreateDatabaseDto = {
       ...databaseFormState,
     };
@@ -26,12 +26,12 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
     createDatabase({ database: creationDatabase })
       .unwrap()
       .then(() => onClose());
-  };
+  }, [createDatabase, databaseFormState, onClose]);
 
   const databaseForm = useMemo(() => {
     const createFetchError = creationError as { status: number; data: { message: string } };
     return (
-      <Form loading={isCreationLoading} error={!!createFetchError}>
+      <Form onSubmit={handleSaveDatabase} loading={isCreationLoading} error={!!createFetchError}>
         <Form.Input
           name="name"
           label="Name"
@@ -43,7 +43,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
         <Message error header={createFetchError?.status || ''} content={createFetchError?.data?.message || ''} />
       </Form>
     );
-  }, [databaseFormState.name, handleDatabaseFormChange, isCreationLoading, creationError]);
+  }, [creationError, handleSaveDatabase, isCreationLoading, databaseFormState.name, handleDatabaseFormChange]);
 
   return (
     <ModifyModal

@@ -12,12 +12,10 @@ const Databases: FC = () => {
   const [deleteDatabaseId, setDeleteDatabaseId] = useState<string>();
 
   const handleDatabaseCreateClick = useCallback(() => setCreatingDatabase(true), []);
-
   const handleDatabaseEditClick = useCallback(
     ({ databaseId }: { databaseId: string }) => setEditDatabaseId(databaseId),
     []
   );
-
   const handleDatabaseDeleteClick = useCallback(
     ({ databaseId }: { databaseId: string }) => setDeleteDatabaseId(databaseId),
     []

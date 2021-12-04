@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import PageLayout from '../../components/PageLayout';
 import TablesSidebar from './Sidebar';
@@ -24,13 +24,23 @@ const Tables: FC = () => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId }));
   }, [dispatch, paramsDatabaseId]);
 
+  const handleTableCreateClick = useCallback(() => setCreatingTable(true), []);
+  const handleTableEditClick = useCallback(({ tableId }: { tableId: string }) => setEditTableId(tableId), []);
+  const handleTableDeleteClick = useCallback(({ tableId }: { tableId: string }) => setDeleteTableId(tableId), []);
+
   return (
     <>
       <PageLayout
         header={<>Tables {activeDatabase?.name && `for ${activeDatabase.name}`}</>}
         backLink="/databases"
         sidebar={<TablesSidebar />}
-        content={<TablesCards />}
+        content={
+          <TablesCards
+            onCreateClick={handleTableCreateClick}
+            onEditClick={handleTableEditClick}
+            onDeleteClick={handleTableDeleteClick}
+          />
+        }
       />
       {isCreatingTable && <TableCreateModal onClose={() => setCreatingTable(false)} />}
       {editTableId && <TableModifyModal tableId={editTableId} onClose={() => setEditTableId(undefined)} />}

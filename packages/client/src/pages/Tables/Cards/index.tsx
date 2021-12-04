@@ -11,8 +11,16 @@ import { selectNameSortedTables } from '../../../redux/selectors/tables';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import styles from './styles.module.scss';
 import CardActions from '../../../components/CardActions';
+import { BindingAction, BindingCallback1 } from '../../../models/functions';
+import CreationCard from '../../../components/CreationCard';
 
-const TablesCards: FC = () => {
+interface TablesCardsProps {
+  onCreateClick: BindingAction;
+  onEditClick: BindingCallback1<{ tableId: string }>;
+  onDeleteClick: BindingCallback1<{ tableId: string }>;
+}
+
+const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDeleteClick }) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -87,22 +95,26 @@ const TablesCards: FC = () => {
     );
   }, []);
 
-  const tablesCards = useMemo(
-    () =>
-      tables.map((table) => (
-        <Card key={table.id} link onClick={() => handleTableClick(table.id)}>
-          <Card.Content>
-            <Card.Header>{table.name}</Card.Header>
-            <Card.Meta>{table.id}</Card.Meta>
-            <Card.Description>{creteColumnsElements(table)}</Card.Description>
-          </Card.Content>
-          <Card.Content extra textAlign="right">
-            <CardActions onEditClick={() => undefined} onDeleteClick={() => undefined} />
-          </Card.Content>
-        </Card>
-      )),
-    [creteColumnsElements, handleTableClick, tables]
-  );
+  const tablesCards = useMemo(() => {
+    const entitiesCards = tables.map((table) => (
+      <Card key={table.id} link onClick={() => handleTableClick(table.id)}>
+        <Card.Content>
+          <Card.Header>{table.name}</Card.Header>
+          <Card.Meta>{table.id}</Card.Meta>
+          <Card.Description>{creteColumnsElements(table)}</Card.Description>
+        </Card.Content>
+        <Card.Content extra textAlign="right">
+          <CardActions
+            onEditClick={() => onEditClick({ tableId: table.id })}
+            onDeleteClick={() => onDeleteClick({ tableId: table.id })}
+          />
+        </Card.Content>
+      </Card>
+    ));
+    const creationCard = <CreationCard key="tableCreation" header="Add a new table" onClick={onCreateClick} />;
+
+    return [entitiesCards, creationCard];
+  }, [creteColumnsElements, handleTableClick, onCreateClick, onDeleteClick, onEditClick, tables]);
 
   if (tablesError) {
     const fetchingError = toFetchError(tablesError);
