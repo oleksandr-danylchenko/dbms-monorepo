@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 import { FieldType } from '../../../models/dbms';
 
 const RowsTable: FC = () => {
-  const { data: activeTable, isLoading: isActiveTableLoading, error: activeTableError } = useActiveTable();
+  const { data: activeTable, isFetching: isActiveTableFetching, error: activeTableError } = useActiveTable();
 
   const { isLoading, error: rowsError } = useActiveTableRows();
   const rows = useAppSelector(selectAllRows);
@@ -37,7 +37,7 @@ const RowsTable: FC = () => {
     );
   }, []);
 
-  if (isActiveTableLoading || isLoading) {
+  if (isActiveTableFetching || isLoading) {
     return tablePlaceholderElement;
   }
 

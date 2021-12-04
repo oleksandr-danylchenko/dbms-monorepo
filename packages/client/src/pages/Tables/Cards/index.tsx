@@ -27,7 +27,7 @@ const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDelet
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
 
   const {
-    isLoading: isTablesLoading,
+    isFetching: isTablesFetching,
     isUninitialized: isTablesUninitialized,
     error: tablesError,
   } = useActiveDatabaseTables();
@@ -123,7 +123,7 @@ const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDelet
 
   return (
     <Card.Group centered doubling stackable>
-      {isTablesLoading || isTablesUninitialized ? cardsPlaceholderElement : tablesCards}
+      {isTablesFetching || isTablesUninitialized ? cardsPlaceholderElement : tablesCards}
     </Card.Group>
   );
 };

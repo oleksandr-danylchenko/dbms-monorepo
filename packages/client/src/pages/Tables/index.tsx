@@ -18,7 +18,7 @@ const Tables: FC = () => {
   const [deleteTableId, setDeleteTableId] = useState<string>();
 
   const { databaseId: paramsDatabaseId } = useParams<{ databaseId: string }>();
-  const { data: activeDatabase } = useActiveDatabase();
+  const { data: activeDatabase, isFetching: isDatabaseFetching } = useActiveDatabase();
 
   useEffect(() => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId }));
@@ -31,7 +31,7 @@ const Tables: FC = () => {
   return (
     <>
       <PageLayout
-        header={<>Tables {activeDatabase?.name && `for ${activeDatabase.name}`}</>}
+        header={<>Tables {!isDatabaseFetching && activeDatabase?.name && `for ${activeDatabase.name}`}</>}
         backLink="/databases"
         sidebar={<TablesSidebar />}
         content={

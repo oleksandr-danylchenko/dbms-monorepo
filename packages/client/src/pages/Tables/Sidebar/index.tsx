@@ -3,14 +3,12 @@ import { Menu } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import PageSidebar from '../../../components/PageSidebar';
-import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
 import { selectNameSortedTables } from '../../../redux/selectors/tables';
 import { useActiveDatabase } from '../../../redux/hooks/databases';
 import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
 import { selectActiveTableId } from '../../../redux/selectors/application';
 
 const TablesSidebar: FC = () => {
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const activeTableId = useAppSelector(selectActiveTableId);
@@ -18,7 +16,7 @@ const TablesSidebar: FC = () => {
   const { data: activeDatabase, isFetching: isDatabaseFetching } = useActiveDatabase();
 
   const {
-    isLoading: isTablesLoading,
+    isFetching: isTablesFetching,
     isUninitialized: isTablesUninitialized,
     error: tablesError,
   } = useActiveDatabaseTables();
@@ -26,14 +24,15 @@ const TablesSidebar: FC = () => {
 
   const handleTableClick = useCallback(
     (tableId: string): void => {
+      if (isDatabaseFetching) return;
       history.push(`/databases/${activeDatabase?.id}/tables/${tableId}/rows`);
     },
-    [activeDatabase?.id, history]
+    [activeDatabase?.id, history, isDatabaseFetching]
   );
 
   const tablesTitle = useMemo(() => {
-    return <>Tables {activeDatabase?.name && `for ${activeDatabase.name}`}</>;
-  }, [activeDatabase?.name]);
+    return <>Tables {!isDatabaseFetching && activeDatabase?.name && `for ${activeDatabase.name}`}</>;
+  }, [activeDatabase?.name, isDatabaseFetching]);
 
   const databasesSidebarItems = useMemo(
     () =>
@@ -52,7 +51,7 @@ const TablesSidebar: FC = () => {
     <PageSidebar
       title={tablesTitle}
       items={databasesSidebarItems}
-      isLoading={isTablesLoading || isTablesUninitialized}
+      isLoading={isDatabaseFetching || isTablesFetching || isTablesUninitialized}
       error={!!tablesError}
     />
   );

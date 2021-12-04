@@ -5,8 +5,8 @@ import { useAppSelector } from '../app/useAppSelector';
 import { selectActiveDatabaseId, selectActiveTableId } from '../../selectors/application';
 
 export const useActiveDatabaseTables = () => {
-  const { data: activeDatabase, isLoading: isActiveDatabaseLoading } = useActiveDatabase();
-  const isActiveDatabaseReady = activeDatabase && !isActiveDatabaseLoading;
+  const { data: activeDatabase, isFetching: isActiveDatabaseFetching } = useActiveDatabase();
+  const isActiveDatabaseReady = activeDatabase && !isActiveDatabaseFetching;
 
   return useGetTablesQuery(isActiveDatabaseReady ? { databaseId: activeDatabase.id } : skipToken);
 };
