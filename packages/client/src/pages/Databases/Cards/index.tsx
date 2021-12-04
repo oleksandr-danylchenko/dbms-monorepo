@@ -12,7 +12,7 @@ import { BindingCallback1 } from '../../../models/functions';
 
 interface DatabasesCardsProps {
   onEditClick: BindingCallback1<{ databaseId: string }>;
-  onDeleteClick: BindingCallback1<{ databaseId: string }>;
+  onDeleteClick: BindingCallback1<{ databaseId: string; databaseName: string }>;
 }
 
 const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick }) => {
@@ -89,7 +89,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick })
           <Card.Content extra textAlign="right">
             <CardActions
               onEditClick={() => onEditClick({ databaseId: database.id })}
-              onDeleteClick={() => onDeleteClick({ databaseId: database.id })}
+              onDeleteClick={() => onDeleteClick({ databaseId: database.id, databaseName: database.name })}
             />
           </Card.Content>
         </Card>

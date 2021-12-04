@@ -2,14 +2,12 @@ import { FC, useCallback, useState } from 'react';
 import DatabasesSidebar from './Sidebar';
 import DatabasesCards from './Cards';
 import PageLayout from '../../components/PageLayout';
-import DeleteModal from '../../components/DeleteModal';
-import { useAppSelector } from '../../redux/hooks/app/useAppSelector';
-import { selectDatabaseById } from '../../redux/selectors/databases';
 import { useDeleteDatabaseMutation } from '../../redux/queries/databases';
+import DatabaseModifyModal from './ModifyModal';
 
 const Databases: FC = () => {
   const [selectedDatabaseId, setSelectedDatabaseId] = useState<string>();
-  const selectedDatabase = useAppSelector((state) => selectDatabaseById(state, selectedDatabaseId || ''));
+  // const selectedDatabase = useAppSelector((state) => selectDatabaseById(state, selectedDatabaseId || ''));
 
   const [deleteDatabase] = useDeleteDatabaseMutation();
 
@@ -17,19 +15,16 @@ const Databases: FC = () => {
     setSelectedDatabaseId(databaseId);
   }, []);
 
-  const handleDatabaseDeleteClick = useCallback(({ databaseId }: { databaseId: string }) => {
-    setSelectedDatabaseId(databaseId);
-  }, []);
-
-  const handleDatabaseDeletePermitClick = useCallback(() => {
-    if (!selectedDatabaseId) return;
-    deleteDatabase({ databaseId: selectedDatabaseId });
-    setSelectedDatabaseId(undefined);
-  }, [deleteDatabase, selectedDatabaseId]);
-
-  const handleDatabaseCancelClick = useCallback(() => {
-    setSelectedDatabaseId(undefined);
-  }, []);
+  const handleDatabaseDeleteClick = useCallback(
+    ({ databaseId, databaseName }: { databaseId: string; databaseName: string }) => {
+      // eslint-disable-next-line no-alert
+      const shouldDelete = window.confirm(`Do want to delete the database ${databaseName}?`);
+      if (shouldDelete) {
+        deleteDatabase({ databaseId });
+      }
+    },
+    [deleteDatabase]
+  );
 
   return (
     <>
@@ -38,12 +33,9 @@ const Databases: FC = () => {
         sidebar={<DatabasesSidebar />}
         content={<DatabasesCards onEditClick={handleDatabaseEditClick} onDeleteClick={handleDatabaseDeleteClick} />}
       />
-      <DeleteModal
-        open={!!selectedDatabaseId}
-        entityName={`database ${selectedDatabase?.name}`}
-        onCancel={handleDatabaseCancelClick}
-        onPermit={handleDatabaseDeletePermitClick}
-      />
+      {selectedDatabaseId && (
+        <DatabaseModifyModal databaseId={selectedDatabaseId} onClose={() => setSelectedDatabaseId(undefined)} />
+      )}
     </>
   );
 };
