@@ -18,6 +18,9 @@ export const {
   selectIds: selectDatabasesIds,
 } = databasesAdapter.getSelectors((state: RootState) => selectDatabasesData(state) || databasesInitialState);
 
+export const selectNameSortedDatabases = createSelector(selectAllDatabases, (databases) =>
+  databases.sort(({ name: dbNameA }, { name: dbNameB }) => dbNameA.localeCompare(dbNameB))
+);
 // // Can be not used. Just valuable as an example of usage of the selector inside the selector
 // export const selectActiveDatabase = createSelector(
 //   stateSelector,

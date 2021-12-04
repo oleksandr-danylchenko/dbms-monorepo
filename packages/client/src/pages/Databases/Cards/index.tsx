@@ -3,7 +3,7 @@ import { Card, Icon, Label, Menu, Placeholder } from 'semantic-ui-react';
 import { useHistory } from 'react-router';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useGetDatabasesQuery } from '../../../redux/queries/databases';
-import { selectAllDatabases } from '../../../redux/selectors/databases';
+import { selectNameSortedDatabases } from '../../../redux/selectors/databases';
 import { Database } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toFetchError } from '../../../utils/errors';
@@ -19,7 +19,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick })
   const history = useHistory();
 
   const { isLoading: isDatabasesLoading, error: databasesError } = useGetDatabasesQuery();
-  const databases = useAppSelector(selectAllDatabases);
+  const databases = useAppSelector(selectNameSortedDatabases);
 
   const handleDatabaseClick = useCallback(
     (databaseId: string): void => {
@@ -94,7 +94,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onEditClick, onDeleteClick })
           </Card.Content>
         </Card>
       )),
-    [creteTablesElements, databases, handleDatabaseClick, onDeleteClick, onEditClick]
+    [creteTablesElements, handleDatabaseClick, databases, onDeleteClick, onEditClick]
   );
 
   if (databasesError) {
