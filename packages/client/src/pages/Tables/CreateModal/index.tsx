@@ -14,7 +14,7 @@ interface DatabaseCreateModalProps {
 
 const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
-  const [createTable, { isLoading: isCreationLoading, error: creationError }] = useAddTableMutation();
+  const [createTable, { isLoading: isCreating, error: creationError }] = useAddTableMutation();
 
   const [tableFormState, handleTableFormChange] = useFormState<CreateTableDto>({
     name: '',
@@ -36,7 +36,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const tableForm = useMemo(() => {
     const createFetchError = creationError as { status: number; data: { message: string } };
     return (
-      <Form onSubmit={handleSaveTable} loading={isCreationLoading} error={!!createFetchError}>
+      <Form onSubmit={handleSaveTable} loading={isCreating} error={!!createFetchError}>
         <Form.Input
           name="name"
           label="Name"
@@ -48,7 +48,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
         <Message error header={createFetchError?.status || ''} content={createFetchError?.data?.message || ''} />
       </Form>
     );
-  }, [creationError, handleSaveTable, isCreationLoading, tableFormState.name, handleTableFormChange]);
+  }, [creationError, handleSaveTable, isCreating, tableFormState.name, handleTableFormChange]);
 
   return (
     <ModifyModal
@@ -56,7 +56,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       header="Create table"
       content={tableForm}
       size="tiny"
-      isLoading={isCreationLoading}
+      isLoading={isCreating}
       onClose={onClose}
       onSave={handleSaveTable}
     />

@@ -11,7 +11,7 @@ interface DatabaseCreateModalProps {
 }
 
 const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
-  const [createDatabase, { isLoading: isCreationLoading, error: creationError }] = useAddDatabaseMutation();
+  const [createDatabase, { isLoading: isCreating, error: creationError }] = useAddDatabaseMutation();
 
   const [databaseFormState, handleDatabaseFormChange] = useFormState<CreateDatabaseDto>({
     name: '',
@@ -31,7 +31,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const databaseForm = useMemo(() => {
     const createFetchError = creationError as { status: number; data: { message: string } };
     return (
-      <Form onSubmit={handleSaveDatabase} loading={isCreationLoading} error={!!createFetchError}>
+      <Form onSubmit={handleSaveDatabase} loading={isCreating} error={!!createFetchError}>
         <Form.Input
           name="name"
           label="Name"
@@ -43,7 +43,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
         <Message error header={createFetchError?.status || ''} content={createFetchError?.data?.message || ''} />
       </Form>
     );
-  }, [creationError, handleSaveDatabase, isCreationLoading, databaseFormState.name, handleDatabaseFormChange]);
+  }, [creationError, handleSaveDatabase, isCreating, databaseFormState.name, handleDatabaseFormChange]);
 
   return (
     <ModifyModal
@@ -51,7 +51,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       header="Create database"
       content={databaseForm}
       size="tiny"
-      isLoading={isCreationLoading}
+      isLoading={isCreating}
       onClose={onClose}
       onSave={handleSaveDatabase}
     />
