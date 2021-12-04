@@ -95,7 +95,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onCreateClick, onEditClick, o
         </Card.Content>
       </Card>
     ));
-    const creationCard = <CreationCard header="Create a new database" onClick={onCreateClick} />;
+    const creationCard = <CreationCard header="Add a new database" onClick={onCreateClick} />;
 
     return [entitiesCards, creationCard];
   }, [creteTablesElements, databases, handleDatabaseClick, onCreateClick, onDeleteClick, onEditClick]);

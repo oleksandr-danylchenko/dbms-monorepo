@@ -21,6 +21,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
     name: modifyingDatabase?.name || '',
   });
 
+  // TODO Remove duplication
   const handleSaveDatabase = (): void => {
     const updatedDatabase: UpdateDatabaseDto = {
       ...databaseFormState,
@@ -44,7 +45,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
         <Form.Input
           name="name"
           label="Name"
-          placeholder="Enter database name"
+          placeholder="Enter a database name"
           required
           value={databaseFormState.name}
           onChange={handleDatabaseFormChange as any}
@@ -54,10 +55,14 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
     );
   }, [databaseFormState.name, handleDatabaseFormChange, isUpdateLoading, updateError]);
 
+  if (!modifyingDatabase) {
+    onClose();
+  }
+
   return (
     <ModifyModal
-      open={!!modifyingDatabase}
-      header={`Modifying database ${modifyingDatabase?.name}`}
+      open
+      header={`Modify database ${modifyingDatabase?.name}`}
       content={databaseForm}
       size="tiny"
       isLoading={isUpdateLoading}

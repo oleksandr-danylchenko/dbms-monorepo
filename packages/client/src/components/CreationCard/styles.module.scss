@@ -1,7 +1,7 @@
 @import "src/styles";
 
 .CreationCard {
-  max-width: rem(220px) !important;
+  max-width: rem(200px) !important;
 
   &__Content {
     @include flexbox($alignItems: center, $justifyContent: center);

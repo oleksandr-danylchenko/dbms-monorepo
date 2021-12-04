@@ -4,14 +4,14 @@ import DatabasesCards from './Cards';
 import PageLayout from '../../components/PageLayout';
 import DatabaseModifyModal from './ModifyModal';
 import DatabaseDeleteModal from './DeleteModal';
+import DatabaseCreateModal from './CreateModal';
 
 const Databases: FC = () => {
+  const [isCreatingDatabase, setCreatingDatabase] = useState(false);
   const [editDatabaseId, setEditDatabaseId] = useState<string>();
   const [deleteDatabaseId, setDeleteDatabaseId] = useState<string>();
 
-  const handleDatabaseCreateClick = useCallback(() => {
-    console.log('I want to create a db');
-  }, []);
+  const handleDatabaseCreateClick = useCallback(() => setCreatingDatabase(true), []);
 
   const handleDatabaseEditClick = useCallback(
     ({ databaseId }: { databaseId: string }) => setEditDatabaseId(databaseId),
@@ -36,6 +36,7 @@ const Databases: FC = () => {
           />
         }
       />
+      {isCreatingDatabase && <DatabaseCreateModal onClose={() => setCreatingDatabase(false)} />}
       {editDatabaseId && (
         <DatabaseModifyModal databaseId={editDatabaseId} onClose={() => setEditDatabaseId(undefined)} />
       )}
