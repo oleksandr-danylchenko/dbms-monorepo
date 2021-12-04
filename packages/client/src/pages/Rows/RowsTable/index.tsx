@@ -1,11 +1,12 @@
 import { FC, useMemo } from 'react';
-import { Container, Placeholder, Table as UiTable } from 'semantic-ui-react';
+import { Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
 import { toFetchError } from '../../../utils/errors';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { useActiveTableRows } from '../../../redux/hooks/rows';
 import { selectAllRows } from '../../../redux/selectors/rows';
+import styles from './styles.module.scss';
 
 const RowsTable: FC = () => {
   const { data: activeTable, isLoading: isActiveTableLoading, error: activeTableError } = useActiveTable();
@@ -50,8 +51,17 @@ const RowsTable: FC = () => {
       <UiTable.Header>
         <UiTable.Row>
           {activeTable?.columnsOrderIndex?.map((columnId) => {
-            const { name: columnName } = activeTable.columnsIndex[columnId];
-            return <UiTable.HeaderCell key={columnId}>{columnName}</UiTable.HeaderCell>;
+            const { name: columnName, type: columnType } = activeTable.columnsIndex[columnId];
+            return (
+              <UiTable.HeaderCell key={columnId}>
+                <div className={styles.RowsTable__HeaderCell}>
+                  {columnName}
+                  <Label circular color="grey">
+                    {columnType}
+                  </Label>
+                </div>
+              </UiTable.HeaderCell>
+            );
           })}
         </UiTable.Row>
       </UiTable.Header>

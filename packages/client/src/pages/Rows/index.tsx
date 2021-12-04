@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import PageLayout from '../../components/PageLayout';
 import { useAppDispatch } from '../../redux/hooks/app/useAppDispatch';
 import { updateActiveIds } from '../../redux/slices/application';
-import RowsTable from './Table';
+import RowsTable from './RowsTable';
 import TablesSidebar from '../Tables/Sidebar';
 import { useActiveTable } from '../../redux/hooks/tables';
 

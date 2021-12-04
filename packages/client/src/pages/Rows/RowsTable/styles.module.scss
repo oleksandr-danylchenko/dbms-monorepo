@@ -1,8 +1,7 @@
 @import "src/styles";
 
-.TablesCards {
-  &__Column {
-    display: flex !important;
+.RowsTable {
+  &__HeaderCell {
     @include flexbox($alignItems: center, $justifyContent: space-between);
   }
 }
