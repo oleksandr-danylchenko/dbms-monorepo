@@ -3,7 +3,8 @@ import { RootState } from '../../store';
 import { tablesAdapter, tablesInitialState } from '../../queries/tables/tables_cache_helper';
 import { tablesApi } from '../../queries/tables';
 import { selectActiveDatabaseId } from '../application';
-import { undefinedResultSelector } from '../utils';
+import { stateSelector, undefinedResultSelector } from '../utils';
+import { TableColumnsIndex } from '../../../models/dbms';
 
 const selectTablesResult = createSelector(selectActiveDatabaseId, (databaseId) =>
   !databaseId ? undefinedResultSelector : tablesApi.endpoints.getTables.select({ databaseId })
@@ -22,4 +23,19 @@ export const {
 
 export const selectNameSortedTables = createSelector(selectAllTables, (tables) =>
   tables.sort(({ name: tableNameA }, { name: tableNameB }) => tableNameA.localeCompare(tableNameB))
+);
+
+export const selectActiveTable = createSelector(stateSelector, selectActiveDatabaseId, (getState, activeDatabaseId) =>
+  !activeDatabaseId ? undefined : selectTableById(getState(), activeDatabaseId)
+);
+
+export const sortColumnsIndex = (columnsIndex: TableColumnsIndex): string[] =>
+  Object.values(columnsIndex)
+    .sort(
+      ({ orderIndex: columnOrderIndexA }, { orderIndex: columnOrderIndexB }) => columnOrderIndexA - columnOrderIndexB
+    )
+    .map((column) => column.id);
+
+export const selectActiveTableColumnsOrderIndex = createSelector(selectActiveTable, (activeTable) =>
+  !activeTable ? undefined : sortColumnsIndex(activeTable.columnsIndex)
 );

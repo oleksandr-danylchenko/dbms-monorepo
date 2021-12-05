@@ -62,7 +62,7 @@ export const tablesApi = dbmsApi.injectEndpoints({
         dispatch(
           tablesApi.util.updateQueryData('getTable', { databaseId, tableId }, (draftTable) => {
             draftTable.name = updatedTable.name;
-            draftTable.columnsOrderIndex = updatedTable.columnsOrderIndex;
+            draftTable.columnsIndex = updatedTable.columnsIndex;
           })
         );
       },
