@@ -18,19 +18,17 @@ class Table {
     name,
     databaseId,
     columns,
-    columnsOrderIndex,
   }: {
     id?: string;
     name: string;
     databaseId: string;
     columns?: Column[];
-    columnsOrderIndex?: string[];
   }) {
     this._id = id || nanoid();
     this._name = name;
     this._databaseId = databaseId;
     this._columnsIndex = normalize(columns || []);
-    this._columnsOrderIndex = columnsOrderIndex || [];
+    this._columnsOrderIndex = columns?.map((column) => column.id) || [];
   }
 
   public get id() {
