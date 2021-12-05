@@ -6,6 +6,7 @@ export interface ColumnDto {
   name: string;
   tableId: string;
   type: FieldType;
+  orderIndex: number;
 }
 
 export class CreateColumnDto {

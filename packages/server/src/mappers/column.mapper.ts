@@ -8,6 +8,7 @@ class ColumnMapper {
       name: column.name,
       tableId: column.tableId,
       type: column.type,
+      orderIndex: column.orderIndex,
     };
   }
 }
