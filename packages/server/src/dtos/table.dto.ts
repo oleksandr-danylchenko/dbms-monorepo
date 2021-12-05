@@ -8,7 +8,6 @@ export interface TableDto {
   columnsIndex: {
     [columnId: string]: ColumnDto;
   };
-  columnsOrderIndex: string[];
 }
 
 export class CreateTableDto {
