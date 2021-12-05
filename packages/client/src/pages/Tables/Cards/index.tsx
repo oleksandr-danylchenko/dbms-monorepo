@@ -5,7 +5,7 @@ import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useAppDispatch } from '../../../redux/hooks/app/useAppDispatch';
 import { Table } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
-import { toFetchError } from '../../../utils/errors';
+import { toMandatoryFetchError } from '../../../utils/errors';
 import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
 import { selectNameSortedTables } from '../../../redux/selectors/tables';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
@@ -120,7 +120,7 @@ const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDelet
   }, [creteColumnsElements, handleTableClick, onCreateClick, onDeleteClick, onEditClick, tables]);
 
   if (tablesError) {
-    const fetchingError = toFetchError(tablesError);
+    const fetchingError = toMandatoryFetchError(tablesError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 

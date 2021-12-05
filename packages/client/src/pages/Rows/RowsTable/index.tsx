@@ -2,7 +2,7 @@ import { FC, ReactElement, useMemo } from 'react';
 import { Button, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
-import { toFetchError } from '../../../utils/errors';
+import { toMandatoryFetchError } from '../../../utils/errors';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { useActiveTableRows } from '../../../redux/hooks/rows';
 import { selectAllRows } from '../../../redux/selectors/rows';
@@ -48,7 +48,7 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick }) => {
 
   if (activeTableError || rowsError) {
     const sharedError = activeTableError || rowsError;
-    const fetchingError = toFetchError(sharedError);
+    const fetchingError = toMandatoryFetchError(sharedError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 

@@ -6,7 +6,7 @@ import { useGetDatabasesQuery } from '../../../redux/queries/databases';
 import { selectNameSortedDatabases } from '../../../redux/selectors/databases';
 import { Database } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
-import { toFetchError } from '../../../utils/errors';
+import { toMandatoryFetchError } from '../../../utils/errors';
 import CardActions from '../../../components/CardActions';
 import { BindingAction, BindingCallback1 } from '../../../models/functions';
 import CreationCard from '../../../components/CreationCard';
@@ -101,7 +101,7 @@ const DatabasesCards: FC<DatabasesCardsProps> = ({ onCreateClick, onEditClick, o
   }, [creteTablesElements, databases, handleDatabaseClick, onCreateClick, onDeleteClick, onEditClick]);
 
   if (databasesError) {
-    const fetchingError = toFetchError(databasesError);
+    const fetchingError = toMandatoryFetchError(databasesError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
