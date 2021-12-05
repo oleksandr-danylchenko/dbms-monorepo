@@ -13,10 +13,12 @@ const RowsHeader: FC<RowsHeaderProps> = ({ onCreateClick }) => {
   return (
     <span className={styles.RowsHeader}>
       <span>Rows {!isTableFetching && activeTable?.name && `for ${activeTable.name}`}</span>
-      <Button color="grey" circular onClick={onCreateClick}>
-        <Icon name="plus circle" />
-        Add row
-      </Button>
+      {!!activeTable?.columnsOrderIndex?.length && (
+        <Button color="grey" circular onClick={onCreateClick}>
+          <Icon name="plus circle" />
+          Add a row
+        </Button>
+      )}
     </span>
   );
 };
