@@ -230,69 +230,6 @@ class DbmsService {
     return table.columns;
   }
 
-  public async findColumnById(databaseId: string, tableId: string, columnId: string): Promise<Column> {
-    const table = await this.findTableById(databaseId, tableId);
-    return this.findColumnByIdWithTable(table, columnId);
-  }
-
-  public async findColumnByIdWithTable(table: Table, columnId: string): Promise<Column> {
-    const column = table.getColumn(columnId);
-    if (!column) throw new HttpException(404, `No column ${columnId} found`);
-    return column;
-  }
-
-  public async createColumn(databaseId: string, tableId: string, columnData: CreateColumnDto): Promise<Column> {
-    if (isEmpty(columnData)) throw new HttpException(400, `There is no column creation data presented`);
-
-    const table = await this.findTableById(databaseId, tableId);
-    const columns = table.columns;
-
-    const { name: newColumnName, type: newColumnType } = columnData;
-
-    const isNameUnique = this.checkUniqueEntityName(columns, newColumnName);
-    if (!isNameUnique) throw new HttpException(409, `Column ${newColumnName} already exists`);
-
-    const newColumn = new Column({ name: newColumnName, type: newColumnType, tableId });
-    table.addColumn(newColumn);
-    await this.persistor.writeTable(table);
-
-    return newColumn;
-  }
-
-  public async updateColumn(
-    databaseId: string,
-    tableId: string,
-    columnId: string,
-    columnData: UpdateColumnDto
-  ): Promise<Column> {
-    if (isEmpty(columnData)) throw new HttpException(400, `There is no column data update presented`);
-
-    const table = await this.findTableById(databaseId, tableId);
-    const columns = table.columns;
-    const column = await this.findColumnByIdWithTable(table, columnId);
-
-    const { name: updateColumnName } = columnData;
-    if (isEmpty(updateColumnName)) return column;
-
-    const isNameUnique = column.name === updateColumnName || this.checkUniqueEntityName(columns, updateColumnName);
-    if (!isNameUnique) throw new HttpException(409, `Column ${updateColumnName} already exists`);
-
-    column.name = updateColumnName || column.name;
-    await this.persistor.writeTable(table);
-
-    return column;
-  }
-
-  public async deleteColumn(databaseId: string, tableId: string, columnId: string): Promise<void> {
-    const table = await this.findTableById(databaseId, tableId);
-    const column = await this.findColumnByIdWithTable(table, columnId);
-
-    table.removeColumn(column);
-    await this.persistor.writeTable(table);
-    await this.persistor.deleteRowsColumn(databaseId, tableId, columnId);
-    return;
-  }
-
   public async findAllRows(databaseId: string, tableId: string): Promise<Row[]> {
     await this.findTableById(databaseId, tableId);
     return this.persistor.readRows(databaseId, tableId);
