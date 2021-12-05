@@ -3,7 +3,7 @@ import Database from '@models/dbms/database';
 import DbmsPersistor from '@services/dbms/persitor.service';
 import { HttpException } from '@exceptions/HttpException';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
-import { areEmpty, isEmpty } from '@utils/util.helper';
+import { isEmpty } from '@utils/util.helper';
 import Table from '@models/dbms/table';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
 import Column from '@models/dbms/column';
@@ -108,14 +108,14 @@ class DbmsService {
     const database = await this.findDatabaseById(databaseId);
     const tables = database.tables;
 
-    const { name: newTableName, columns: columnsDtos } = tableData;
+    const { name: tableName, columns: columnsDtos } = tableData;
 
-    const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
-    if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
+    const isNameUnique = this.checkUniqueEntityName(tables, tableName);
+    if (!isNameUnique) throw new HttpException(409, `Table ${tableName} already exists`);
 
-    const newTable = new Table({ name: newTableName, databaseId });
-    const columns = this.createColumns(newTable.id, columnsDtos);
-    newTable.addColumns(columns);
+    const newTable = new Table({ name: tableName, databaseId });
+    DbmsService.createTableColumns(newTable, columnsDtos);
+
     database.addTable(newTable);
     await this.persistor.writeDatabase(database);
     await this.persistor.writeTable(newTable);
@@ -130,35 +130,89 @@ class DbmsService {
     const tables = database.tables;
     const table = await this.findTableById(database, tableId);
 
-    const { name: updateTableName, columnsOrderIndex: updateOrderIndex } = tableData;
-    if (areEmpty(updateTableName, updateOrderIndex)) return table;
+    const { name: tableName, columns: columnsDtos } = tableData;
 
-    const isNameUnique = table.name === updateTableName || this.checkUniqueEntityName(tables, updateTableName);
-    if (!isNameUnique) throw new HttpException(409, `Table ${updateTableName} already exists`);
+    const isNameUnique = !tableName || table.name === tableName || this.checkUniqueEntityName(tables, tableName);
+    if (!isNameUnique) throw new HttpException(409, `Table ${tableName} already exists`);
 
-    const isLengthEqual = table.columnsOrderIndex.length === updateOrderIndex.length;
-    const isIdsEqual = updateOrderIndex.every((columnId) => table.columnsOrderIndex.includes(columnId));
-    if (!isLengthEqual || !isIdsEqual) {
-      throw new HttpException(400, `columnsOrderIndex is malformed or contains not presented columns ids`);
-    }
+    table.name = tableName || table.name;
+    await this.updateTableColumns(table, columnsDtos);
 
-    table.name = updateTableName || table.name;
-    table.columnsOrderIndex = updateOrderIndex || table.columnsOrderIndex;
     await this.persistor.writeTable(table);
 
     return table;
   }
 
-  private createColumns(tableId: string, columns: CreateColumnDto[]): Column[] {
-    const duplicatedColumnsNames = columns
-      .map((column) => column.name)
-      .filter((name, index, arr) => index !== arr.indexOf(name)); // Filter only non-unique names
+  private static createTableColumns(table: Table, columnsDtos: CreateColumnDto[]): void {
+    DbmsService.validateUniqueColumnsProperties(columnsDtos);
+
+    const newColumns = DbmsService.createColumns(table.id, columnsDtos);
+    table.setColumns(newColumns);
+  }
+
+  private static createColumns(tableId: string, columnsDtos: (CreateColumnDto | UpdateColumnDto)[]) {
+    return columnsDtos.map(({ name, type, orderIndex }) => new Column({ name, type, tableId, orderIndex }));
+  }
+
+  private async updateTableColumns(table: Table, columnsDtos: UpdateColumnDto[]): Promise<void> {
+    const columnsIndex = table.columnsIndex;
+    const columnsIds = Object.keys(columnsIndex);
+    DbmsService.validateUniqueColumnsProperties(columnsDtos);
+
+    /**
+     * Update the existing columns names
+     */
+    const existingColumns = columnsDtos
+      .filter(({ id: columnId }) => columnsIds.includes(columnId))
+      .map(({ id: columnId, name: columnName, orderIndex: columnOrderIndex }) => {
+        const column = columnsIndex[columnId];
+        column.name = columnName || column.name;
+        column.orderIndex = columnOrderIndex || column.orderIndex;
+        return column;
+      });
+
+    /**
+     * Only the columns without an id can be considered as the new ones
+     */
+    const newColumnsDtos = columnsDtos.filter(({ id: columnId }) => !!columnId);
+    const newColumns = DbmsService.createColumns(table.id, newColumnsDtos);
+
+    /**
+     * Delete all existing columns which are not presented in the update
+     */
+    const columnsDtosIds = columnsDtos.map((column) => column.id);
+    const missingColumnsIds = columnsIds.filter((columnId) => !columnsDtosIds.includes(columnId));
+    if (missingColumnsIds.length) {
+      await this.removeTableColumns(table, missingColumnsIds);
+    }
+
+    table.setColumns([...existingColumns, ...newColumns]);
+  }
+
+  private static validateUniqueColumnsProperties(columnsDtos: (CreateColumnDto | UpdateColumnDto)[]): void {
+    const columnsNames = columnsDtos.map((column) => column.name);
+    const columnsOrderIndices = columnsDtos.map((column) => column.orderIndex);
+
+    const duplicatedColumnsNames = columnsNames.filter((name, index, arr) => index !== arr.indexOf(name)); // Filter only non-unique names
     if (duplicatedColumnsNames.length) {
       const uniqueDuplicatedNames = [...new Set(duplicatedColumnsNames)]; // Remove repeating duplicated names. E.g. [column1, column1] -> [column1]
       throw new HttpException(400, `Table cannot have duplicated columns names: [${uniqueDuplicatedNames.join(', ')}]`);
     }
 
-    return columns.map(({ name, type }) => new Column({ name, type, tableId }));
+    const duplicatedColumnsOrderIndices = columnsOrderIndices.filter(
+      (orderIndex, index, arr) => orderIndex !== arr.indexOf(orderIndex)
+    ); // Filter only non-unique indices
+    if (duplicatedColumnsOrderIndices.length) {
+      throw new HttpException(
+        400,
+        `Columns cannot have the same order indices: [${duplicatedColumnsOrderIndices.join(', ')}]`
+      );
+    }
+  }
+
+  private async removeTableColumns(table: Table, columnsIds: string[]) {
+    table.removeColumns(columnsIds);
+    await this.persistor.deleteRowsColumns(table.databaseId, table.id, columnsIds);
   }
 
   public async deleteTable(databaseId: string, tableId: string): Promise<void> {
