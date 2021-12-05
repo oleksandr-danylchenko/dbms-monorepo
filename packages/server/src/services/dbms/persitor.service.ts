@@ -87,22 +87,21 @@ class DbmsPersistor {
   }
 
   public async writeTable(table: Table) {
-    const { id, name, databaseId, columns, columnsOrderIndex } = table;
+    const { id, name, databaseId, columns } = table;
     const tableFilePath = this.createTablePath(databaseId, id);
     const persistContent = {
       id,
       name,
       databaseId,
       columnsIndex: createPersistColumnsIndex(columns),
-      columnsOrderIndex,
     };
     const persistContentStr = JSON.stringify(persistContent);
     return fsPromises.writeFile(tableFilePath, persistContentStr);
 
     function createPersistColumnsIndex(columns: Column[]): PersistedColumnsIndex {
       return columns.reduce((index, column) => {
-        const { id: columnId, name: columnName, tableId, type: columnType } = column;
-        index[columnId] = { id: columnId, name: columnName, tableId, type: columnType };
+        const { id: columnId, name: columnName, tableId, type: columnType, orderIndex: columnOrderIndex } = column;
+        index[columnId] = { id: columnId, name: columnName, tableId, type: columnType, orderIndex: columnOrderIndex };
         return index;
       }, {} as PersistedColumnsIndex);
     }
@@ -166,6 +165,16 @@ class DbmsPersistor {
     return this.writePersistedRows(databaseId, tableId, rowsWithoutColumn);
   }
 
+  public async deleteRowsColumns(databaseId: string, tableId: string, columnsIds: string[]) {
+    const rows = await this.readRowsLines(databaseId, tableId);
+    const rowsWithoutColumn = rows.map((row) => {
+      const columnsValuesIndex = { ...row.rowColumnsValuesIndex };
+      columnsIds.forEach((columnId) => delete columnsValuesIndex[columnId]);
+      return { ...row, rowColumnsValuesIndex: columnsValuesIndex };
+    });
+    return this.writePersistedRows(databaseId, tableId, rowsWithoutColumn);
+  }
+
   public async removeRow(databaseId: string, tableId: string, rowId: string) {
     const rows = await this.readRowsLines(databaseId, tableId);
     const rowsWithoutRemoved = rows.filter((row) => row.id !== rowId);
@@ -196,12 +205,14 @@ class DbmsPersistor {
   }
 
   private static createTable(table: PersistedTable, columns: Column[]): Table {
-    const { id, name, databaseId, columnsOrderIndex } = table;
-    return new Table({ id, name, databaseId, columns, columnsOrderIndex });
+    const { id, name, databaseId } = table;
+    return new Table({ id, name, databaseId, columns });
   }
 
   private static createColumns(columns: PersistedColumn[]): Column[] {
-    return columns.map(({ id, name, tableId, type }) => new Column({ id, name, tableId, type }));
+    return columns.map(
+      ({ id, name, tableId, type, orderIndex }) => new Column({ id, name, tableId, type, orderIndex })
+    );
   }
 
   private static createRows(rows: PersistedRow[]): Row[] {
