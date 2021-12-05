@@ -8,10 +8,9 @@ export interface FetchError {
 
 export const toFetchError = (originalError?: FetchBaseQueryError | SerializedError): FetchError | undefined => {
   if (!originalError) return undefined;
-  const {
-    data: { message },
-    status,
-  } = originalError as { data: { message: string }; status: string };
+
+  const { data, error, status } = originalError as { data: { message: string }; error: string; status: string };
+  const message = data?.message || error;
   return { message, status };
 };
 
