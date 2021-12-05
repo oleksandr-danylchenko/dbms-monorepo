@@ -174,7 +174,7 @@ class DbmsPersistor {
 
   private async writePersistedRows(databaseId: string, tableId: string, rows: PersistedRow[]) {
     const rowsFilePath = this.createRowsPath(databaseId, tableId);
-    const persistContentStr = rows.map((row) => JSON.stringify(row)).join(EOL);
+    const persistContentStr = rows.map((row) => JSON.stringify(row)).join(EOL) + EOL;
     return fsPromises.writeFile(rowsFilePath, persistContentStr);
   }
 

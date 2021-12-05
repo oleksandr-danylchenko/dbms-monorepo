@@ -49,9 +49,6 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick }) => {
   if (activeTableError || rowsError) {
     const sharedError = activeTableError || rowsError;
     const fetchingError = toFetchError(sharedError);
-
-    console.log(sharedError);
-
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
