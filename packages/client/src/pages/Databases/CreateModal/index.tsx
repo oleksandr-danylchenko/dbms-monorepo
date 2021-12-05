@@ -5,6 +5,7 @@ import ModifyModal from '../../../components/ModifyModal';
 import { useAddDatabaseMutation } from '../../../redux/queries/databases';
 import { CreateDatabaseDto } from '../../../dtos';
 import { useFormState } from '../../../hooks/useFormState';
+import { toFetchError } from '../../../utils/errors';
 
 interface DatabaseCreateModalProps {
   onClose: BindingAction;
@@ -29,7 +30,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   }, [createDatabase, databaseFormState, onClose]);
 
   const databaseForm = useMemo(() => {
-    const creationFetchError = creationError as { status: number; data: { message: string } };
+    const creationFetchError = toFetchError(creationError);
     return (
       <Form onSubmit={handleSaveDatabase} loading={isCreating} error={!!creationFetchError}>
         <Form.Input
@@ -40,7 +41,7 @@ const DatabaseCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
           value={databaseFormState.name}
           onChange={handleDatabaseFormChange as any}
         />
-        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.data?.message || ''} />
+        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.message || ''} />
       </Form>
     );
   }, [creationError, handleSaveDatabase, isCreating, databaseFormState.name, handleDatabaseFormChange]);

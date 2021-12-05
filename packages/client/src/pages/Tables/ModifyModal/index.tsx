@@ -7,6 +7,7 @@ import { UpdateTableDto } from '../../../dtos';
 import { useFormState } from '../../../hooks/useFormState';
 import { selectTableById } from '../../../redux/selectors/tables';
 import { useUpdateTableMutation } from '../../../redux/queries/tables';
+import { toFetchError } from '../../../utils/errors';
 
 interface TableModifyModalProps {
   tableId: string;
@@ -36,7 +37,7 @@ const TableModifyModal: FC<TableModifyModalProps> = ({ tableId, onClose }) => {
   }, [modifyingTable?.databaseId, onClose, tableFormState, tableId, updateTable]);
 
   const tableForm = useMemo(() => {
-    const updateFetchError = updateError as { status: number; data: { message: string } };
+    const updateFetchError = toFetchError(updateError);
     return (
       <Form onSubmit={handleSaveTable} loading={isUpdateLoading} error={!!updateFetchError}>
         <Form.Input
@@ -47,7 +48,7 @@ const TableModifyModal: FC<TableModifyModalProps> = ({ tableId, onClose }) => {
           value={tableFormState.name}
           onChange={handleTableFormChange as any}
         />
-        <Message error header={updateFetchError?.status || ''} content={updateFetchError?.data?.message || ''} />
+        <Message error header={updateFetchError?.status || ''} content={updateFetchError?.message || ''} />
       </Form>
     );
   }, [updateError, handleSaveTable, isUpdateLoading, tableFormState.name, handleTableFormChange]);

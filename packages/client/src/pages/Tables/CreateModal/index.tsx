@@ -7,6 +7,7 @@ import { useFormState } from '../../../hooks/useFormState';
 import { useAddTableMutation } from '../../../redux/queries/tables';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
+import { toFetchError } from '../../../utils/errors';
 
 interface DatabaseCreateModalProps {
   onClose: BindingAction;
@@ -34,7 +35,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   }, [activeDatabaseId, createTable, onClose, tableFormState]);
 
   const tableForm = useMemo(() => {
-    const creationFetchError = creationError as { status: number; data: { message: string } };
+    const creationFetchError = toFetchError(creationError);
     return (
       <Form onSubmit={handleSaveTable} loading={isCreating} error={!!creationFetchError}>
         <Form.Input
@@ -45,7 +46,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
           value={tableFormState.name}
           onChange={handleTableFormChange as any}
         />
-        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.data?.message || ''} />
+        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.message || ''} />
       </Form>
     );
   }, [creationError, handleSaveTable, isCreating, tableFormState.name, handleTableFormChange]);

@@ -5,6 +5,9 @@ export const toFetchError = (
   originalError?: FetchBaseQueryError | SerializedError
 ): { message: string; status: string } => {
   if (!originalError) return { message: 'Unknown error', status: 'Unknown' };
-  const { error, status } = originalError as { error: string; status: string };
-  return { message: error, status };
+  const {
+    data: { message },
+    status,
+  } = originalError as { data: { message: string }; status: string };
+  return { message, status };
 };

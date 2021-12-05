@@ -7,6 +7,7 @@ import ModifyModal from '../../../components/ModifyModal';
 import { useUpdateDatabaseMutation } from '../../../redux/queries/databases';
 import { UpdateDatabaseDto } from '../../../dtos';
 import { useFormState } from '../../../hooks/useFormState';
+import { toFetchError } from '../../../utils/errors';
 
 interface DatabaseModifyModalProps {
   databaseId: string;
@@ -33,7 +34,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
   }, [databaseFormState, databaseId, onClose, updateDatabase]);
 
   const databaseForm = useMemo(() => {
-    const updateFetchError = updateError as { status: number; data: { message: string } };
+    const updateFetchError = toFetchError(updateError);
     return (
       <Form onSubmit={handleSaveDatabase} loading={isUpdateLoading} error={!!updateFetchError}>
         <Form.Input
@@ -44,7 +45,7 @@ const DatabaseModifyModal: FC<DatabaseModifyModalProps> = ({ databaseId, onClose
           value={databaseFormState.name}
           onChange={handleDatabaseFormChange as any}
         />
-        <Message error header={updateFetchError?.status || ''} content={updateFetchError?.data?.message || ''} />
+        <Message error header={updateFetchError?.status || ''} content={updateFetchError?.message || ''} />
       </Form>
     );
   }, [databaseFormState.name, handleDatabaseFormChange, handleSaveDatabase, isUpdateLoading, updateError]);

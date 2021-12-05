@@ -8,6 +8,7 @@ import { useActiveTable } from '../../../redux/hooks/tables';
 import { useAddRowMutation } from '../../../redux/queries/rows';
 import { FieldType, RowColumnsValuesIndex } from '../../../models/dbms';
 import styles from './styles.module.scss';
+import { toFetchError } from '../../../utils/errors';
 
 interface RowsCreateModalProps {
   onClose: BindingAction;
@@ -40,7 +41,7 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
   }, [activeTable, createRow, onClose, rowFormState]);
 
   const rowForm = useMemo(() => {
-    const creationFetchError = creationError as { status: number; data: { message: string } };
+    const creationFetchError = toFetchError(creationError);
     return (
       <Form onSubmit={handleSaveRow} loading={isCreating} error={!!creationFetchError}>
         {activeTable?.columnsOrderIndex?.map((columnId) => {
@@ -55,20 +56,20 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
           );
 
           const value = rowFormState[columnId] || '';
-          const onChangeHandler = handleRowFormChange as any;
+          const handler = handleRowFormChange as any;
 
           if (column.type === FieldType.color) {
             return (
               <Form.Field key={columnId} name={columnId}>
                 <label htmlFor={`${columnId}-color-input`}>{label}</label>
                 <Form.Group inline>
-                  <Input name={columnId} value={value} onChange={onChangeHandler} />
+                  <Input name={columnId} value={value} onChange={handler} />
                   <Input
                     id={`${columnId}-color-input`}
                     type="color"
                     name={columnId}
                     value={value}
-                    onChange={onChangeHandler}
+                    onChange={handler}
                     className={styles.RowsCreateModal__FieldColor}
                   />
                 </Form.Group>
@@ -76,18 +77,9 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
             );
           }
 
-          return (
-            <Form.Input
-              key={columnId}
-              name={columnId}
-              label={label}
-              required
-              value={value}
-              onChange={onChangeHandler}
-            />
-          );
+          return <Form.Input key={columnId} name={columnId} label={label} required value={value} onChange={handler} />;
         })}
-        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.data?.message || ''} />
+        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.message || ''} />
       </Form>
     );
   }, [
