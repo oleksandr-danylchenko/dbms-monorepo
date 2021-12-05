@@ -1,5 +1,5 @@
 import { FC, ReactElement, useMemo } from 'react';
-import { Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
+import { Button, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
 import { toFetchError } from '../../../utils/errors';
@@ -8,8 +8,13 @@ import { useActiveTableRows } from '../../../redux/hooks/rows';
 import { selectAllRows } from '../../../redux/selectors/rows';
 import styles from './styles.module.scss';
 import { FieldType } from '../../../models/dbms';
+import { BindingCallback1 } from '../../../models/functions';
 
-const RowsTable: FC = () => {
+interface RowsTableProps {
+  onDeleteClick: BindingCallback1<{ rowId: string }>;
+}
+
+const RowsTable: FC<RowsTableProps> = ({ onDeleteClick }) => {
   const { data: activeTable, isFetching: isActiveTableFetching, error: activeTableError } = useActiveTable();
 
   const { isLoading, error: rowsError } = useActiveTableRows();
@@ -44,6 +49,9 @@ const RowsTable: FC = () => {
   if (activeTableError || rowsError) {
     const sharedError = activeTableError || rowsError;
     const fetchingError = toFetchError(sharedError);
+
+    console.log(sharedError);
+
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
@@ -76,6 +84,11 @@ const RowsTable: FC = () => {
               </UiTable.HeaderCell>
             );
           })}
+          {!!activeTable?.columnsOrderIndex?.length && (
+            <UiTable.HeaderCell key="actions-header" width={1}>
+              Actions
+            </UiTable.HeaderCell>
+          )}
         </UiTable.Row>
       </UiTable.Header>
       <UiTable.Body>
@@ -88,6 +101,17 @@ const RowsTable: FC = () => {
                 <UiTable.Cell key={columnId}>{formatCellValue({ type: columnType, value: columnValue })}</UiTable.Cell>
               );
             })}
+            {!!activeTable?.columnsOrderIndex?.length && (
+              <UiTable.Cell key={`actions-row-${row.id}`} width={1} textAlign="center">
+                <Button
+                  circular
+                  icon="trash alternate"
+                  size="mini"
+                  color="black"
+                  onClick={() => onDeleteClick({ rowId: row.id })}
+                />
+              </UiTable.Cell>
+            )}
           </UiTable.Row>
         ))}
       </UiTable.Body>
