@@ -1,5 +1,5 @@
 import { FC, ReactElement, useMemo } from 'react';
-import { Button, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
+import { Button, Card, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
 import { toMandatoryFetchError } from '../../../utils/errors';
@@ -9,12 +9,14 @@ import { selectAllRows } from '../../../redux/selectors/rows';
 import styles from './styles.module.scss';
 import { FieldType } from '../../../models/dbms';
 import { BindingCallback1 } from '../../../models/functions';
+import CreationCard from '../../../components/CreationCard';
 
 interface RowsTableProps {
   onDeleteClick: BindingCallback1<{ rowId: string }>;
+  onTableEditClick: BindingCallback1<{ tableId: string }>;
 }
 
-const RowsTable: FC<RowsTableProps> = ({ onDeleteClick }) => {
+const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
   const { data: activeTable, isFetching: isActiveTableFetching, error: activeTableError } = useActiveTable();
 
   const { isLoading, error: rowsError } = useActiveTableRows();
@@ -50,6 +52,18 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick }) => {
     const sharedError = activeTableError || rowsError;
     const fetchingError = toMandatoryFetchError(sharedError);
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
+  }
+
+  if (activeTable?.columnsOrderIndex && activeTable.columnsOrderIndex.length === 0) {
+    return (
+      <Card.Group centered doubling stackable>
+        <CreationCard
+          key="columnCreation"
+          header="Add a new column"
+          onClick={() => onTableEditClick({ tableId: activeTable.id })}
+        />
+      </Card.Group>
+    );
   }
 
   const formatCellValue = ({ type, value }: { type: FieldType; value: string }): string | ReactElement => {
