@@ -17,9 +17,9 @@ const Tables: FC = () => {
   const [editTableId, setEditTableId] = useState<string>();
   const [deleteTableId, setDeleteTableId] = useState<string>();
 
-  const { databaseId: paramsDatabaseId } = useParams<{ databaseId: string }>();
   const { data: activeDatabase, isFetching: isDatabaseFetching } = useActiveDatabase();
 
+  const { databaseId: paramsDatabaseId } = useParams<{ databaseId: string }>();
   useEffect(() => {
     dispatch(updateActiveIds({ databaseId: paramsDatabaseId }));
   }, [dispatch, paramsDatabaseId]);

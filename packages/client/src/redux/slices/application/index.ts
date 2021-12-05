@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { API_HOST } from '../../../constants';
-import { selectDefinedProperties } from '../../../utils/objects';
 
 export interface ApplicationState {
   activeIds: Partial<{
@@ -38,11 +37,8 @@ export const applicationsSlice = createSlice({
   name: 'application',
   initialState,
   reducers: {
-    updateActiveIds: (state, action: PayloadAction<Partial<ApplicationState['activeIds']>>) => {
-      state.activeIds = {
-        ...state.activeIds,
-        ...selectDefinedProperties(action.payload),
-      };
+    updateActiveIds: (state, action: PayloadAction<ApplicationState['activeIds']>) => {
+      state.activeIds = action.payload;
     },
   },
 });
