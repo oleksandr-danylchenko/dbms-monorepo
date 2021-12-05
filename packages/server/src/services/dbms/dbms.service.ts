@@ -156,7 +156,7 @@ class DbmsService {
 
   private async updateTableColumns(table: Table, columnsDtos: UpdateColumnDto[]): Promise<void> {
     const columnsIndex = table.columnsIndex;
-    const columnsIds = Object.keys(columnsIndex);
+    const columnsIds = table.columnsIds;
     DbmsService.validateUniqueColumnsProperties(columnsDtos);
 
     /**
@@ -174,8 +174,11 @@ class DbmsService {
     /**
      * Only the columns without an id can be considered as the new ones
      */
-    const newColumnsDtos = columnsDtos.filter(({ id: columnId }) => !!columnId);
+    const newColumnsDtos = columnsDtos.filter(({ id: columnId }) => !columnId);
     const newColumns = DbmsService.createColumns(table.id, newColumnsDtos);
+
+    const updatedColumns = [...existingColumns, ...newColumns];
+    DbmsService.validateUniqueColumnsProperties(updatedColumns);
 
     /**
      * Delete all existing columns which are not presented in the update
@@ -186,12 +189,12 @@ class DbmsService {
       await this.removeTableColumns(table, missingColumnsIds);
     }
 
-    table.setColumns([...existingColumns, ...newColumns]);
+    table.setColumns(updatedColumns);
   }
 
-  private static validateUniqueColumnsProperties(columnsDtos: (CreateColumnDto | UpdateColumnDto)[]): void {
-    const columnsNames = columnsDtos.map((column) => column.name);
-    const columnsOrderIndices = columnsDtos.map((column) => column.orderIndex);
+  private static validateUniqueColumnsProperties(columns: (Column | CreateColumnDto | UpdateColumnDto)[]): void {
+    const columnsNames = columns.map((column) => column.name);
+    const columnsOrderIndices = columns.map((column) => column.orderIndex);
 
     const duplicatedColumnsNames = columnsNames.filter((name, index, arr) => index !== arr.indexOf(name)); // Filter only non-unique names
     if (duplicatedColumnsNames.length) {
@@ -200,7 +203,7 @@ class DbmsService {
     }
 
     const duplicatedColumnsOrderIndices = columnsOrderIndices.filter(
-      (orderIndex, index, arr) => orderIndex !== arr.indexOf(orderIndex)
+      (orderIndex, index, arr) => index !== arr.indexOf(orderIndex)
     ); // Filter only non-unique indices
     if (duplicatedColumnsOrderIndices.length) {
       throw new HttpException(

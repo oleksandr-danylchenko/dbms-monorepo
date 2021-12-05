@@ -67,20 +67,14 @@ class Table {
 
   public setColumns(columns: Column[]) {
     this._columnsIndex = {};
-    columns.map(this.addColumn);
-  }
-
-  private addColumn(column: Column) {
-    const { id: columnId } = column;
-    this._columnsIndex[columnId] = column;
-  }
-
-  public removeColumn(columnId: string) {
-    delete this._columnsIndex[columnId];
+    columns.map((column) => {
+      const { id: columnId } = column;
+      this._columnsIndex[columnId] = column;
+    });
   }
 
   public removeColumns(columnsIds: string[]) {
-    columnsIds.map(this.removeColumn);
+    columnsIds.map((columnId) => delete this._columnsIndex[columnId]);
   }
 }
 
