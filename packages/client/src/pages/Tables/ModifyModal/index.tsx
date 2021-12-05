@@ -28,7 +28,13 @@ const TableModifyModal: FC<TableModifyModalProps> = ({ tableId, onClose }) => {
     if (!modifyingTable?.databaseId) return;
 
     const updatedTable: UpdateTableDto = {
-      ...tableFormState,
+      name: tableFormState.name,
+      columns: tableFormState.columns.map((column) => ({
+        id: column.id,
+        name: column.name,
+        type: column.type,
+        orderIndex: column.orderIndex,
+      })),
     };
 
     updateTable({ databaseId: modifyingTable.databaseId, tableId, table: updatedTable })

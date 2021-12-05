@@ -1,6 +1,7 @@
 import Table from '@models/dbms/table';
 import { TableDto } from '@dtos/table.dto';
 import Column from '@models/dbms/column';
+import ColumnMapper from '@/mappers/column.mapper';
 
 class TableMapper {
   public static toDto(table: Table): TableDto {
@@ -14,7 +15,7 @@ class TableMapper {
     function createDtoColumnsIndex(columns: Column[]): TableDto['columnsIndex'] {
       return columns.reduce((index, column) => {
         const columnId = column.id;
-        index[columnId] = { id: columnId, name: column.name, tableId: column.tableId, type: column.type };
+        index[columnId] = ColumnMapper.toDto(column);
         return index;
       }, {} as TableDto['columnsIndex']);
     }
