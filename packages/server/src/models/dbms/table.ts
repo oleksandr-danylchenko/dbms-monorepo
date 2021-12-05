@@ -10,8 +10,7 @@ class Table {
   private readonly _id: string;
   private _name: string;
   private readonly _databaseId: string;
-  private readonly _columnsIndex: ColumnsIndex;
-  private _columnsOrderIndex: string[];
+  private _columnsIndex: ColumnsIndex;
 
   constructor({
     id,
@@ -28,7 +27,6 @@ class Table {
     this._name = name;
     this._databaseId = databaseId;
     this._columnsIndex = normalize(columns || []);
-    this._columnsOrderIndex = columns?.map((column) => column.id) || [];
   }
 
   public get id() {
@@ -59,17 +57,6 @@ class Table {
     return this._columnsIndex;
   }
 
-  public get columnsOrderIndex(): string[] {
-    return this._columnsOrderIndex;
-  }
-
-  // /**
-  //  * Allow only to shuffle the existing ids, but not to add/remove ones
-  //  */
-  // public set columnsOrderIndex(value: string[]) {
-  //   this._columnsOrderIndex = value;
-  // }
-
   public getColumn(id: string): Column | undefined {
     return this._columnsIndex[id];
   }
@@ -78,24 +65,22 @@ class Table {
     return this.columnsIds.length;
   }
 
-  public addColumn(column: Column) {
-    const { id: columnId } = column;
-    this._columnsIndex[columnId] = column;
-    this._columnsOrderIndex.push(columnId);
-  }
-
-  public addColumns(columns: Column[]) {
+  public setColumns(columns: Column[]) {
+    this._columnsIndex = {};
     columns.map(this.addColumn);
   }
 
-  public removeColumn(column: Column) {
+  private addColumn(column: Column) {
     const { id: columnId } = column;
-    delete this._columnsIndex[columnId];
-    this._columnsOrderIndex = this._columnsOrderIndex.filter((savedColumnId) => savedColumnId !== columnId);
+    this._columnsIndex[columnId] = column;
   }
 
-  public removeColumns(columns: Column[]) {
-    columns.map(this.removeColumn);
+  public removeColumn(columnId: string) {
+    delete this._columnsIndex[columnId];
+  }
+
+  public removeColumns(columnsIds: string[]) {
+    columnsIds.map(this.removeColumn);
   }
 }
 
