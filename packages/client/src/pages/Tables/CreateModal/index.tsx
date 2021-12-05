@@ -19,6 +19,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
 
   const [tableFormState, handleTableFormChange] = useFormState<CreateTableDto>({
     name: '',
+    columns: [],
   });
 
   // TODO Remove duplication

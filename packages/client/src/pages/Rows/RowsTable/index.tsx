@@ -10,6 +10,7 @@ import styles from './styles.module.scss';
 import { FieldType } from '../../../models/dbms';
 import { BindingCallback1 } from '../../../models/functions';
 import CreationCard from '../../../components/CreationCard';
+import { selectActiveTableColumnsOrderIndex } from '../../../redux/selectors/tables';
 
 interface RowsTableProps {
   onDeleteClick: BindingCallback1<{ rowId: string }>;
@@ -18,6 +19,7 @@ interface RowsTableProps {
 
 const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
   const { data: activeTable, isFetching: isActiveTableFetching, error: activeTableError } = useActiveTable();
+  const columnsOrderIndex = useAppSelector(selectActiveTableColumnsOrderIndex);
 
   const { isLoading, error: rowsError } = useActiveTableRows();
   const rows = useAppSelector(selectAllRows);
@@ -54,7 +56,7 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
     return <ErrorHeader message={fetchingError.message} submessage={fetchingError.status} />;
   }
 
-  if (activeTable?.columnsOrderIndex && activeTable.columnsOrderIndex.length === 0) {
+  if (activeTable && columnsOrderIndex && columnsOrderIndex.length === 0) {
     return (
       <Card.Group centered doubling stackable>
         <CreationCard
@@ -82,20 +84,21 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
     <UiTable celled>
       <UiTable.Header>
         <UiTable.Row>
-          {activeTable?.columnsOrderIndex?.map((columnId) => {
-            const { name: columnName, type: columnType } = activeTable.columnsIndex[columnId];
-            return (
-              <UiTable.HeaderCell key={columnId}>
-                <div className={styles.RowsTable__HeaderCell}>
-                  {columnName}
-                  <Label circular color="black">
-                    {columnType}
-                  </Label>
-                </div>
-              </UiTable.HeaderCell>
-            );
-          })}
-          {!!activeTable?.columnsOrderIndex?.length && (
+          {activeTable &&
+            columnsOrderIndex?.map((columnId) => {
+              const { name: columnName, type: columnType } = activeTable.columnsIndex[columnId];
+              return (
+                <UiTable.HeaderCell key={columnId}>
+                  <div className={styles.RowsTable__HeaderCell}>
+                    {columnName}
+                    <Label circular color="black">
+                      {columnType}
+                    </Label>
+                  </div>
+                </UiTable.HeaderCell>
+              );
+            })}
+          {!!columnsOrderIndex?.length && (
             <UiTable.HeaderCell key="actions-header" width={1}>
               Actions
             </UiTable.HeaderCell>
@@ -105,14 +108,17 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
       <UiTable.Body>
         {rows.map((row) => (
           <UiTable.Row key={row.id}>
-            {activeTable?.columnsOrderIndex?.map((columnId) => {
-              const { type: columnType } = activeTable.columnsIndex[columnId];
-              const { value: columnValue } = row.columnsValuesIndex[columnId];
-              return (
-                <UiTable.Cell key={columnId}>{formatCellValue({ type: columnType, value: columnValue })}</UiTable.Cell>
-              );
-            })}
-            {!!activeTable?.columnsOrderIndex?.length && (
+            {activeTable &&
+              columnsOrderIndex?.map((columnId) => {
+                const { type: columnType } = activeTable.columnsIndex[columnId];
+                const { value: columnValue } = row.columnsValuesIndex[columnId];
+                return (
+                  <UiTable.Cell key={columnId}>
+                    {formatCellValue({ type: columnType, value: columnValue })}
+                  </UiTable.Cell>
+                );
+              })}
+            {!!columnsOrderIndex?.length && (
               <UiTable.Cell key={`actions-row-${row.id}`} width={1} textAlign="center">
                 <Button
                   circular

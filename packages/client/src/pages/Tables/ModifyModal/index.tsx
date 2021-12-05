@@ -20,7 +20,7 @@ const TableModifyModal: FC<TableModifyModalProps> = ({ tableId, onClose }) => {
 
   const [tableFormState, handleTableFormChange] = useFormState<UpdateTableDto>({
     name: modifyingTable?.name || '',
-    columnsOrderIndex: modifyingTable?.columnsOrderIndex || [],
+    columns: Object.values(modifyingTable?.columnsIndex || {}),
   });
 
   // TODO Remove duplication

@@ -19,9 +19,11 @@ export interface Table {
   id: string;
   name: string;
   databaseId: string;
-  columnsIndex: {
-    [columnId: string]: Column;
-  };
+  columnsIndex: TableColumnsIndex;
+}
+
+export interface TableColumnsIndex {
+  [columnId: string]: Column;
 }
 
 export interface Column {

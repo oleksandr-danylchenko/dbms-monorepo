@@ -7,7 +7,7 @@ import { Table } from '../../../models/dbms';
 import ErrorHeader from '../../../components/ErrorHeader';
 import { toMandatoryFetchError } from '../../../utils/errors';
 import { useActiveDatabaseTables } from '../../../redux/hooks/tables';
-import { selectNameSortedTables } from '../../../redux/selectors/tables';
+import { selectNameSortedTables, sortColumnsIndex } from '../../../redux/selectors/tables';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import styles from './styles.module.scss';
 import CardActions from '../../../components/CardActions';
@@ -74,7 +74,7 @@ const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDelet
       );
     }
 
-    const columnsOrder = table.columnsOrderIndex;
+    const columnsOrder = sortColumnsIndex(table?.columnsIndex || {});
     return (
       <Menu vertical fluid>
         <Menu.Item>

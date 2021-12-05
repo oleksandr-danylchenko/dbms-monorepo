@@ -9,6 +9,8 @@ import { useAddRowMutation } from '../../../redux/queries/rows';
 import { FieldType, RowColumnsValuesIndex } from '../../../models/dbms';
 import styles from './styles.module.scss';
 import { toFetchError } from '../../../utils/errors';
+import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
+import { selectActiveTableColumnsOrderIndex } from '../../../redux/selectors/tables';
 
 interface RowsCreateModalProps {
   onClose: BindingAction;
@@ -16,6 +18,7 @@ interface RowsCreateModalProps {
 
 const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
   const { data: activeTable } = useActiveTable();
+  const columnsOrderIndex = useAppSelector(selectActiveTableColumnsOrderIndex);
 
   const [createRow, { isLoading: isCreating, error: creationError }] = useAddRowMutation();
 
@@ -44,53 +47,48 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
     const creationFetchError = toFetchError(creationError);
     return (
       <Form onSubmit={handleSaveRow} loading={isCreating} error={!!creationFetchError}>
-        {activeTable?.columnsOrderIndex?.map((columnId) => {
-          const column = activeTable.columnsIndex[columnId];
-          const label = (
-            <span className={styles.RowsCreateModal__FieldLabel}>
-              {column.name}
-              <Label circular color="black">
-                {column.type}
-              </Label>
-            </span>
-          );
-
-          const value = rowFormState[columnId] || '';
-          const handler = handleRowFormChange as any;
-
-          if (column.type === FieldType.color) {
-            return (
-              <Form.Field key={columnId} name={columnId}>
-                <label htmlFor={`${columnId}-color-input`}>{label}</label>
-                <Form.Group inline>
-                  <Input name={columnId} value={value} onChange={handler} />
-                  <Input
-                    id={`${columnId}-color-input`}
-                    type="color"
-                    name={columnId}
-                    value={value}
-                    onChange={handler}
-                    className={styles.RowsCreateModal__FieldColor}
-                  />
-                </Form.Group>
-              </Form.Field>
+        {activeTable &&
+          columnsOrderIndex?.map((columnId) => {
+            const column = activeTable.columnsIndex[columnId];
+            const label = (
+              <span className={styles.RowsCreateModal__FieldLabel}>
+                {column.name}
+                <Label circular color="black">
+                  {column.type}
+                </Label>
+              </span>
             );
-          }
 
-          return <Form.Input key={columnId} name={columnId} label={label} required value={value} onChange={handler} />;
-        })}
+            const value = rowFormState[columnId] || '';
+            const handler = handleRowFormChange as any;
+
+            if (column.type === FieldType.color) {
+              return (
+                <Form.Field key={columnId} name={columnId}>
+                  <label htmlFor={`${columnId}-color-input`}>{label}</label>
+                  <Form.Group inline>
+                    <Input name={columnId} value={value} onChange={handler} />
+                    <Input
+                      id={`${columnId}-color-input`}
+                      type="color"
+                      name={columnId}
+                      value={value}
+                      onChange={handler}
+                      className={styles.RowsCreateModal__FieldColor}
+                    />
+                  </Form.Group>
+                </Form.Field>
+              );
+            }
+
+            return (
+              <Form.Input key={columnId} name={columnId} label={label} required value={value} onChange={handler} />
+            );
+          })}
         <Message error header={creationFetchError?.status || ''} content={creationFetchError?.message || ''} />
       </Form>
     );
-  }, [
-    activeTable?.columnsIndex,
-    activeTable?.columnsOrderIndex,
-    creationError,
-    handleRowFormChange,
-    handleSaveRow,
-    isCreating,
-    rowFormState,
-  ]);
+  }, [activeTable, columnsOrderIndex, creationError, handleRowFormChange, handleSaveRow, isCreating, rowFormState]);
 
   return (
     <ModifyModal
