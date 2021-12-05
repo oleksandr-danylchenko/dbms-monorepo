@@ -1,4 +1,4 @@
-import { IsEnum, IsString, MinLength } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, MinLength } from 'class-validator';
 import { FieldType } from '@interfaces/dbms/dbms.interface';
 
 export interface ColumnDto {
@@ -17,10 +17,27 @@ export class CreateColumnDto {
   @MinLength(1)
   @IsEnum(FieldType)
   public type!: FieldType;
+
+  @IsInt()
+  public orderIndex!: number;
 }
 
 export class UpdateColumnDto {
   @IsString()
   @MinLength(1)
+  @IsOptional()
+  public id!: string;
+
+  @IsString()
+  @MinLength(1)
+  @IsOptional()
   public name!: string;
+
+  @IsString()
+  @MinLength(1)
+  @IsOptional()
+  public type!: FieldType;
+
+  @IsInt()
+  public orderIndex!: number;
 }
