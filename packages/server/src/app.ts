@@ -9,6 +9,7 @@ import { Routes } from '@interfaces/routes.interface';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger.helper';
 import env from '@config/env';
+import 'reflect-metadata';
 
 class App {
   public app: express.Application;

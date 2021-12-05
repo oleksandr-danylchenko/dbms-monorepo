@@ -4,6 +4,25 @@ import { RequestHandler } from 'express';
 import { HttpException } from '@exceptions/HttpException';
 import { Request } from 'express-serve-static-core';
 
+const collectErrorMessage = (errors: ValidationError[], property?: string): string => {
+  const message = errors
+    .flatMap((error: ValidationError) => Object.values(error.constraints || {}))
+    .filter(Boolean)
+    .join('\n ');
+  if (message) {
+    const topLevelPropertyStr = property ? `Property: ${property} ` : '';
+    return topLevelPropertyStr + message;
+  }
+  return errors
+    .map((error) =>
+      error.children
+        ? collectErrorMessage(error.children, property ? `${property} ${error.property}` : error.property)
+        : ''
+    )
+    .filter(Boolean)
+    .join('\n ');
+};
+
 const validationMiddleware =
   (
     type: any,
@@ -19,7 +38,7 @@ const validationMiddleware =
       forbidNonWhitelisted,
     }).then((errors: ValidationError[]) => {
       if (errors.length > 0) {
-        const message = errors.map((error: ValidationError) => Object.values(error.constraints || {})).join(', ');
+        const message = collectErrorMessage(errors);
         next(new HttpException(400, message));
       } else {
         next();
