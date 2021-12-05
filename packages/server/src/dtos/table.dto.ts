@@ -1,5 +1,6 @@
 import { IsArray, IsOptional, IsString, MinLength, ValidateNested } from 'class-validator';
 import { ColumnDto, CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
+import { Type } from 'class-transformer';
 
 export interface TableDto {
   id: string;
@@ -17,6 +18,7 @@ export class CreateTableDto {
 
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => CreateColumnDto)
   public columns!: CreateColumnDto[];
 }
 
@@ -28,6 +30,7 @@ export class UpdateTableDto {
 
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => UpdateColumnDto)
   @IsOptional()
   public columns!: UpdateColumnDto[];
 }
