@@ -31,7 +31,7 @@ class DbmsValidation {
     const missingRowColumns = columns.filter(({ id: columnId }) => !rowColumnsValuesIndex[columnId]);
     if (missingRowColumns.length > 0) {
       const columnsNames = missingRowColumns.map(({ id, name }) => `(${id}:${name})`).join(', ');
-      return { errorMessage: `Row column missing [${columnsNames}] columns` };
+      return { errorMessage: `Row values missing [${columnsNames}] columns` };
     }
 
     for (const columnId in rowColumnsValuesIndex) {

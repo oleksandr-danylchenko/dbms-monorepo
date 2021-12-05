@@ -1,12 +1,12 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Form, Label, Message } from 'semantic-ui-react';
+import { Form, Input, Label, Message } from 'semantic-ui-react';
 import { BindingAction } from '../../../models/functions';
 import ModifyModal from '../../../components/ModifyModal';
 import { CreateRowDto } from '../../../dtos';
 import { useFormState } from '../../../hooks/useFormState';
 import { useActiveTable } from '../../../redux/hooks/tables';
 import { useAddRowMutation } from '../../../redux/queries/rows';
-import { RowColumnsValuesIndex } from '../../../models/dbms';
+import { FieldType, RowColumnsValuesIndex } from '../../../models/dbms';
 import styles from './styles.module.scss';
 
 interface RowsCreateModalProps {
@@ -54,8 +54,28 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
             </span>
           );
 
+          if (column.type === FieldType.color) {
+            return (
+              <Form.Field key={columnId} name={columnId}>
+                <label htmlFor={`${columnId}-color-input`}>{label}</label>
+                <Form.Group inline>
+                  <Input name={columnId} value={rowFormState[columnId]} onChange={handleRowFormChange as any} />
+                  <Input
+                    id={`${columnId}-color-input`}
+                    type="color"
+                    name={columnId}
+                    value={rowFormState[columnId]}
+                    onChange={handleRowFormChange as any}
+                    className={styles.RowsCreateModal__FieldColor}
+                  />
+                </Form.Group>
+              </Form.Field>
+            );
+          }
+
           return (
             <Form.Input
+              key={columnId}
               name={columnId}
               label={label}
               required

@@ -7,5 +7,12 @@
       margin-bottom: rem(5px);
       font-weight: bold;
     }
+
+    &Color {
+      input {
+        height: rem(43px);
+        padding: 0 !important;
+      }
+    }
   }
 }
