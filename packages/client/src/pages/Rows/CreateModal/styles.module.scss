@@ -1,0 +1,11 @@
+@import "src/styles";
+
+.RowsCreateModal {
+  &__Field {
+    &Label {
+      @include flexbox($alignItems: center, $gap: rem(10px));
+      margin-bottom: rem(5px);
+      font-weight: bold;
+    }
+  }
+}

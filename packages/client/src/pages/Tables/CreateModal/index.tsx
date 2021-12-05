@@ -34,9 +34,9 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   }, [activeDatabaseId, createTable, onClose, tableFormState]);
 
   const tableForm = useMemo(() => {
-    const createFetchError = creationError as { status: number; data: { message: string } };
+    const creationFetchError = creationError as { status: number; data: { message: string } };
     return (
-      <Form onSubmit={handleSaveTable} loading={isCreating} error={!!createFetchError}>
+      <Form onSubmit={handleSaveTable} loading={isCreating} error={!!creationFetchError}>
         <Form.Input
           name="name"
           label="Name"
@@ -45,7 +45,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
           value={tableFormState.name}
           onChange={handleTableFormChange as any}
         />
-        <Message error header={createFetchError?.status || ''} content={createFetchError?.data?.message || ''} />
+        <Message error header={creationFetchError?.status || ''} content={creationFetchError?.data?.message || ''} />
       </Form>
     );
   }, [creationError, handleSaveTable, isCreating, tableFormState.name, handleTableFormChange]);

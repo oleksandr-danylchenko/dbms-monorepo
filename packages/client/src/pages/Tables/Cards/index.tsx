@@ -87,7 +87,10 @@ const TablesCards: FC<TablesCardsProps> = ({ onCreateClick, onEditClick, onDelet
           const { name: columnName, type: columnType } = columnsIndex[columnId];
           return (
             <Menu.Item key={columnId} className={styles.TablesCards__Column}>
-              <span>{columnName}</span> <strong>{columnType}</strong>
+              <span>{columnName}</span>
+              <Label circular color="black">
+                {columnType}
+              </Label>
             </Menu.Item>
           );
         })}
