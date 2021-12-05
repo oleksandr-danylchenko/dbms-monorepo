@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { tablesAdapter, tablesInitialState } from '../../queries/tables/tables_cache_helper';
 import { tablesApi } from '../../queries/tables';
-import { selectActiveDatabaseId } from '../application';
+import { selectActiveDatabaseId, selectActiveTableId } from '../application';
 import { stateSelector, undefinedResultSelector } from '../utils';
 import { TableColumnsIndex } from '../../../models/dbms';
 
@@ -25,8 +25,8 @@ export const selectNameSortedTables = createSelector(selectAllTables, (tables) =
   tables.sort(({ name: tableNameA }, { name: tableNameB }) => tableNameA.localeCompare(tableNameB))
 );
 
-export const selectActiveTable = createSelector(stateSelector, selectActiveDatabaseId, (getState, activeDatabaseId) =>
-  !activeDatabaseId ? undefined : selectTableById(getState(), activeDatabaseId)
+export const selectActiveTable = createSelector(stateSelector, selectActiveTableId, (getState, activeTableId) =>
+  !activeTableId ? undefined : selectTableById(getState(), activeTableId)
 );
 
 export const sortColumnsIndex = (columnsIndex: TableColumnsIndex): string[] =>
