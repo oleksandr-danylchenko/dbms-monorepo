@@ -69,7 +69,7 @@ const RowsTable: FC = () => {
               <UiTable.HeaderCell key={columnId}>
                 <div className={styles.RowsTable__HeaderCell}>
                   {columnName}
-                  <Label circular color="grey">
+                  <Label circular color="black">
                     {columnType}
                   </Label>
                 </div>
