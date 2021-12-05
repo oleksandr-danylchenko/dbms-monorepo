@@ -23,10 +23,6 @@ export class CreateTableDto {
 export class UpdateTableDto {
   @IsString()
   @MinLength(1)
-  public id!: string;
-
-  @IsString()
-  @MinLength(1)
   @IsOptional()
   public name!: string;
 

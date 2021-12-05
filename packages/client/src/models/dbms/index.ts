@@ -22,7 +22,6 @@ export interface Table {
   columnsIndex: {
     [columnId: string]: Column;
   };
-  columnsOrderIndex: string[];
 }
 
 export interface Column {
@@ -30,6 +29,7 @@ export interface Column {
   name: string;
   tableId: string;
   type: FieldType;
+  orderIndex: number;
 }
 
 export interface RowColumnValue {
