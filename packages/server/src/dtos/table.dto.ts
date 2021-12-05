@@ -1,12 +1,12 @@
-import { IsArray, IsString, MinLength } from 'class-validator';
-import { ColumnDto } from '@dtos/column.dto';
+import { IsArray, IsOptional, IsString, MinLength, ValidateNested } from 'class-validator';
+import { ColumnDto, CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
 
 export interface TableDto {
   id: string;
   name: string;
   databaseId: string;
   columnsIndex: {
-    [columnId: string]: Pick<ColumnDto, 'id' | 'name' | 'type' | 'tableId'>;
+    [columnId: string]: ColumnDto;
   };
   columnsOrderIndex: string[];
 }
@@ -15,10 +15,24 @@ export class CreateTableDto {
   @IsString()
   @MinLength(1)
   public name!: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  public columns!: CreateColumnDto[];
 }
 
-export class UpdateTableDto extends CreateTableDto {
+export class UpdateTableDto {
+  @IsString()
+  @MinLength(1)
+  public id!: string;
+
+  @IsString()
+  @MinLength(1)
+  @IsOptional()
+  public name!: string;
+
   @IsArray()
-  @IsString({ each: true })
-  public columnsOrderIndex!: string[];
+  @ValidateNested({ each: true })
+  @IsOptional()
+  public columns!: UpdateColumnDto[];
 }

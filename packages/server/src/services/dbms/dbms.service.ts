@@ -108,12 +108,14 @@ class DbmsService {
     const database = await this.findDatabaseById(databaseId);
     const tables = database.tables;
 
-    const { name: newTableName } = tableData;
+    const { name: newTableName, columns: columnsDtos } = tableData;
 
     const isNameUnique = this.checkUniqueEntityName(tables, newTableName);
     if (!isNameUnique) throw new HttpException(409, `Table ${newTableName} already exists`);
 
     const newTable = new Table({ name: newTableName, databaseId });
+    const columns = this.createColumns(newTable.id, columnsDtos);
+    newTable.addColumns(columns);
     database.addTable(newTable);
     await this.persistor.writeDatabase(database);
     await this.persistor.writeTable(newTable);
@@ -145,6 +147,18 @@ class DbmsService {
     await this.persistor.writeTable(table);
 
     return table;
+  }
+
+  private createColumns(tableId: string, columns: CreateColumnDto[]): Column[] {
+    const duplicatedColumnsNames = columns
+      .map((column) => column.name)
+      .filter((name, index, arr) => index !== arr.indexOf(name)); // Filter only non-unique names
+    if (duplicatedColumnsNames.length) {
+      const uniqueDuplicatedNames = [...new Set(duplicatedColumnsNames)]; // Remove repeating duplicated names. E.g. [column1, column1] -> [column1]
+      throw new HttpException(400, `Table cannot have duplicated columns names: [${uniqueDuplicatedNames.join(', ')}]`);
+    }
+
+    return columns.map(({ name, type }) => new Column({ name, type, tableId }));
   }
 
   public async deleteTable(databaseId: string, tableId: string): Promise<void> {

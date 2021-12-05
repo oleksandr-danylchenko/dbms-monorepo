@@ -63,12 +63,12 @@ class Table {
     return this._columnsOrderIndex;
   }
 
-  /**
-   * Allow only to shuffle the existing ids, but not to add/remove ones
-   */
-  public set columnsOrderIndex(value: string[]) {
-    this._columnsOrderIndex = value;
-  }
+  // /**
+  //  * Allow only to shuffle the existing ids, but not to add/remove ones
+  //  */
+  // public set columnsOrderIndex(value: string[]) {
+  //   this._columnsOrderIndex = value;
+  // }
 
   public getColumn(id: string): Column | undefined {
     return this._columnsIndex[id];
@@ -84,10 +84,18 @@ class Table {
     this._columnsOrderIndex.push(columnId);
   }
 
+  public addColumns(columns: Column[]) {
+    columns.map(this.addColumn);
+  }
+
   public removeColumn(column: Column) {
     const { id: columnId } = column;
     delete this._columnsIndex[columnId];
     this._columnsOrderIndex = this._columnsOrderIndex.filter((savedColumnId) => savedColumnId !== columnId);
+  }
+
+  public removeColumns(columns: Column[]) {
+    columns.map(this.removeColumn);
   }
 }
 

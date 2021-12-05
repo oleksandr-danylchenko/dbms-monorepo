@@ -7,6 +7,7 @@ export interface RowDto {
   columnsValuesIndex: RowColumnsValuesIndex;
 }
 
+// TODO Simplify and just pass an array of columns values
 export class CreateRowDto {
   @IsObject()
   columnsValuesIndex!: RowColumnsValuesIndex;
