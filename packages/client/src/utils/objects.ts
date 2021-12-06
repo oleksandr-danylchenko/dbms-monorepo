@@ -26,3 +26,11 @@ export const isEmpty = (value: string | number | object): boolean => {
 };
 
 export const areEmpty = (...values: (string | number | object)[]): boolean => values.every((value) => isEmpty(value));
+
+export const moveArray = <T>(arr: T[], from: number, to: number): T[] => {
+  const result = [...arr];
+  const element = result[from];
+  result.splice(from, 1);
+  result.splice(to, 0, element);
+  return result;
+};

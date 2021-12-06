@@ -9,7 +9,7 @@ import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import { toFetchError } from '../../../utils/errors';
 import { FieldType } from '../../../models/dbms';
-import { transformTable } from '../../../redux/queries/tables/tables_cache_helper';
+import { moveArray } from '../../../utils/objects';
 
 interface DatabaseCreateModalProps {
   onClose: BindingAction;
@@ -96,6 +96,32 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
     [setTableFormState]
   );
 
+  const handleMoveColumn = useCallback(
+    (columnName: string, direction: 'up' | 'down') => {
+      setTableFormState((prevTableState) => {
+        const prevColumns = prevTableState.columns;
+        const columnNameIndex = prevColumns.findIndex((column) => column.name === columnName);
+        const prevIndex = columnNameIndex - 1;
+        const nextIndex = columnNameIndex + 1;
+        if (prevIndex < 0 && direction === 'up') {
+          return prevTableState;
+        }
+        if (nextIndex >= prevColumns.length && direction === 'down') {
+          return prevTableState;
+        }
+
+        const movingIndex = direction === 'up' ? prevIndex : nextIndex;
+        const movedArray = moveArray(prevColumns, columnNameIndex, movingIndex);
+        const reorderedColumns = movedArray.map((column, index) => ({ ...column, orderIndex: index }));
+        return {
+          ...prevTableState,
+          columns: reorderedColumns,
+        };
+      });
+    },
+    [setTableFormState]
+  );
+
   const tableForm = useMemo(() => {
     const creationFetchError = toFetchError(creationError);
     return (
@@ -114,6 +140,8 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
             return (
               <Menu.Item key={columnName}>
                 <Icon name="times" onClick={() => handleRemoveColumn(columnName)} />
+                <Icon name="arrow up" onClick={() => handleMoveColumn(columnName, 'up')} />
+                <Icon name="arrow down" onClick={() => handleMoveColumn(columnName, 'down')} />
                 <span>{columnName}</span>
                 <Label circular color="black">
                   {columnType}
