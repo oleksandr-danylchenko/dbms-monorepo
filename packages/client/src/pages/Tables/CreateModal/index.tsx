@@ -277,21 +277,25 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       </Form>
     );
   }, [
-    modifyingColumn?.name,
-    modifyingColumn?.type,
     creationError,
-    handleAddColumn,
-    handleColumnChange,
-    handleMoveColumn,
-    handleRemoveColumn,
-    handleRemoveNewColumn,
-    handleSaveNewColumn,
     handleSaveTable,
+    isCreating,
+    tableFormState.name,
+    tableFormState.columns,
     handleTableFormChange,
     isAddingColumn,
-    isCreating,
-    tableFormState.columns,
-    tableFormState.name,
+    editingColumnName,
+    modifyingColumn?.name,
+    modifyingColumn?.type,
+    handleColumnChange,
+    handleRemoveNewColumn,
+    handleSaveNewColumn,
+    handleAddColumn,
+    handleRemoveEditingColumn,
+    handleSaveEditingColumn,
+    handleRemoveColumn,
+    handleEditColumn,
+    handleMoveColumn,
   ]);
 
   return (
