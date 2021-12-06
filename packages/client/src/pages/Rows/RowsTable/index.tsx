@@ -111,7 +111,7 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
             {activeTable &&
               columnsOrderIndex?.map((columnId) => {
                 const { type: columnType } = activeTable.columnsIndex[columnId];
-                const { value: columnValue } = row.columnsValuesIndex[columnId];
+                const { value: columnValue } = row.columnsValuesIndex[columnId] || { value: '∅' };
                 return (
                   <UiTable.Cell key={columnId}>
                     {formatCellValue({ type: columnType, value: columnValue })}
