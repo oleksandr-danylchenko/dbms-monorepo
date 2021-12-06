@@ -2164,6 +2164,7 @@ __metadata:
     "@types/express-serve-static-core": ^4.17.25
     "@types/helmet": ^4.0.0
     "@types/hpp": ^0.2.1
+    "@types/is-base64": ^1.1.1
     "@types/jsonwebtoken": ^8.5.4
     "@types/morgan": ^1.9.3
     "@types/supertest": ^2.0.11
@@ -2186,6 +2187,7 @@ __metadata:
     express: ^4.17.1
     helmet: ^4.6.0
     hpp: ^0.2.3
+    is-base64: ^1.1.0
     jsonwebtoken: ^8.5.1
     morgan: ^1.10.0
     nanoid: ^3.1.30
@@ -2790,6 +2792,13 @@ __metadata:
   version: 5.1.2
   resolution: "@types/html-minifier-terser@npm:5.1.2"
   checksum: 4bca779c44d2aebe4cc4036c5db370abe7466249038e9c5996cb3c192debeff1c75b7a2ab78e5fd2a014ad24ebf0f357f9a174a4298540dc1e1317d43aa69cfa
+  languageName: node
+  linkType: hard
+
+"@types/is-base64@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@types/is-base64@npm:1.1.1"
+  checksum: 3edb1c5d2bf89f0a48e12dffe192a9ea94bab0fbe8e601f19f3775fbc13567217247f18bc357ed23e800e5243e5cb7f900712e6c2ed7290b9e3b1840db38d023
   languageName: node
   linkType: hard
 
@@ -9015,6 +9024,16 @@ __metadata:
   version: 0.3.2
   resolution: "is-arrayish@npm:0.3.2"
   checksum: 977e64f54d91c8f169b59afcd80ff19227e9f5c791fa28fa2e5bce355cbaf6c2c356711b734656e80c9dd4a854dd7efcf7894402f1031dfc5de5d620775b4d5f
+  languageName: node
+  linkType: hard
+
+"is-base64@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "is-base64@npm:1.1.0"
+  bin:
+    is-base64: bin/is-base64
+    is_base64: bin/is-base64
+  checksum: 5935d054d04895cd617c20853b3cb6516db8c3852a2697ebcbda0d4889c9eb841ca0610c99108f83d4342b378fdd9d0f222227ec25f18528227479749d1833ac
   languageName: node
   linkType: hard
 

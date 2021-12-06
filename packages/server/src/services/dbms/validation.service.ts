@@ -2,6 +2,7 @@ import { FieldType } from '@interfaces/dbms/dbms.interface';
 import { ColumnsIndex } from '@models/dbms/table';
 import { RowColumnsValuesIndex } from '@models/dbms/row';
 import { isHexColor, isRgbColor } from 'class-validator';
+import isBase64 from 'is-base64';
 
 export type Validator = (value: unknown) => boolean;
 
@@ -15,7 +16,7 @@ class DbmsValidation {
     real: (value) => Number.isFinite(value),
     char: (value) => typeof value === 'string' && value.length === 1,
     string: (value) => typeof value === 'string',
-    picture: (value) => isRgbColor(value),
+    picture: (value) => isBase64(String(value), { mimeRequired: true }),
     color: (value) => isRgbColor(value) || isHexColor(value),
   };
 
