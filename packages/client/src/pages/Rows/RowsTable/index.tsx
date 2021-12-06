@@ -1,5 +1,5 @@
 import { FC, ReactElement, useMemo } from 'react';
-import { Button, Card, Container, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
+import { Button, Card, Container, Image, Label, Placeholder, Table as UiTable } from 'semantic-ui-react';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { useActiveTable } from '../../../redux/hooks/tables';
 import { toMandatoryFetchError } from '../../../utils/errors';
@@ -69,12 +69,18 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
   }
 
   const formatCellValue = ({ type, value }: { type: FieldType; value: string }): string | ReactElement => {
+    if (!value) return '∅';
+
     if (type === FieldType.color) {
       return (
         <span className={styles.RowsTable__ColorCell}>
           {value} <span style={{ backgroundColor: value }} />
         </span>
       );
+    }
+
+    if (type === FieldType.picture) {
+      return <Image src={value} size="medium" rounded />;
     }
 
     return value;
@@ -111,7 +117,7 @@ const RowsTable: FC<RowsTableProps> = ({ onDeleteClick, onTableEditClick }) => {
             {activeTable &&
               columnsOrderIndex?.map((columnId) => {
                 const { type: columnType } = activeTable.columnsIndex[columnId];
-                const { value: columnValue } = row.columnsValuesIndex[columnId] || { value: '∅' };
+                const { value: columnValue } = row.columnsValuesIndex[columnId] || {};
                 return (
                   <UiTable.Cell key={columnId}>
                     {formatCellValue({ type: columnType, value: columnValue })}
