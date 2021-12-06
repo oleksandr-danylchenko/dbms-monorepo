@@ -15,20 +15,20 @@ interface DatabaseCreateModalProps {
   onClose: BindingAction;
 }
 
-const defaultColumnFormState = {
+export const defaultColumnFormState = {
   name: '',
   type: undefined,
   orderIndex: undefined,
 };
 
-const fieldsTypesOptions = Object.values(FieldType).map((type) => ({ key: type, value: type, text: type }));
+export const fieldsTypesOptions = Object.values(FieldType).map((type) => ({ key: type, value: type, text: type }));
 
 const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const activeDatabaseId = useAppSelector(selectActiveDatabaseId);
   const [createTable, { isLoading: isCreating, error: creationError }] = useAddTableMutation();
 
   const [isAddingColumn, setAddingColumn] = useState(false);
-  const [editingColumn, handleColumnChange, setColumnState] =
+  const [addingColumn, handleColumnChange, setColumnState] =
     useFormState<Partial<CreateColumnDto>>(defaultColumnFormState);
 
   const [tableFormState, handleTableFormChange, setTableFormState] = useFormState<CreateTableDto>({
@@ -55,7 +55,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   }, [setColumnState]);
 
   const handleSaveNewColumn = useCallback(() => {
-    const newColumn = editingColumn as CreateColumnDto;
+    const newColumn = addingColumn as CreateColumnDto;
     const { name: newName, type: newType } = newColumn;
     if (!newName || !newType) return;
 
@@ -66,7 +66,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
     setTableFormState((prevTableState) => {
       const previousColumns = prevTableState.columns;
       const newColumnOrderIndex = previousColumns.length + 1;
-      const newColumnData = { ...(editingColumn as CreateColumnDto), orderIndex: newColumnOrderIndex };
+      const newColumnData = { ...(addingColumn as CreateColumnDto), orderIndex: newColumnOrderIndex };
       const columnsWithNew = [...previousColumns, newColumnData];
       return {
         ...prevTableState,
@@ -74,7 +74,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       };
     });
     setAddingColumn(false);
-  }, [editingColumn, setTableFormState, tableFormState]);
+  }, [addingColumn, setTableFormState, tableFormState]);
 
   const handleRemoveNewColumn = useCallback(() => {
     setColumnState(defaultColumnFormState);
@@ -155,7 +155,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
                 <Form.Input
                   name="name"
                   placeholder="Column name"
-                  value={editingColumn?.name || ''}
+                  value={addingColumn?.name || ''}
                   onChange={handleColumnChange as any}
                 />
                 <Form.Dropdown
@@ -164,7 +164,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
                   selection
                   name="type"
                   placeholder="Column type"
-                  value={editingColumn?.type || ''}
+                  value={addingColumn?.type || ''}
                   options={fieldsTypesOptions}
                   onChange={handleColumnChange as any}
                 />
@@ -186,11 +186,15 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       </Form>
     );
   }, [
+    addingColumn?.name,
+    addingColumn?.type,
     creationError,
-    editingColumn?.name,
-    editingColumn?.type,
     handleAddColumn,
     handleColumnChange,
+    handleMoveColumn,
+    handleRemoveColumn,
+    handleRemoveNewColumn,
+    handleSaveNewColumn,
     handleSaveTable,
     handleTableFormChange,
     isAddingColumn,
