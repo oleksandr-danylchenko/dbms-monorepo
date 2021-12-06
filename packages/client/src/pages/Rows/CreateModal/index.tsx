@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Form, Input, Label, Message } from 'semantic-ui-react';
+import { Form, Input, Label, Message, Image, Segment, Icon } from 'semantic-ui-react';
 import { BindingAction } from '../../../models/functions';
 import ModifyModal from '../../../components/ModifyModal';
 import { CreateRowDto } from '../../../dtos';
@@ -11,6 +11,7 @@ import styles from './styles.module.scss';
 import { toFetchError } from '../../../utils/errors';
 import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { selectActiveTableColumnsOrderIndex } from '../../../redux/selectors/tables';
+import { fileToBase64 } from '../../../utils/files';
 
 interface RowsCreateModalProps {
   onClose: BindingAction;
@@ -42,6 +43,26 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
       .unwrap()
       .then(() => onClose());
   }, [activeTable, createRow, onClose, rowFormState]);
+
+  const handlePictureLoading = useCallback(
+    async (columnId, fileEvent) => {
+      const file = fileEvent.target?.files?.[0];
+      const isFileImage = file?.type?.split('/')?.[0] === 'image';
+      if (!isFileImage) return;
+
+      const filename = file.name;
+      const fileBase64 = await fileToBase64(file);
+
+      const columnValue = {
+        filename,
+        fileBase64,
+      };
+
+      const handler = handleRowFormChange as any;
+      handler(fileEvent, { name: columnId, value: columnValue });
+    },
+    [handleRowFormChange]
+  );
 
   const rowForm = useMemo(() => {
     const creationFetchError = toFetchError(creationError);
@@ -82,6 +103,38 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
               );
             }
 
+            if (columnType === FieldType.picture) {
+              return (
+                <Form.Field key={columnId} name={columnId}>
+                  <label htmlFor={`${columnId}-picture-input`}>{label}</label>
+                  <Form.Group widths="equal" className={styles.RowsCreateModal__FieldPicture}>
+                    <Input
+                      id={`${columnId}-picture-input`}
+                      hidden
+                      placeholder="No image has been loaded yet"
+                      value={rowFormState[columnId]?.filename}
+                      name={columnId}
+                      className={styles.RowsCreateModal__FieldPicture__Preview}
+                    />
+                    <Form.Button as="label" htmlFor={`${columnId}-picture-input-file`} type="button">
+                      Click here to load an image
+                      <Icon name="picture" />
+                    </Form.Button>
+                    <input
+                      id={`${columnId}-picture-input-file`}
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={(event) => handlePictureLoading(columnId, event)}
+                    />
+                  </Form.Group>
+                  {rowFormState[columnId]?.fileBase64 && (
+                    <Image src={rowFormState[columnId]?.fileBase64} size="medium" rounded />
+                  )}
+                </Form.Field>
+              );
+            }
+
             if (columnType === FieldType.integer || columnType === FieldType.real) {
               return (
                 <Form.Input
@@ -105,7 +158,16 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
         <Message error header={creationFetchError?.status || ''} content={creationFetchError?.message || ''} />
       </Form>
     );
-  }, [activeTable, columnsOrderIndex, creationError, handleRowFormChange, handleSaveRow, isCreating, rowFormState]);
+  }, [
+    activeTable,
+    columnsOrderIndex,
+    creationError,
+    handlePictureLoading,
+    handleRowFormChange,
+    handleSaveRow,
+    isCreating,
+    rowFormState,
+  ]);
 
   return (
     <ModifyModal

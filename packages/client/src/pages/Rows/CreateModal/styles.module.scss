@@ -14,5 +14,19 @@
         padding: 0 !important;
       }
     }
+
+    &Picture {
+      @include flexbox($alignItems: center, $gap: rem(15px));
+
+      &__Preview {
+        pointer-events: none;
+      }
+
+      label {
+        @include flexbox($alignItems: center, $direction: column, $gap: rem(2px));
+        font-weight: bold;
+        cursor: pointer;
+      }
+    }
   }
 }
