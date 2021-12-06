@@ -62,7 +62,8 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
             const value = rowFormState[columnId] || '';
             const handler = handleRowFormChange as any;
 
-            if (column.type === FieldType.color) {
+            const columnType = column.type;
+            if (columnType === FieldType.color) {
               return (
                 <Form.Field key={columnId} name={columnId}>
                   <label htmlFor={`${columnId}-color-input`}>{label}</label>
@@ -78,6 +79,22 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
                     />
                   </Form.Group>
                 </Form.Field>
+              );
+            }
+
+            if (columnType === FieldType.integer || columnType === FieldType.real) {
+              return (
+                <Form.Input
+                  key={columnId}
+                  name={columnId}
+                  label={label}
+                  type="number"
+                  required
+                  value={value}
+                  onChange={(event, data) => {
+                    handler(event, { ...data, value: Number(data.value) });
+                  }}
+                />
               );
             }
 
