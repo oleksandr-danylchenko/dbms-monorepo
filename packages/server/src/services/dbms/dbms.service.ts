@@ -68,7 +68,7 @@ class DbmsService {
       database.name === updateDatabaseName || this.checkUniqueEntityName(this.allDatabases, updateDatabaseName);
     if (!isNameUnique) throw new HttpException(409, `Database ${updateDatabaseName} already exists`);
 
-    database.name = updateDatabaseName;
+    database.name = updateDatabaseName || database.name;
     await this.persistor.writeDatabase(database);
 
     return database;
@@ -167,7 +167,7 @@ class DbmsService {
       .map(({ id: columnId, name: columnName, orderIndex: columnOrderIndex }) => {
         const column = columnsIndex[columnId];
         column.name = columnName || column.name;
-        column.orderIndex = columnOrderIndex || column.orderIndex;
+        column.orderIndex = columnOrderIndex ?? column.orderIndex;
         return column;
       });
 
