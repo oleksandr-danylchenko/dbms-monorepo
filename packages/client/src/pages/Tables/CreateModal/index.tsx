@@ -81,6 +81,21 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
     setAddingColumn(false);
   }, [setColumnState]);
 
+  const handleRemoveColumn = useCallback(
+    (columnName: string) => {
+      setTableFormState((prevTableState) => {
+        const columnsWithoutName = prevTableState.columns
+          .filter((column) => column.name === columnName)
+          .map((column, index) => ({ ...column, orderIndex: index }));
+        return {
+          ...prevTableState,
+          columns: columnsWithoutName,
+        };
+      });
+    },
+    [setTableFormState]
+  );
+
   const tableForm = useMemo(() => {
     const creationFetchError = toFetchError(creationError);
     return (
@@ -98,6 +113,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
             const { name: columnName, type: columnType } = column;
             return (
               <Menu.Item key={columnName}>
+                <Icon name="times" onClick={() => handleRemoveColumn(columnName)} />
                 <span>{columnName}</span>
                 <Label circular color="black">
                   {columnType}
