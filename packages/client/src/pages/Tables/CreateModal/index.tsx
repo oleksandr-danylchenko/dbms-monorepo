@@ -9,6 +9,7 @@ import { useAppSelector } from '../../../redux/hooks/app/useAppSelector';
 import { selectActiveDatabaseId } from '../../../redux/selectors/application';
 import { toFetchError } from '../../../utils/errors';
 import { FieldType } from '../../../models/dbms';
+import { transformTable } from '../../../redux/queries/tables/tables_cache_helper';
 
 interface DatabaseCreateModalProps {
   onClose: BindingAction;
@@ -54,6 +55,14 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   }, [setColumnState]);
 
   const handleSaveNewColumn = useCallback(() => {
+    const newColumn = editingColumn as CreateColumnDto;
+    const { name: newName, type: newType } = newColumn;
+    if (!newName || !newType) return;
+
+    const { columns } = tableFormState;
+    const columnsNames = columns.map((column) => column.name);
+    if (columnsNames.includes(newName)) return;
+
     setTableFormState((prevTableState) => {
       const previousColumns = prevTableState.columns;
       const newColumnOrderIndex = previousColumns.length + 1;
@@ -65,7 +74,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
       };
     });
     setAddingColumn(false);
-  }, [editingColumn, setTableFormState]);
+  }, [editingColumn, setTableFormState, tableFormState]);
 
   const handleRemoveNewColumn = useCallback(() => {
     setColumnState(defaultColumnFormState);
@@ -115,8 +124,8 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
                   options={fieldsTypesOptions}
                   onChange={handleColumnChange as any}
                 />
-                <Form.Button icon="times" size="mini" basic onClick={handleRemoveNewColumn} />
-                <Form.Button icon="plus circle" size="mini" color="black" onClick={handleSaveNewColumn} />
+                <Form.Button type="button" icon="times" size="mini" basic onClick={handleRemoveNewColumn} />
+                <Form.Button type="button" icon="plus circle" size="mini" color="black" onClick={handleSaveNewColumn} />
               </Form.Group>
             </Menu.Item>
           )}
