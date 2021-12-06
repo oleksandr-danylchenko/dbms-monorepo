@@ -85,7 +85,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
     (columnName: string) => {
       setTableFormState((prevTableState) => {
         const columnsWithoutName = prevTableState.columns
-          .filter((column) => column.name === columnName)
+          .filter((column) => column.name !== columnName)
           .map((column, index) => ({ ...column, orderIndex: index }));
         return {
           ...prevTableState,
