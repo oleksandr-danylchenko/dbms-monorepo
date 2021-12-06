@@ -30,10 +30,15 @@ const RowsCreateModal: FC<RowsCreateModalProps> = ({ onClose }) => {
   const handleSaveRow = useCallback(() => {
     if (!activeTable) return;
 
+    const tableColumnsIndex = activeTable.columnsIndex;
     const columnsValuesIndex = Object.entries(rowFormState).reduce((columnsIndex, [columnId, value]) => {
+      const column = tableColumnsIndex[columnId];
+      const columnType = column.type;
+      const columnValue = columnType === FieldType.picture ? value.fileBase64 : value;
+
       columnsIndex[columnId] = {
         columnId,
-        value,
+        value: columnValue,
       };
       return columnsIndex;
     }, {} as RowColumnsValuesIndex);
