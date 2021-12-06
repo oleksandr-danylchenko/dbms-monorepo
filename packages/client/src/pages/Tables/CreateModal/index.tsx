@@ -30,7 +30,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const [editingColumn, handleColumnChange, setColumnState] =
     useFormState<Partial<CreateColumnDto>>(defaultColumnFormState);
 
-  const [tableFormState, handleTableFormChange] = useFormState<CreateTableDto>({
+  const [tableFormState, handleTableFormChange, setTableFormState] = useFormState<CreateTableDto>({
     name: '',
     columns: [],
   });
@@ -51,6 +51,25 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
   const handleAddColumn = useCallback(() => {
     setAddingColumn(true);
     setColumnState(defaultColumnFormState);
+  }, [setColumnState]);
+
+  const handleSaveNewColumn = useCallback(() => {
+    setTableFormState((prevTableState) => {
+      const previousColumns = prevTableState.columns;
+      const newColumnOrderIndex = previousColumns.length + 1;
+      const newColumnData = { ...(editingColumn as CreateColumnDto), orderIndex: newColumnOrderIndex };
+      const columnsWithNew = [...previousColumns, newColumnData];
+      return {
+        ...prevTableState,
+        columns: columnsWithNew,
+      };
+    });
+    setAddingColumn(false);
+  }, [editingColumn, setTableFormState]);
+
+  const handleRemoveNewColumn = useCallback(() => {
+    setColumnState(defaultColumnFormState);
+    setAddingColumn(false);
   }, [setColumnState]);
 
   const tableForm = useMemo(() => {
@@ -79,7 +98,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
           })}
           {isAddingColumn && (
             <Menu.Item key="creatingColumn">
-              <Form.Group widths="equal">
+              <Form.Group>
                 <Form.Input
                   name="name"
                   placeholder="Column name"
@@ -87,6 +106,7 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
                   onChange={handleColumnChange as any}
                 />
                 <Form.Dropdown
+                  fluid
                   search
                   selection
                   name="type"
@@ -95,6 +115,8 @@ const TableCreateModal: FC<DatabaseCreateModalProps> = ({ onClose }) => {
                   options={fieldsTypesOptions}
                   onChange={handleColumnChange as any}
                 />
+                <Form.Button icon="times" size="mini" basic onClick={handleRemoveNewColumn} />
+                <Form.Button icon="plus circle" size="mini" color="black" onClick={handleSaveNewColumn} />
               </Form.Group>
             </Menu.Item>
           )}
