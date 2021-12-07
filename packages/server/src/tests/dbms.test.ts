@@ -98,46 +98,85 @@ describe('Testing Databases', () => {
   });
 
   describe('[GET] /databases/:dbId', () => {
-    it('response findOne database', (done) => {
+    it('response findOne database', async () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
       const dbmsService = new DbmsService();
       const databases = dbmsService.allDatabases;
-      if (!databases.length) {
-        done('No databases have been created yet');
+      const testDatabase = databases.find((database) => database.name === 'testDatabase');
+      if (!testDatabase) {
+        throw new Error('Missing testDatabase');
       }
-      const firstDatabase = databases[0];
-      const firstDatabaseDto = DatabaseMapper.toDto(firstDatabase);
+      const testDatabaseDto = DatabaseMapper.toDto(testDatabase);
 
       request(app.getServer())
-        .get(`${dbmsRoute.path}/${firstDatabaseDto.id}`)
+        .get(`${dbmsRoute.path}/${testDatabaseDto.id}`)
         .expect('Content-Type', /json/)
-        .expect(200, { data: firstDatabaseDto, message: 'findDatabaseById' }, done);
+        .expect(200, { data: testDatabaseDto, message: 'findDatabaseById' });
     });
   });
 
   describe('[POST] /databases', () => {
-    it('response Create database duplicated name', (done) => {
+    it('response Create database duplicated name', async () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
       const dbmsService = new DbmsService();
       const databases = dbmsService.allDatabases;
-      if (!databases.length) {
-        done('No databases have been created yet');
+      const testDatabase = databases.find((database) => database.name === 'testDatabase');
+      if (!testDatabase) {
+        throw new Error('Missing testDatabase');
       }
-
-      const firstDatabase = databases[0];
       const databaseData: CreateDatabaseDto = {
-        name: firstDatabase.name,
+        name: testDatabase.name,
       };
 
+      request(app.getServer()).post(`${dbmsRoute.path}`).send(databaseData).expect('Content-Type', /json/).expect(409);
+    });
+  });
+
+  describe('[GET] /databases/:dbId/tables/:tableId/rows/projection', () => {
+    it('response table rows projection', (done) => {
+      const dbmsRoute = new DbmsRoute();
+      const app = new App([dbmsRoute]);
+
+      const dbmsService = new DbmsService();
+      const databases = dbmsService.allDatabases;
+      const testDatabase = databases.find((database) => database.name === 'testDatabase');
+      if (!testDatabase) {
+        throw new Error('Missing testDatabase');
+      }
+      const tables = testDatabase.tables;
+      const testTable = tables.find((table) => table.name === 'testTable');
+      if (!testTable) {
+        throw new Error('Missing testTable');
+      }
+
+      const projectionColumnsIds = testTable.columnsIds.slice(0, 2);
+      const projectionColumnsIdsParam = JSON.stringify(projectionColumnsIds);
+
       request(app.getServer())
-        .post(`${dbmsRoute.path}`)
-        .send(databaseData)
+        .get(
+          `${dbmsRoute.path}/${testDatabase.id}/tables/${testTable.id}/rows/projection?columns=${projectionColumnsIdsParam}`
+        )
         .expect('Content-Type', /json/)
-        .expect(409, done);
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+
+          const { body } = res;
+          if (body.message !== 'findAllDatabases') {
+            throw new Error('Missing findAllDatabases message');
+          }
+
+          const rowsProjection = body.data.length;
+          const firstRow = rowsProjection[0];
+          const firstRowColumnsAmount = Object.keys(firstRow.columnsValuesIndex).length;
+          if (firstRowColumnsAmount !== 2) {
+            throw new Error('Missing findAllDatabases message');
+          }
+        });
     });
   });
 });
