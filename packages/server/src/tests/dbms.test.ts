@@ -4,6 +4,62 @@ import DbmsRoute from '@routes/dbms.route';
 import DbmsService from '@services/dbms/dbms.service';
 import DatabaseMapper from '@/mappers/database.mapper';
 import { CreateDatabaseDto } from '@dtos/database.dto';
+import { FieldType } from '@interfaces/dbms/dbms.interface';
+import { CreateRowDto } from '@dtos/row.dto';
+
+beforeAll(async () => {
+  const dbmsService = new DbmsService();
+  const databases = dbmsService.allDatabases;
+  let testDatabase = databases.find((database) => database.name === 'testDatabase');
+  if (!testDatabase) {
+    testDatabase = await dbmsService.createDatabase({ name: 'testDatabase' });
+  }
+  const tables = testDatabase.tables;
+  let testTable = tables.find((table) => table.name === 'testTable');
+  if (!testTable) {
+    testTable = await dbmsService.createTable(testDatabase.id, {
+      name: 'testTable',
+      columns: [
+        { name: 'testColumn1', type: FieldType.string, orderIndex: 0 },
+        { name: 'testColumn2', type: FieldType.char, orderIndex: 1 },
+        { name: 'testColumn3', type: FieldType.real, orderIndex: 2 },
+      ],
+    });
+  }
+
+  const testColumnsIndex = testTable.columnsIndex;
+
+  const rows = await dbmsService.findAllRows(testDatabase.id, testTable.id);
+  if (!rows.length) {
+    const testRowData: CreateRowDto = {
+      columnsValuesIndex: Object.values(testColumnsIndex).reduce((colIndex, column) => {
+        const columnId = column.id;
+        const columnType = column.type;
+
+        let value;
+        switch (columnType) {
+          case FieldType.string: {
+            value = 'Testing string';
+            break;
+          }
+          case FieldType.char: {
+            value = 'g';
+            break;
+          }
+          default: {
+            value = 1.2;
+            break;
+          }
+        }
+
+        colIndex[columnId] = { columnId, value };
+        return colIndex;
+      }, {} as CreateRowDto['columnsValuesIndex']),
+    };
+
+    await dbmsService.createRow(testDatabase.id, testTable.id, testRowData);
+  }
+});
 
 afterAll(async () => {
   await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
