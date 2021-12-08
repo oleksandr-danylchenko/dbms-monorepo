@@ -83,9 +83,7 @@ describe('Testing Databases', () => {
         .get(`${dbmsRoute.path}`)
         .expect('Content-Type', /json/)
         .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-
+        .expect((res) => {
           const { body } = res;
           if (body.message !== 'findAllDatabases') {
             throw new Error('Missing findAllDatabases message');
@@ -96,6 +94,9 @@ describe('Testing Databases', () => {
           if (body.data.length !== databasesAmount) {
             throw new Error(`Databases amount is mismatched, expected: ${databasesAmount}, got: ${body.data.length}`);
           }
+        })
+        .end((err) => {
+          if (err) return done(err);
           return done();
         });
     });
@@ -170,20 +171,31 @@ describe('Testing Databases', () => {
         )
         .expect('Content-Type', /json/)
         .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-
+        .expect((res) => {
           const { body } = res;
           if (body.message !== 'projectRows') {
             throw new Error('Missing findAllDatabases message');
           }
 
+          debugger;
+
           const rowsProjection = body.data;
           const firstRow = rowsProjection[0];
-          const firstRowColumnsAmount = Object.keys(firstRow.columnsValuesIndex).length;
+          const firstRowColumnsIds = Object.keys(firstRow.columnsValuesIndex);
+          const firstRowColumnsAmount = firstRowColumnsIds.length;
           if (firstRowColumnsAmount !== 2) {
-            throw new Error('Missing findAllDatabases message');
+            throw new Error('Amount of projected columns is mismatched');
           }
+
+          const isColumnsMatching = projectionColumnsIds.every((columnId) => firstRowColumnsIds.includes(columnId));
+          if (!isColumnsMatching) {
+            throw new Error(
+              `Projected columns ids ${firstRowColumnsIds} missing expected columns ids ${projectionColumnsIds}`
+            );
+          }
+        })
+        .end((err) => {
+          if (err) return done(err);
           return done();
         });
     });
