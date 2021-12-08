@@ -62,7 +62,11 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await new Promise<void>((resolve) => setTimeout(() => resolve(), 100));
+  const dbmsService = new DbmsService();
+  const databases = dbmsService.allDatabases;
+  const testDatabase = databases.find((database) => database.name === 'testDatabase');
+  if (!testDatabase) return;
+  await dbmsService.deleteDatabase(testDatabase.id);
 });
 
 describe('Testing Databases', () => {
