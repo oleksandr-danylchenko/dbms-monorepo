@@ -6,6 +6,8 @@ import DatabaseMapper from '@/mappers/database.mapper';
 import { CreateDatabaseDto } from '@dtos/database.dto';
 import { FieldType } from '@interfaces/dbms/dbms.interface';
 import { CreateRowDto } from '@dtos/row.dto';
+import { UpdateTableDto } from '@dtos/table.dto';
+import { UpdateColumnDto } from '@dtos/column.dto';
 
 beforeAll(async () => {
   const dbmsService = DbmsService.getInstance();
@@ -153,11 +155,8 @@ describe('Testing Databases', () => {
       const dbmsService = DbmsService.getInstance();
       const databases = dbmsService.allDatabases;
       const testDatabase = databases.find((database) => database.name === 'testDatabase');
-      if (!testDatabase) {
-        throw new Error('Missing testDatabase');
-      }
-      const tables = testDatabase.tables;
-      const testTable = tables.find((table) => table.name === 'testTable');
+      const tables = testDatabase?.tables;
+      const testTable = tables?.find((table) => table.name === 'testTable');
       if (!testTable) {
         throw new Error('Missing testTable');
       }
@@ -167,7 +166,7 @@ describe('Testing Databases', () => {
 
       request(app.getServer())
         .get(
-          `${dbmsRoute.path}/${testDatabase.id}/tables/${testTable.id}/rows/projection?columns=${projectionColumnsIdsParam}`
+          `${dbmsRoute.path}/${testDatabase?.id}/tables/${testTable.id}/rows/projection?columns=${projectionColumnsIdsParam}`
         )
         .expect('Content-Type', /json/)
         .expect(200)
@@ -176,8 +175,6 @@ describe('Testing Databases', () => {
           if (body.message !== 'projectRows') {
             throw new Error('Missing findAllDatabases message');
           }
-
-          debugger;
 
           const rowsProjection = body.data;
           const firstRow = rowsProjection[0];
@@ -192,6 +189,87 @@ describe('Testing Databases', () => {
             throw new Error(
               `Projected columns ids ${firstRowColumnsIds} missing expected columns ids ${projectionColumnsIds}`
             );
+          }
+        })
+        .end((err) => {
+          if (err) return done(err);
+          return done();
+        });
+    });
+  });
+
+  describe('[PUT] /databases/:dbId/tables/:tableId', () => {
+    it('rename and reorder columns', (done) => {
+      const dbmsRoute = new DbmsRoute();
+      const app = new App([dbmsRoute]);
+
+      const dbmsService = DbmsService.getInstance();
+      const databases = dbmsService.allDatabases;
+      const testDatabase = databases.find((database) => database.name === 'testDatabase');
+      const tables = testDatabase?.tables;
+      const testTable = tables?.find((table) => table.name === 'testTable');
+      const testColumns = testTable?.columns;
+      if (!testColumns?.length) {
+        throw new Error('Missing columns for the testTable');
+      }
+
+      const firstColumn = testColumns[0];
+      const secondColumn = testColumns[1];
+
+      const updateFirstColumn: UpdateColumnDto = {
+        id: firstColumn.id,
+        name: 'updatedFirstColumn',
+        orderIndex: secondColumn.orderIndex,
+      };
+
+      const updateSecondColumn: UpdateColumnDto = {
+        id: secondColumn.id,
+        name: 'updatedSecondColumn',
+        orderIndex: firstColumn.orderIndex,
+      };
+
+      const updateData: UpdateTableDto = {
+        columns: [updateFirstColumn, updateSecondColumn],
+      };
+
+      request(app.getServer())
+        .put(`${dbmsRoute.path}/${testDatabase?.id}/tables/${testTable?.id}`)
+        .send(updateData)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .expect((res) => {
+          const { body } = res;
+          if (body.message !== 'updateTable') {
+            throw new Error('Missing updateTable message');
+          }
+
+          const updatedTable = body.data;
+          const updatedColumnsIndex = updatedTable.columnsIndex;
+
+          const updatedFirstColumn = updatedColumnsIndex[firstColumn.id];
+          if (!updatedFirstColumn) {
+            throw new Error(`Missing updated first column ${firstColumn.id}`);
+          }
+          const isFirstNameUpdated = updatedFirstColumn.name === updateFirstColumn.name;
+          if (!isFirstNameUpdated) {
+            throw new Error(`First column name wasn't updated to ${updateFirstColumn.name}`);
+          }
+          const isFirstOrderUpdated = updatedFirstColumn.orderIndex === updateFirstColumn.orderIndex;
+          if (!isFirstOrderUpdated) {
+            throw new Error(`First column order wasn't updated to ${updateFirstColumn.orderIndex}`);
+          }
+
+          const updatedSecondColumn = updatedColumnsIndex[secondColumn.id];
+          if (!updatedSecondColumn) {
+            throw new Error(`Missing updated second column ${secondColumn.id}`);
+          }
+          const isSecondNameUpdated = updatedSecondColumn.name === updateSecondColumn.name;
+          if (!isSecondNameUpdated) {
+            throw new Error(`Second column name wasn't updated to ${updateSecondColumn.name}`);
+          }
+          const isSecondOrderUpdated = updatedSecondColumn.orderIndex === updateSecondColumn.orderIndex;
+          if (!isSecondOrderUpdated) {
+            throw new Error(`Second column order wasn't updated to ${updateSecondColumn.orderIndex}`);
           }
         })
         .end((err) => {
