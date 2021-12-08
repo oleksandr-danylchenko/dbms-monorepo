@@ -114,7 +114,7 @@ describe('Testing Databases', () => {
       }
       const testDatabaseDto = DatabaseMapper.toDto(testDatabase);
 
-      request(app.getServer())
+      return request(app.getServer())
         .get(`${dbmsRoute.path}/${testDatabaseDto.id}`)
         .expect('Content-Type', /json/)
         .expect(200, { data: testDatabaseDto, message: 'findDatabaseById' });
@@ -136,7 +136,11 @@ describe('Testing Databases', () => {
         name: testDatabase.name,
       };
 
-      request(app.getServer()).post(`${dbmsRoute.path}`).send(databaseData).expect('Content-Type', /json/).expect(409);
+      return request(app.getServer())
+        .post(`${dbmsRoute.path}`)
+        .send(databaseData)
+        .expect('Content-Type', /json/)
+        .expect(409);
     });
   });
 
@@ -170,16 +174,17 @@ describe('Testing Databases', () => {
           if (err) return done(err);
 
           const { body } = res;
-          if (body.message !== 'findAllDatabases') {
+          if (body.message !== 'projectRows') {
             throw new Error('Missing findAllDatabases message');
           }
 
-          const rowsProjection = body.data.length;
+          const rowsProjection = body.data;
           const firstRow = rowsProjection[0];
           const firstRowColumnsAmount = Object.keys(firstRow.columnsValuesIndex).length;
           if (firstRowColumnsAmount !== 2) {
             throw new Error('Missing findAllDatabases message');
           }
+          return done();
         });
     });
   });
