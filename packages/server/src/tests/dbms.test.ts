@@ -8,7 +8,7 @@ import { FieldType } from '@interfaces/dbms/dbms.interface';
 import { CreateRowDto } from '@dtos/row.dto';
 
 beforeAll(async () => {
-  const dbmsService = new DbmsService();
+  const dbmsService = DbmsService.getInstance();
   const databases = dbmsService.allDatabases;
   let testDatabase = databases.find((database) => database.name === 'testDatabase');
   if (!testDatabase) {
@@ -62,7 +62,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  const dbmsService = new DbmsService();
+  const dbmsService = DbmsService.getInstance();
   const databases = dbmsService.allDatabases;
   const testDatabase = databases.find((database) => database.name === 'testDatabase');
   if (!testDatabase) return;
@@ -75,7 +75,7 @@ describe('Testing Databases', () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
-      const dbmsService = new DbmsService();
+      const dbmsService = DbmsService.getInstance();
       const databases = dbmsService.allDatabases;
       const databasesAmount = databases.length;
 
@@ -106,7 +106,7 @@ describe('Testing Databases', () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
-      const dbmsService = new DbmsService();
+      const dbmsService = DbmsService.getInstance();
       const databases = dbmsService.allDatabases;
       const testDatabase = databases.find((database) => database.name === 'testDatabase');
       if (!testDatabase) {
@@ -126,7 +126,7 @@ describe('Testing Databases', () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
-      const dbmsService = new DbmsService();
+      const dbmsService = DbmsService.getInstance();
       const databases = dbmsService.allDatabases;
       const testDatabase = databases.find((database) => database.name === 'testDatabase');
       if (!testDatabase) {
@@ -149,7 +149,7 @@ describe('Testing Databases', () => {
       const dbmsRoute = new DbmsRoute();
       const app = new App([dbmsRoute]);
 
-      const dbmsService = new DbmsService();
+      const dbmsService = DbmsService.getInstance();
       const databases = dbmsService.allDatabases;
       const testDatabase = databases.find((database) => database.name === 'testDatabase');
       if (!testDatabase) {
