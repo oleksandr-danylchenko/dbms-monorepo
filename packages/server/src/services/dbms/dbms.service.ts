@@ -145,7 +145,9 @@ class DbmsService {
     if (!isNameUnique) throw new HttpException(409, `Table ${tableName} already exists`);
 
     table.name = tableName || table.name;
-    await this.updateTableColumns(table, columnsDtos);
+    if (columnsDtos) {
+      await this.updateTableColumns(table, columnsDtos);
+    }
 
     await this.persistor.writeTable(table);
 
@@ -159,7 +161,7 @@ class DbmsService {
     table.setColumns(newColumns);
   }
 
-  private static createColumns(tableId: string, columnsDtos: (CreateColumnDto | UpdateColumnDto)[]) {
+  private static createColumns(tableId: string, columnsDtos: CreateColumnDto[]) {
     return columnsDtos.map(({ name, type, orderIndex }) => new Column({ name, type, tableId, orderIndex }));
   }
 
@@ -172,9 +174,9 @@ class DbmsService {
      * Update the existing columns names
      */
     const existingColumns = columnsDtos
-      .filter(({ id: columnId }) => columnsIds.includes(columnId))
+      .filter(({ id: columnId }) => columnId && columnsIds.includes(columnId))
       .map(({ id: columnId, name: columnName, orderIndex: columnOrderIndex }) => {
-        const column = columnsIndex[columnId];
+        const column = columnsIndex[columnId as string];
         column.name = columnName || column.name;
         column.orderIndex = columnOrderIndex ?? column.orderIndex;
         return column;
@@ -183,7 +185,11 @@ class DbmsService {
     /**
      * Only the columns without an id can be considered as the new ones
      */
-    const newColumnsDtos = columnsDtos.filter(({ id: columnId }) => !columnId);
+    const newColumnsDtos = columnsDtos.filter((columnDto): columnDto is CreateColumnDto => {
+      const { id } = columnDto;
+      if (!id) return true; // If it doesn't have an id -> consider dto as the new object
+      return false;
+    });
     const newColumns = DbmsService.createColumns(table.id, newColumnsDtos);
 
     const updatedColumns = [...existingColumns, ...newColumns];

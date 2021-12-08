@@ -4,7 +4,6 @@ import DbmsController from '@controllers/dbms.controller';
 import validationMiddleware from '@middlewares/validation.middleware';
 import { CreateDatabaseDto, UpdateDatabaseDto } from '@dtos/database.dto';
 import { CreateTableDto, UpdateTableDto } from '@dtos/table.dto';
-import { CreateColumnDto, UpdateColumnDto } from '@dtos/column.dto';
 import { CreateRowDto } from '@dtos/row.dto';
 
 class DbmsRoute implements Routes {

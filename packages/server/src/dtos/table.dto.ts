@@ -26,11 +26,11 @@ export class UpdateTableDto {
   @IsString()
   @MinLength(1)
   @IsOptional()
-  public name!: string;
+  public name?: string;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UpdateColumnDto)
   @IsOptional()
-  public columns!: UpdateColumnDto[];
+  public columns?: UpdateColumnDto[];
 }

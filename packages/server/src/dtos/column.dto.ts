@@ -27,17 +27,17 @@ export class UpdateColumnDto {
   @IsString()
   @MinLength(1)
   @IsOptional()
-  public id!: string;
+  public id?: string;
 
   @IsString()
   @MinLength(1)
   @IsOptional()
-  public name!: string;
+  public name?: string;
 
   @IsString()
   @MinLength(1)
   @IsOptional()
-  public type!: FieldType;
+  public type?: FieldType;
 
   @IsInt()
   public orderIndex!: number;
