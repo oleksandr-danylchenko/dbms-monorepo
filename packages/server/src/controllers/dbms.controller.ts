@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import DbmsService from '@services/dbms/dbms.service';
 import DatabaseMapper from '@/mappers/database.mapper';
 import TableMapper from '@/mappers/table.mapper';
-import ColumnMapper from '@/mappers/column.mapper';
 import RowMapper from '@/mappers/row.mapper';
 
 class DbmsController {
-  public dbmsService = new DbmsService();
+  public dbmsService = DbmsService.getInstance();
 
   public getDatabases = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

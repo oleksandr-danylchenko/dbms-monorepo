@@ -14,15 +14,24 @@ import Row from '@models/dbms/row';
 import { EOL } from 'os';
 
 class DbmsPersistor {
+  private static _instance: DbmsPersistor;
+
   public readonly basePath = `${process.cwd()}/storage`;
   public readonly databasesFolder = `${this.basePath}/databases`;
   public readonly tablesFolder = `${this.basePath}/tables`;
   public readonly rowsFolder = `${this.basePath}/rows`;
 
-  constructor() {
+  private constructor() {
     fs.mkdirSync(this.databasesFolder, { recursive: true });
     fs.mkdirSync(this.tablesFolder, { recursive: true });
     fs.mkdirSync(this.rowsFolder, { recursive: true });
+  }
+
+  public static getInstance(): DbmsPersistor {
+    if (!DbmsPersistor._instance) {
+      DbmsPersistor._instance = new DbmsPersistor();
+    }
+    return DbmsPersistor._instance;
   }
 
   public readDatabases(): Database[] {

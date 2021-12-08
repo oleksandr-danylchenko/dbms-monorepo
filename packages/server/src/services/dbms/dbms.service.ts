@@ -13,14 +13,23 @@ import { CreateRowDto } from '@dtos/row.dto';
 import DbmsValidation from '@services/dbms/validation.service';
 
 class DbmsService {
-  public persistor = new DbmsPersistor();
+  private static _instance: DbmsService;
+
+  public persistor = DbmsPersistor.getInstance();
   public databasesIndex: {
     [databaseId: string]: Database;
   };
 
-  constructor() {
+  private constructor() {
     const databases = this.persistor.readDatabases();
     this.databasesIndex = normalize(databases);
+  }
+
+  public static getInstance(): DbmsService {
+    if (!DbmsService._instance) {
+      DbmsService._instance = new DbmsService();
+    }
+    return DbmsService._instance;
   }
 
   private checkUniqueEntityName<T extends { name: string }>(entities: T[], newName: string): boolean {
