@@ -79,7 +79,7 @@ class DbmsPersistor {
 
   public async deleteDatabase(database: Database) {
     const { id, tables } = database;
-    const tablesDeletion = tables.map(this.deleteTable);
+    const tablesDeletion = tables.map(this.deleteTable.bind(this));
     await Promise.all(tablesDeletion);
 
     const databaseFilePath = this.createDatabasePath(id);
