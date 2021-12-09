@@ -72,7 +72,13 @@
     "import/prefer-default-export": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
   "settings": {
     "import/resolver": {
