@@ -9,7 +9,7 @@
   "packageManager": "yarn@3.1.0",
   "scripts": {
     "heroku-postbuild": "chmod u+x ./heroku.build && ./heroku.build",
-    "develop": "yarn workspace @oleksandr/dbms-client start & yarn workspace @oleksandr/dbms-server dev"
+    "develop": "yarn workspace @team/dbms-client start & yarn workspace @team/dbms-server dev"
   },
   "workspaces": {
     "packages": [

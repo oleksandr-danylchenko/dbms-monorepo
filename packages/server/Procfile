@@ -1,1 +1,1 @@
-web: yarn workspace @oleksandr/dbms-server start
+web: yarn workspace @team/dbms-server start

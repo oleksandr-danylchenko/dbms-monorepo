@@ -4,14 +4,14 @@ if [ -n "$NODE_APP" ]
 then
   if [ "$NODE_APP" == "client" ]
   then
-    echo "Building @oleksandr/dbms-client"
-    yarn workspace @oleksandr/dbms-client build
+    echo "Building @team/dbms-client"
+    yarn workspace @team/dbms-client build
     cp packages/client/static.json ./
     exit
   elif [ "$NODE_APP" == "server" ]
   then
-    echo "Building @oleksandr/dbms-server"
-    yarn workspace @oleksandr/dbms-server build
+    echo "Building @team/dbms-server"
+    yarn workspace @team/dbms-server build
     exit
   else
     echo "Invalid NODE_APP value $NODE_APP"
