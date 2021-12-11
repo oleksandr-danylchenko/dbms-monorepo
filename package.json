@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Fractional implementation of the DBMS system",
   "main": "index.js",
-  "author": "Oleksandr Danylchenko",
+  "author": "Oleksandr Danylchenko, Anton Kuzmishyn",
   "license": "MIT",
   "packageManager": "yarn@3.1.0",
   "scripts": {
