@@ -17,7 +17,7 @@ class DbmsValidation {
     char: (value) => typeof value === 'string' && value.length === 1,
     string: (value) => typeof value === 'string',
     picture: (value) => isBase64(String(value), { mimeRequired: true }),
-    color: (value) => isRgbColor(value) || isHexColor(value),
+    color: (value) => typeof value === 'string' && value.startsWith('#') && isHexColor(value),
   };
 
   public static getValidatorByType(type: FieldType): Validator {
